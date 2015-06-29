@@ -124,10 +124,15 @@ module todo.CommonActions {
         let generatedAction : IAction;
         if(typeof subAction === 'object'){
             generatedAction = <IAction> subAction;
-        }else{
+        }else if(typeof subAction === 'function'){
             const actionGenerator = <IObjectGenerator<IAction, IAction>> subAction;
             generatedAction = actionGenerator(action);
-            
+            if(typeof generatedAction === 'function'){
+                doActionOrActionGenerator(context, callback, action, generatedAction);
+                return;
+            }
+        }else{
+            throw 'Action Type not supported.'
         }
         generatedAction.do(context, callback, generatedAction);
     }

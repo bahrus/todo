@@ -67,9 +67,16 @@ var todo;
             if (typeof subAction === 'object') {
                 generatedAction = subAction;
             }
-            else {
+            else if (typeof subAction === 'function') {
                 var actionGenerator = subAction;
                 generatedAction = actionGenerator(action);
+                if (typeof generatedAction === 'function') {
+                    doActionOrActionGenerator(context, callback, action, generatedAction);
+                    return;
+                }
+            }
+            else {
+                throw 'Action Type not supported.';
             }
             generatedAction.do(context, callback, generatedAction);
         }
