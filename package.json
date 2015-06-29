@@ -1,0 +1,13 @@
+{
+  "name": "todo",
+  "version": "0.0.0",
+  "description": "todo",
+  "main": "app.js",
+  "author": {
+    "name": "Bruce B. Anderson",
+    "email": ""
+  },
+  "dependencies": {
+    "lodash": "latest"
+  }
+}
