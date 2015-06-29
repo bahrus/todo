@@ -62,22 +62,25 @@ var todo;
             console.log(message);
         }
         CommonActions.ConsoleActionImpl = ConsoleActionImpl;
+        function doActionOrActionGenerator(context, callback, action, subAction) {
+            var generatedAction;
+            if (typeof subAction === 'object') {
+                generatedAction = subAction;
+            }
+            else {
+                var actionGenerator = subAction;
+                generatedAction = actionGenerator(action);
+            }
+            generatedAction.do(context, callback, generatedAction);
+        }
         function CompositeActionsImpl(context, callback, action) {
             var cA = action;
             if (!cA)
                 cA = this;
             if (!cA.actions)
                 return;
-            cA.actions.forEach(function (action) {
-                var generatedAction;
-                if (typeof action === 'object') {
-                    generatedAction = action;
-                }
-                else {
-                    var actionGenerator = action;
-                    generatedAction = actionGenerator(cA);
-                }
-                generatedAction.do(context, callback, generatedAction);
+            cA.actions.forEach(function (subAction) {
+                doActionOrActionGenerator(context, callback, cA, subAction);
             });
         }
         CommonActions.CompositeActionsImpl = CompositeActionsImpl;

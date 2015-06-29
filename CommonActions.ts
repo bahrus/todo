@@ -120,20 +120,24 @@ module todo.CommonActions {
         actions?: actionOrActionGenerator[];
     }
 
+    function doActionOrActionGenerator(context?: IContext, callback?:  ICallback, action?: ICompositeActions, subAction?: actionOrActionGenerator){
+        let generatedAction : IAction;
+        if(typeof subAction === 'object'){
+            generatedAction = <IAction> subAction;
+        }else{
+            const actionGenerator = <IObjectGenerator<IAction, IAction>> subAction;
+            generatedAction = actionGenerator(action);
+            
+        }
+        generatedAction.do(context, callback, generatedAction);
+    }
+    
     export function CompositeActionsImpl(context?: IContext, callback?: ICallback, action?: ICompositeActions){
         let cA = action;
         if(!cA) cA = this;
         if(!cA.actions) return;
-        cA.actions.forEach(action => {
-            let generatedAction : IAction;
-            if(typeof action === 'object'){
-                generatedAction = <IAction> action;
-            }else{
-                const actionGenerator = <IObjectGenerator<IAction, IAction>> action;
-                generatedAction = actionGenerator(cA);
-                
-            }
-            generatedAction.do(context, callback, generatedAction);
+        cA.actions.forEach(subAction => {
+            doActionOrActionGenerator(context, callback, cA, subAction)
         });
     }
     

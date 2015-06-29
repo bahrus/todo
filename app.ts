@@ -7,31 +7,32 @@ if(typeof(global) !== 'undefined'){
 }
 
 const ca = todo.CommonActions;
-type ica = todo.CommonActions.IConsoleAction;
-type compToConsoleAction = todo.CommonActions.IObjectGenerator<todo.CommonActions.ICompositeActions, todo.CommonActions.IConsoleAction>;
+type iConsoleAct = todo.CommonActions.IConsoleAction;
+type iCompositeAct = todo.CommonActions.ICompositeActions;
+type compToConsoleAction = todo.CommonActions.IObjectGenerator<iCompositeAct, iConsoleAct>;
 
 
-const sendHelloWorldToConsole: ica  = {
+const sendHelloWorldToConsole: iConsoleAct  = {
 	do: ca.ConsoleActionImpl,
 	message: `hello, world`
 }
 
 sendHelloWorldToConsole.do();
 
-const sendYouveGotMaileToConsole: ica = {
+const sendYouveGotMaileToConsole: iConsoleAct = {
 	do: ca.ConsoleActionImpl,
 	message: `You've got mail`
 }
 
-const sendMessagesToConsole: todo.CommonActions.ICompositeActions = {
+const sendMessagesToConsole: iCompositeAct = {
 	do: ca.CompositeActionsImpl,
 	actions: [sendHelloWorldToConsole, sendYouveGotMaileToConsole]
 }
 
 sendMessagesToConsole.do();
 
-interface IToDoList1 extends todo.CommonActions.ICompositeActions {
-	actions: [ica, ica, compToConsoleAction]
+interface IToDoList1 extends iCompositeAct {
+	actions: [iConsoleAct, iConsoleAct, compToConsoleAction]
 }
 
 const sendMessagesToConsole2 : IToDoList1 = {
@@ -39,11 +40,11 @@ const sendMessagesToConsole2 : IToDoList1 = {
 	actions: [
 		{
 			do: ca.ConsoleActionImpl,
-			message: 'This is foo'
+			message: `This is foo`
 		},
 		{
 			do: ca.ConsoleActionImpl,
-			message: 'That is bar'
+			message: `That is bar`
 		},
 		cA => cA.actions[0]
 	]
@@ -51,14 +52,36 @@ const sendMessagesToConsole2 : IToDoList1 = {
 
 sendMessagesToConsole2.do();
 
-// interface IToDoList{
-// 	sendMessageToConsole: todo.CommonActions.IConsoleAction;
-// }
+type IToDoList2ToConsoleAction = todo.CommonActions.IObjectGenerator<IToDOList2, iConsoleAct>;
 
-// const todoActions : IToDoList = {
-// 	sendMessageToConsole: {
-// 		do: ca.ConsoleActionImpl,
-// 		message: 'hello, world'
-// 	}
-// };
+interface IToDOList2 extends iCompositeAct {
+	consoleAction1: iConsoleAct,
+	consoleAction2: iConsoleAct,
+	consoleAction3: IToDoList2ToConsoleAction,
+	actions: IToDoList2ToConsoleAction[],
+}
+
+const sendMessagesToConsole3: IToDOList2 = {
+	do: ca.CompositeActionsImpl,
+	consoleAction1:{
+		do: ca.ConsoleActionImpl,
+		message: `To Err is human.`
+	},
+	consoleAction2:{
+		do: ca.ConsoleActionImpl,
+		message: `To really foul things up requires a computer.`
+	},
+	consoleAction3: i => {
+		const consoleMessage: iConsoleAct = {
+			do: ca.ConsoleActionImpl,
+			message: `${i.consoleAction1.message}  ${i.consoleAction2.message}`
+		};
+		return consoleMessage;
+	},
+	actions: [
+		i => i.consoleAction1, i => i.consoleAction2, i=> i.consoleAction3
+	]
+}
+
+sendMessagesToConsole3.do();
 

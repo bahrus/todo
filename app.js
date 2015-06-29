@@ -23,23 +23,36 @@ var sendMessagesToConsole2 = {
     actions: [
         {
             do: ca.ConsoleActionImpl,
-            message: 'This is foo'
+            message: "This is foo"
         },
         {
             do: ca.ConsoleActionImpl,
-            message: 'That is bar'
+            message: "That is bar"
         },
         function (cA) { return cA.actions[0]; }
     ]
 };
 sendMessagesToConsole2.do();
-// interface IToDoList{
-// 	sendMessageToConsole: todo.CommonActions.IConsoleAction;
-// }
-// const todoActions : IToDoList = {
-// 	sendMessageToConsole: {
-// 		do: ca.ConsoleActionImpl,
-// 		message: 'hello, world'
-// 	}
-// };
+var sendMessagesToConsole3 = {
+    do: ca.CompositeActionsImpl,
+    consoleAction1: {
+        do: ca.ConsoleActionImpl,
+        message: "To Err is human."
+    },
+    consoleAction2: {
+        do: ca.ConsoleActionImpl,
+        message: "To really foul things up requires a computer."
+    },
+    consoleAction3: function (i) {
+        var consoleMessage = {
+            do: ca.ConsoleActionImpl,
+            message: i.consoleAction1.message + "  " + i.consoleAction2.message
+        };
+        return consoleMessage;
+    },
+    actions: [
+        function (i) { return i.consoleAction1; }, function (i) { return i.consoleAction2; }, function (i) { return i.consoleAction3; }
+    ]
+};
+sendMessagesToConsole3.do();
 //# sourceMappingURL=app.js.map
