@@ -1,4 +1,5 @@
-﻿///<reference path='../Scripts/typings/node/node.d.ts'/>
+﻿///<reference path='Scripts/typings/node/node.d.ts'/>
+
 const fs = require('fs');
 const path = require('path');
 const compressor = require('node-minify');

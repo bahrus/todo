@@ -6,6 +6,7 @@
 	},
 	"files": [
     	"CommonActions.ts",
+		"StringUtils.ts",
 		"app.ts"
   	]
 }

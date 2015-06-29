@@ -1,13 +1,13 @@
-﻿
+﻿///<reference path='StringUtils.ts'/>
+///<reference path='CommonActions.ts'/>
+///<reference path='Scripts/typings/jquery/jquery.d.ts'/>
+///<reference path='Scripts/typings/cheerio/cheerio.d.ts'/>
 
-module tsp.FileSystemActions {
-    try {
-        require('./Refs');
-        global.refs.moduleTarget = tsp;
-    } finally { }
+module todo.FileSystemActions {
+   
     //tsp.ParserActions = global.tsp.ParserActions;
-    const pa = tsp.ParserActions;
-    const ca = tsp.CommonActions; 
+    const su = todo.StringUtils;
+    const ca = todo.CommonActions; 
     //if (typeof (global) !== 'undefined') {
     //    if (!ca) ca = global.tsp.CommonActions;
     //    if (!pa) pa = global.tsp.ParserActions;
@@ -36,7 +36,7 @@ module tsp.FileSystemActions {
         fileManager: IWebFileManager;
     }
     export interface IWebAction extends CommonActions.IAction {
-        do: (action: IWebAction, context: IWebContext, callback?: CommonActions.ICallback) => void;
+        do: (context?: IWebContext, callback?: CommonActions.ICallback, action?: IWebAction) => void;
 
     }
 
@@ -49,15 +49,15 @@ module tsp.FileSystemActions {
     //#region helper functions
     export module commonHelperFunctions {
         export function testForHtmlFileName(s: string) {
-            return pa.endsWith(s, '.html');
+            return su.endsWith(s, '.html');
         }
 
         export function testForNonMinifiedJSFileName(s: string) {
-            return pa.endsWith(s, '.js') && !pa.endsWith(s, '.min.js');
+            return su.endsWith(s, '.js') && !su.endsWith(s, '.min.js');
         }
 
         export function testForTsFileName(s: string) {
-            return pa.endsWith(s, '.ts');
+            return su.endsWith(s, '.ts');
         }
 
         export function retrieveWorkingDirectory(context: IWebContext) {
@@ -90,7 +90,7 @@ module tsp.FileSystemActions {
         fileReaderAction: ITextFileReaderAction;
     }
     export function cacheTextFile(action: ICacheFileContents, context: IWebContext, callback: CommonActions.ICallback) {
-        action.fileReaderAction.do(action.fileReaderAction, context);
+        action.fileReaderAction.do(context, null, action.fileReaderAction);
         context.stringCache[action.cacheKey] = action.fileReaderAction.state.content;
         ca.endAction(action, callback);
 
@@ -241,7 +241,7 @@ module tsp.FileSystemActions {
     export function selectAndProcessFiles(action: ISelectAndProcessFileAction, context: IWebContext, callback: CommonActions.ICallback) {
         if (action.debug) debugger;
         const fs = action.fileSelector;
-        fs.do(fs, context);
+        fs.do(context, null, fs);
         const selectedFilePaths = fs.state.selectedFilePaths;
         const len = selectedFilePaths.length;
         if (len === 0) {
@@ -263,7 +263,7 @@ module tsp.FileSystemActions {
                         fp.state.filePath = filePath;
                         
                     }
-                    fp.do(fp, context, fpCallback);
+                    fp.do(context, fpCallback, fp);
                 } else {
                     ca.endAction(action, callback);
                 }
@@ -280,7 +280,7 @@ module tsp.FileSystemActions {
                 } else {
                     fp.state.filePath = filePath;
                 }
-                fp.do(fp, context);
+                fp.do(context, null, fp);
             }
             ca.endAction(action, callback);
         }
@@ -335,6 +335,3 @@ module tsp.FileSystemActions {
     //#endregion
 }
 
-try {
-    global.refs.ref = ['FileSystemActions', tsp.FileSystemActions];
-} finally { }

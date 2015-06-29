@@ -146,33 +146,6 @@ module todo.CommonActions {
         });
     }
     
-    // export interface ITypedActionList<T> extends IAction {
-    //     configOneLiners?: [(t: T) => void];
-    //     subActionsGenerator?: [(t: T) => IAction];
-    // }
-
-    // export function doSubActions<T>(action: ITypedActionList<T>, context: IContext, callback: ICallback) {
-    //     const t = <T> <any> action;
-    //     if (!action.subActionsGenerator || action.subActionsGenerator.length === 0) {
-    //         endAction(action, callback);
-    //         return;
-    //     }
-    //     const subActionGenerator = action.subActionsGenerator[0];
-    //     const subAction = subActionGenerator(t);
-    //     if (subAction.async) {
-    //         const seqCallback: ICallback = (err) => {
-    //             action.subActionsGenerator = <[(t: T) => IAction]> action.subActionsGenerator.slice(1);
-    //             doSubActions(action, context, callback);
-    //         };
-    //         subAction.do(context, seqCallback, subAction); 
-    //     } else {
-    //         subAction.do(context, null, subAction);
-    //         action.subActionsGenerator = <[(t: T) => IAction]> action.subActionsGenerator.slice(1);
-    //         doSubActions(action, context, callback);
-    //     } 
-        
-        
-    // }
 
     export interface IMergeAction<T> extends IAction {
         srcRefs: T[];
