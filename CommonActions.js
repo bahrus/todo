@@ -41,19 +41,24 @@ var todo;
         }
         CommonActions.endAction = endAction;
         function ConsoleActionImpl(context, callback, consoleAction) {
-            var mA = consoleAction;
-            if (!mA)
-                mA = this;
-            mA.state = {
-                dynamicMessage: mA.message ? mA.message : '',
-            };
-            var mS = mA.state;
-            if (mA.messageGenerator) {
-                var genMessage = mA.messageGenerator(mA);
-                genMessage = (mS.dynamicMessage ? (mS.dynamicMessage + ' ') : '') + genMessage;
-                mS.dynamicMessage = genMessage;
+            var cA = consoleAction;
+            if (!cA)
+                cA = this;
+            var message;
+            var messageOrMessageGenerator = cA.message;
+            if (typeof messageOrMessageGenerator === 'string') {
+                message = messageOrMessageGenerator;
             }
-            console.log(mS.dynamicMessage);
+            else if (typeof messageOrMessageGenerator === 'function') {
+                message = messageOrMessageGenerator(cA);
+            }
+            else {
+                throw 'Not Supported Message Type';
+            }
+            cA.state = {
+                dynamicMessage: message,
+            };
+            console.log(message);
         }
         CommonActions.ConsoleActionImpl = ConsoleActionImpl;
         function CompositeActionsImpl(context, callback, action) {
@@ -62,7 +67,17 @@ var todo;
                 cA = this;
             if (!cA.actions)
                 return;
-            cA.actions.forEach(function (action) { return action.do(context, callback, action); });
+            cA.actions.forEach(function (action) {
+                var generatedAction;
+                if (typeof action === 'object') {
+                    generatedAction = action;
+                }
+                else {
+                    var actionGenerator = action;
+                    var generatedAction_1 = actionGenerator(cA);
+                }
+                generatedAction.do(context, callback, action);
+            });
         }
         CommonActions.CompositeActionsImpl = CompositeActionsImpl;
         function doSubActions(action, context, callback) {

@@ -74,43 +74,66 @@ module todo.CommonActions {
         dynamicMessage?: string;
     }
 
+    interface IObjectGenerator<TInput, TObject>{
+        (action: TInput) : TObject;
+    }
+    
+    
     export interface IConsoleAction extends IAction {
-        message?: string;
-        messageGenerator?: (IMessageAction) => string;
+        message?: stringOrStringGenerator;
         state?: IMessageState;
     }
+    
+    type stringOrStringGenerator = string | IObjectGenerator<IConsoleAction, string>;
 
     export function ConsoleActionImpl(context?: IContext, callback?: ICallback, consoleAction?: IConsoleAction) {
-        let mA = consoleAction;
-        if(!mA) mA = <IConsoleAction> this;
-        mA.state = {
-            dynamicMessage: mA.message ? mA.message : '',
-        };
-        const mS = mA.state;
-        if (mA.messageGenerator) {
-            let genMessage = mA.messageGenerator(mA);
-            genMessage = (mS.dynamicMessage ? (mS.dynamicMessage + ' ') : '') + genMessage;
-            mS.dynamicMessage = genMessage;
+        let cA = consoleAction;
+        if(!cA) cA = <IConsoleAction> this;
+        let message: string;
+        const messageOrMessageGenerator = cA.message;
+        if(typeof messageOrMessageGenerator === 'string'){
+            message = messageOrMessageGenerator;
+        }else if(typeof messageOrMessageGenerator === 'function'){
+            message = messageOrMessageGenerator(cA);
+        }else{
+            throw 'Not Supported Message Type';
         }
-        console.log(mS.dynamicMessage);
+        cA.state = {
+            dynamicMessage: message,
+        };
+        console.log(message);
     }
 
     //#endregion
 
     //#region Action Management
     
+    // interface IActionGenerator{
+    //     (action: IAction): IAction;
+    // }
     
+    type actionOrActionGenerator = IAction | IObjectGenerator<IAction, IAction>;
     
     
     export interface ICompositeActions extends IAction {
-        actions?: IAction[];
+        actions?: actionOrActionGenerator[];
     }
 
     export function CompositeActionsImpl(context?: IContext, callback?: ICallback, action?: ICompositeActions){
         let cA = action;
         if(!cA) cA = this;
         if(!cA.actions) return;
-        cA.actions.forEach(action => action.do(context, callback, action));
+        cA.actions.forEach(action => {
+            let generatedAction : IAction;
+            if(typeof action === 'object'){
+                generatedAction = <IAction> action;
+            }else{
+                const actionGenerator = <IObjectGenerator<IAction, IAction>> action;
+                const generatedAction = actionGenerator(cA);
+                
+            }
+            generatedAction.do(context, callback, action);
+        });
     }
     
     export interface ITypedActionList<T> extends IAction {

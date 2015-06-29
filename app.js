@@ -18,6 +18,20 @@ var sendMessagesToConsole = {
     actions: [sendHelloWorldToConsole, sendYouveGotMaileToConsole]
 };
 sendMessagesToConsole.do();
+var sendMessagesToConsole2 = {
+    do: ca.CompositeActionsImpl,
+    actions: [
+        {
+            do: ca.ConsoleActionImpl,
+            message: 'This is foo'
+        },
+        {
+            do: ca.ConsoleActionImpl,
+            message: 'That is bar'
+        }
+    ]
+};
+sendMessagesToConsole2.do();
 // interface IToDoList{
 // 	sendMessageToConsole: todo.CommonActions.IConsoleAction;
 // }

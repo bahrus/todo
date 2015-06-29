@@ -7,15 +7,16 @@ if(typeof(global) !== 'undefined'){
 }
 
 const ca = todo.CommonActions;
+type ica = todo.CommonActions.IConsoleAction
 
-const sendHelloWorldToConsole: todo.CommonActions.IConsoleAction = {
+const sendHelloWorldToConsole: ica  = {
 	do: ca.ConsoleActionImpl,
 	message: `hello, world`
 }
 
 sendHelloWorldToConsole.do();
 
-const sendYouveGotMaileToConsole: todo.CommonActions.IConsoleAction = {
+const sendYouveGotMaileToConsole: ica = {
 	do: ca.ConsoleActionImpl,
 	message: `You've got mail`
 }
@@ -26,6 +27,26 @@ const sendMessagesToConsole: todo.CommonActions.ICompositeActions = {
 }
 
 sendMessagesToConsole.do();
+
+interface IToDoList1 extends todo.CommonActions.ICompositeActions {
+	actions: [ica, ica]
+}
+
+const sendMessagesToConsole2 : IToDoList1 = {
+	do: ca.CompositeActionsImpl,
+	actions: [
+		{
+			do: ca.ConsoleActionImpl,
+			message: 'This is foo'
+		},
+		{
+			do: ca.ConsoleActionImpl,
+			message: 'That is bar'
+		}
+	]
+}
+
+sendMessagesToConsole2.do();
 
 // interface IToDoList{
 // 	sendMessageToConsole: todo.CommonActions.IConsoleAction;
