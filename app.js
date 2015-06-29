@@ -55,4 +55,5 @@ var sendMessagesToConsole3 = {
     ]
 };
 sendMessagesToConsole3.do();
+//const readFileAndLogContentsToConsole: 
 //# sourceMappingURL=app.js.map

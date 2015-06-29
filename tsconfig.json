@@ -8,6 +8,7 @@
     	"CommonActions.ts",
 		"StringUtils.ts",
 		"FileSystemActions.ts",
+		"NodeJSImplementations.ts",
 		"app.ts"
   	]
 }

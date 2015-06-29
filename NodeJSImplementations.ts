@@ -1,15 +1,17 @@
 ﻿///<reference path='Scripts/typings/node/node.d.ts'/>
+///<reference path='Scripts/typings/cheerio/cheerio.d.ts'/>
+///<reference path='CommonActions.ts'/>
+///<reference path='StringUtils.ts'/>
+///<reference path='FileSystemActions.ts'/>
 
 const fs = require('fs');
 const path = require('path');
 const compressor = require('node-minify');
+const cheerio = require('cheerio');
 
-module tsp.NodeJSImplementations {
-    try {
-        require('./Refs');
-        global.refs.moduleTarget = tsp;
-    } finally { }
-    const pa = ParserActions;
+module todo.NodeJSImplementations {
+    
+    const su = todo.StringUtils;;
 
     export class NodeJSFileManager implements FileSystemActions.IFileManager {
 
@@ -53,7 +55,7 @@ module tsp.NodeJSImplementations {
             return <JQueryStatic> $any;
         }
         minify(filePath: string, callback: (err: Error, min: string) => void) {
-            const destPath = pa.replaceEndWith(filePath, '.js', '.min.js');
+            const destPath = su.replaceEndWith(filePath, '.js', '.min.js');
             new compressor.minify({
                 type: 'uglifyjs',
                 fileIn: filePath,
@@ -77,6 +79,3 @@ module tsp.NodeJSImplementations {
     }
 }
 
-try {
-    global.refs.ref = ['NodeJSImplementations', tsp.NodeJSImplementations];
-} finally { }

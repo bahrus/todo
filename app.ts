@@ -85,3 +85,9 @@ const sendMessagesToConsole3: IToDOList2 = {
 
 sendMessagesToConsole3.do();
 
+
+interface IEchoFile extends iCompositeAct{
+	
+}
+//const readFileAndLogContentsToConsole: 
+
