@@ -74,7 +74,7 @@ module todo.CommonActions {
         dynamicMessage?: string;
     }
 
-    interface IObjectGenerator<TInput, TObject>{
+    export interface IObjectGenerator<TInput, TObject>{
         (action: TInput) : TObject;
     }
     
@@ -96,6 +96,7 @@ module todo.CommonActions {
         }else if(typeof messageOrMessageGenerator === 'function'){
             message = messageOrMessageGenerator(cA);
         }else{
+            console.log(messageOrMessageGenerator);
             throw 'Not Supported Message Type';
         }
         cA.state = {
@@ -129,40 +130,40 @@ module todo.CommonActions {
                 generatedAction = <IAction> action;
             }else{
                 const actionGenerator = <IObjectGenerator<IAction, IAction>> action;
-                const generatedAction = actionGenerator(cA);
+                generatedAction = actionGenerator(cA);
                 
             }
-            generatedAction.do(context, callback, action);
+            generatedAction.do(context, callback, generatedAction);
         });
     }
     
-    export interface ITypedActionList<T> extends IAction {
-        configOneLiners?: [(t: T) => void];
-        subActionsGenerator?: [(t: T) => IAction];
-    }
+    // export interface ITypedActionList<T> extends IAction {
+    //     configOneLiners?: [(t: T) => void];
+    //     subActionsGenerator?: [(t: T) => IAction];
+    // }
 
-    export function doSubActions<T>(action: ITypedActionList<T>, context: IContext, callback: ICallback) {
-        const t = <T> <any> action;
-        if (!action.subActionsGenerator || action.subActionsGenerator.length === 0) {
-            endAction(action, callback);
-            return;
-        }
-        const subActionGenerator = action.subActionsGenerator[0];
-        const subAction = subActionGenerator(t);
-        if (subAction.async) {
-            const seqCallback: ICallback = (err) => {
-                action.subActionsGenerator = <[(t: T) => IAction]> action.subActionsGenerator.slice(1);
-                doSubActions(action, context, callback);
-            };
-            subAction.do(context, seqCallback, subAction); 
-        } else {
-            subAction.do(context, null, subAction);
-            action.subActionsGenerator = <[(t: T) => IAction]> action.subActionsGenerator.slice(1);
-            doSubActions(action, context, callback);
-        } 
+    // export function doSubActions<T>(action: ITypedActionList<T>, context: IContext, callback: ICallback) {
+    //     const t = <T> <any> action;
+    //     if (!action.subActionsGenerator || action.subActionsGenerator.length === 0) {
+    //         endAction(action, callback);
+    //         return;
+    //     }
+    //     const subActionGenerator = action.subActionsGenerator[0];
+    //     const subAction = subActionGenerator(t);
+    //     if (subAction.async) {
+    //         const seqCallback: ICallback = (err) => {
+    //             action.subActionsGenerator = <[(t: T) => IAction]> action.subActionsGenerator.slice(1);
+    //             doSubActions(action, context, callback);
+    //         };
+    //         subAction.do(context, seqCallback, subAction); 
+    //     } else {
+    //         subAction.do(context, null, subAction);
+    //         action.subActionsGenerator = <[(t: T) => IAction]> action.subActionsGenerator.slice(1);
+    //         doSubActions(action, context, callback);
+    //     } 
         
         
-    }
+    // }
 
     export interface IMergeAction<T> extends IAction {
         srcRefs: T[];

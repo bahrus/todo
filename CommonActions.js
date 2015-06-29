@@ -53,6 +53,7 @@ var todo;
                 message = messageOrMessageGenerator(cA);
             }
             else {
+                console.log(messageOrMessageGenerator);
                 throw 'Not Supported Message Type';
             }
             cA.state = {
@@ -74,34 +75,12 @@ var todo;
                 }
                 else {
                     var actionGenerator = action;
-                    var generatedAction_1 = actionGenerator(cA);
+                    generatedAction = actionGenerator(cA);
                 }
-                generatedAction.do(context, callback, action);
+                generatedAction.do(context, callback, generatedAction);
             });
         }
         CommonActions.CompositeActionsImpl = CompositeActionsImpl;
-        function doSubActions(action, context, callback) {
-            var t = action;
-            if (!action.subActionsGenerator || action.subActionsGenerator.length === 0) {
-                endAction(action, callback);
-                return;
-            }
-            var subActionGenerator = action.subActionsGenerator[0];
-            var subAction = subActionGenerator(t);
-            if (subAction.async) {
-                var seqCallback = function (err) {
-                    action.subActionsGenerator = action.subActionsGenerator.slice(1);
-                    doSubActions(action, context, callback);
-                };
-                subAction.do(context, seqCallback, subAction);
-            }
-            else {
-                subAction.do(context, null, subAction);
-                action.subActionsGenerator = action.subActionsGenerator.slice(1);
-                doSubActions(action, context, callback);
-            }
-        }
-        CommonActions.doSubActions = doSubActions;
         function merge(mergeAction, context, callback) {
             var n = mergeAction.srcRefs.length;
             for (var i = 0; i < n; i++) {

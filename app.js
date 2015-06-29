@@ -28,7 +28,8 @@ var sendMessagesToConsole2 = {
         {
             do: ca.ConsoleActionImpl,
             message: 'That is bar'
-        }
+        },
+        function (cA) { return cA.actions[0]; }
     ]
 };
 sendMessagesToConsole2.do();
