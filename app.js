@@ -9,12 +9,12 @@ if (typeof (global) !== 'undefined') {
 var ca = todo.CommonActions;
 var fsa = todo.FileSystemActions;
 var sendHelloWorldToConsole = {
-    do: ca.ConsoleActionImpl,
+    do: ca.ConsoleLogActionImpl,
     message: "hello, world"
 };
 sendHelloWorldToConsole.do();
 var sendYouveGotMaileToConsole = {
-    do: ca.ConsoleActionImpl,
+    do: ca.ConsoleLogActionImpl,
     message: "You've got mail"
 };
 var sendMessagesToConsole = {
@@ -26,11 +26,11 @@ var sendMessagesToConsole2 = {
     do: ca.CompositeActionsImpl,
     actions: [
         {
-            do: ca.ConsoleActionImpl,
+            do: ca.ConsoleLogActionImpl,
             message: "This is foo"
         },
         {
-            do: ca.ConsoleActionImpl,
+            do: ca.ConsoleLogActionImpl,
             message: "That is bar"
         },
         function (cA) { return cA.actions[0]; }
@@ -40,16 +40,16 @@ sendMessagesToConsole2.do();
 var sendMessagesToConsole3 = {
     do: ca.CompositeActionsImpl,
     consoleAction1: {
-        do: ca.ConsoleActionImpl,
+        do: ca.ConsoleLogActionImpl,
         message: "To Err is human."
     },
     consoleAction2: {
-        do: ca.ConsoleActionImpl,
+        do: ca.ConsoleLogActionImpl,
         message: "To really foul things up requires a computer."
     },
     consoleAction3: function (i) {
         var consoleMessage = {
-            do: ca.ConsoleActionImpl,
+            do: ca.ConsoleLogActionImpl,
             message: i.consoleAction1.message + "  " + i.consoleAction2.message
         };
         return consoleMessage;
@@ -63,11 +63,11 @@ var readAndDisplayFile = {
     do: ca.CompositeActionsImpl,
     readFileAction: {
         do: todo.FileSystemActions.textFileReaderActionImpl,
-        relativeFilePath: "Scripts\\typings\\node\\node.d.ts",
+        relativeFilePath: ".git\\config",
     },
     showFileContentsInConsole: function (i) {
         var consoleMessage = {
-            do: ca.ConsoleActionImpl,
+            do: ca.ConsoleLogActionImpl,
             message: i.readFileAction.state.content
         };
         return consoleMessage;
@@ -78,9 +78,6 @@ var readAndDisplayFile = {
     ]
 };
 var context = {
-    HTMLOutputs: {},
-    JSOutputs: {},
-    stringCache: {},
     fileManager: new todo.NodeJSImplementations.NodeJSWebFileManager(),
 };
 readAndDisplayFile.do(context);

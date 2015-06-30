@@ -40,7 +40,7 @@ var todo;
                 callback(null);
         }
         CommonActions.endAction = endAction;
-        function ConsoleActionImpl(context, callback, consoleAction) {
+        function ConsoleLogActionImpl(context, callback, consoleAction) {
             var cA = consoleAction;
             if (!cA)
                 cA = this;
@@ -51,17 +51,17 @@ var todo;
             }
             else if (typeof messageOrMessageGenerator === 'function') {
                 message = messageOrMessageGenerator(cA);
+                cA.state = {
+                    dynamicMessage: message,
+                };
             }
             else {
                 console.log(messageOrMessageGenerator);
                 throw 'Not Supported Message Type';
             }
-            cA.state = {
-                dynamicMessage: message,
-            };
             console.log(message);
         }
-        CommonActions.ConsoleActionImpl = ConsoleActionImpl;
+        CommonActions.ConsoleLogActionImpl = ConsoleLogActionImpl;
         function doActionOrActionGenerator(context, callback, action, subAction) {
             var generatedAction;
             if (typeof subAction === 'object') {

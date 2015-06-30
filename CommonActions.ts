@@ -46,7 +46,7 @@ module todo.CommonActions {
 
 
     export interface IContext {
-        stringCache: { [key: string]: string };
+        stringCache?: { [key: string]: string };
         processManager?: IProcessManager;
     }
 
@@ -79,29 +79,30 @@ module todo.CommonActions {
     }
     
     
-    export interface IConsoleAction extends IAction {
+    export interface IConsoleLogAction extends IAction {
         message?: stringOrStringGenerator;
         state?: IMessageState;
     }
     
-    type stringOrStringGenerator = string | IObjectGenerator<IConsoleAction, string>;
+    type stringOrStringGenerator = string | IObjectGenerator<IConsoleLogAction, string>;
 
-    export function ConsoleActionImpl(context?: IContext, callback?: ICallback, consoleAction?: IConsoleAction) {
+    export function ConsoleLogActionImpl(context?: IContext, callback?: ICallback, consoleAction?: IConsoleLogAction) {
         let cA = consoleAction;
-        if(!cA) cA = <IConsoleAction> this;
+        if(!cA) cA = <IConsoleLogAction> this;
         let message: string;
         const messageOrMessageGenerator = cA.message;
         if(typeof messageOrMessageGenerator === 'string'){
             message = messageOrMessageGenerator;
         }else if(typeof messageOrMessageGenerator === 'function'){
             message = messageOrMessageGenerator(cA);
+            cA.state = {
+                dynamicMessage: message,
+            };
         }else{
             console.log(messageOrMessageGenerator);
             throw 'Not Supported Message Type';
         }
-        cA.state = {
-            dynamicMessage: message,
-        };
+        
         console.log(message);
     }
 

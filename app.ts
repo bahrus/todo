@@ -12,20 +12,20 @@ if(typeof(global) !== 'undefined'){
 const ca = todo.CommonActions;
 const fsa = todo.FileSystemActions;
 
-type iConsoleAct = todo.CommonActions.IConsoleAction;
+type iConsoleAct = todo.CommonActions.IConsoleLogAction;
 type iCompositeAct = todo.CommonActions.ICompositeActions;
 type compToConsoleAction = todo.CommonActions.IObjectGenerator<iCompositeAct, iConsoleAct>;
 
 
 const sendHelloWorldToConsole: iConsoleAct  = {
-	do: ca.ConsoleActionImpl,
+	do: ca.ConsoleLogActionImpl,
 	message: `hello, world`
 }
 
 sendHelloWorldToConsole.do();
 
 const sendYouveGotMaileToConsole: iConsoleAct = {
-	do: ca.ConsoleActionImpl,
+	do: ca.ConsoleLogActionImpl,
 	message: `You've got mail`
 }
 
@@ -44,11 +44,11 @@ const sendMessagesToConsole2 : IToDoList1 = {
 	do: ca.CompositeActionsImpl,
 	actions: [
 		{
-			do: ca.ConsoleActionImpl,
+			do: ca.ConsoleLogActionImpl,
 			message: `This is foo`
 		},
 		{
-			do: ca.ConsoleActionImpl,
+			do: ca.ConsoleLogActionImpl,
 			message: `That is bar`
 		},
 		cA => cA.actions[0]
@@ -69,16 +69,16 @@ interface IToDOList2 extends iCompositeAct {
 const sendMessagesToConsole3: IToDOList2 = {
 	do: ca.CompositeActionsImpl,
 	consoleAction1:{
-		do: ca.ConsoleActionImpl,
+		do: ca.ConsoleLogActionImpl,
 		message: `To Err is human.`
 	},
 	consoleAction2:{
-		do: ca.ConsoleActionImpl,
+		do: ca.ConsoleLogActionImpl,
 		message: `To really foul things up requires a computer.`
 	},
 	consoleAction3: i => {
 		const consoleMessage: iConsoleAct = {
-			do: ca.ConsoleActionImpl,
+			do: ca.ConsoleLogActionImpl,
 			message: `${i.consoleAction1.message}  ${i.consoleAction2.message}`
 		};
 		return consoleMessage;
@@ -102,12 +102,11 @@ const readAndDisplayFile : IEchoFile = {
 	do: ca.CompositeActionsImpl,
 	readFileAction: {
 		do: todo.FileSystemActions.textFileReaderActionImpl,
-		relativeFilePath: `Scripts\\typings\\node\\node.d.ts`,
-		// rootDirectoryRetriever: fsa.commonHelperFunctions.retrieveWorkingDirectory
+		relativeFilePath: `.git\\config`,
 	},
 	showFileContentsInConsole : i => {
 		const consoleMessage: iConsoleAct = {
-			do: ca.ConsoleActionImpl,
+			do: ca.ConsoleLogActionImpl,
 			message: i.readFileAction.state.content
 		}
 		return consoleMessage;
@@ -119,9 +118,6 @@ const readAndDisplayFile : IEchoFile = {
 }
 
 const context : todo.FileSystemActions.IWebContext = {
-	HTMLOutputs: {},
-	JSOutputs: {},
-	stringCache: {},
 	fileManager: new todo.NodeJSImplementations.NodeJSWebFileManager(),
 }
 readAndDisplayFile.do(context);

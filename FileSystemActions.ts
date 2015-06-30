@@ -36,7 +36,7 @@ module todo.FileSystemActions {
     }
 
     export interface IWebContext extends CommonActions.IContext {
-        HTMLOutputs: { [key: string]: JQueryStatic };
+        HTMLOutputs?: { [key: string]: JQueryStatic };
         JSOutputs?: { [key: string]: string[] };
         fileManager: IWebFileManager;
     }
