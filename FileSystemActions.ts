@@ -83,6 +83,9 @@ module todo.FileSystemActions {
     }
 
     export function textFileReaderActionImpl(context?: IWebContext, callback?: CommonActions.ICallback, action?: ITextFileReaderAction) {
+        if(!action.rootDirectoryRetriever){
+            action.rootDirectoryRetriever = commonHelperFunctions.retrieveWorkingDirectory
+        }
         const rootdirectory = action.rootDirectoryRetriever(context);
         const wfm = context.fileManager;
         const filePath = wfm.resolve(rootdirectory, action.relativeFilePath);
@@ -90,6 +93,7 @@ module todo.FileSystemActions {
             content: wfm.readTextFileSync(filePath),
         };
     }
+    
     export interface ICacheFileContents extends CommonActions.IAction {
         cacheKey: string;
         fileReaderAction: ITextFileReaderAction;

@@ -36,6 +36,9 @@ var todo;
             commonHelperFunctions.retrieveWorkingDirectory = retrieveWorkingDirectory;
         })(commonHelperFunctions = FileSystemActions.commonHelperFunctions || (FileSystemActions.commonHelperFunctions = {}));
         function textFileReaderActionImpl(context, callback, action) {
+            if (!action.rootDirectoryRetriever) {
+                action.rootDirectoryRetriever = commonHelperFunctions.retrieveWorkingDirectory;
+            }
             var rootdirectory = action.rootDirectoryRetriever(context);
             var wfm = context.fileManager;
             var filePath = wfm.resolve(rootdirectory, action.relativeFilePath);

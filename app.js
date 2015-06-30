@@ -64,7 +64,6 @@ var readAndDisplayFile = {
     readFileAction: {
         do: todo.FileSystemActions.textFileReaderActionImpl,
         relativeFilePath: "Scripts\\typings\\node\\node.d.ts",
-        rootDirectoryRetriever: fsa.commonHelperFunctions.retrieveWorkingDirectory
     },
     showFileContentsInConsole: function (i) {
         var consoleMessage = {

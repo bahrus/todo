@@ -103,7 +103,7 @@ const readAndDisplayFile : IEchoFile = {
 	readFileAction: {
 		do: todo.FileSystemActions.textFileReaderActionImpl,
 		relativeFilePath: `Scripts\\typings\\node\\node.d.ts`,
-		rootDirectoryRetriever: fsa.commonHelperFunctions.retrieveWorkingDirectory
+		// rootDirectoryRetriever: fsa.commonHelperFunctions.retrieveWorkingDirectory
 	},
 	showFileContentsInConsole : i => {
 		const consoleMessage: iConsoleAct = {
