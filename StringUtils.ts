@@ -18,3 +18,25 @@ module todo.StringUtils{
         return str.substr(0, iPosOfEnd) + replaceText;
     }
 }
+
+(function(__global: any) {
+    const modInfo = {
+        name: 'todo',
+        mod: todo,
+        //subMod: todo.CommonActions,
+    }
+    if (typeof __global[modInfo.name] !== "undefined") {
+        if (__global[modInfo.name] !== modInfo.mod) {
+            for (var p in modInfo.mod) {
+                __global[modInfo.name][p] = (<any>modInfo.mod)[p];
+            }
+        }
+    }
+    else {
+        __global[modInfo.name] = modInfo.mod;
+    }
+})(
+    typeof window !== "undefined" ? window :
+        typeof WorkerGlobalScope !== "undefined" ? self :
+            typeof global !== "undefined" ? global :
+                Function("return this;")());

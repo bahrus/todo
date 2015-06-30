@@ -2,6 +2,10 @@
 ///<reference path='CommonActions.ts'/>
 ///<reference path='Scripts/typings/jquery/jquery.d.ts'/>
 ///<reference path='Scripts/typings/cheerio/cheerio.d.ts'/>
+if (typeof (global) !== 'undefined') {
+    require('./CommonActions');
+    require('./StringUtils');
+}
 var todo;
 (function (todo) {
     var FileSystemActions;
@@ -31,7 +35,7 @@ var todo;
             }
             commonHelperFunctions.retrieveWorkingDirectory = retrieveWorkingDirectory;
         })(commonHelperFunctions = FileSystemActions.commonHelperFunctions || (FileSystemActions.commonHelperFunctions = {}));
-        function readTextFile(action, context) {
+        function textFileReaderActionImpl(context, callback, action) {
             var rootdirectory = action.rootDirectoryRetriever(context);
             var wfm = context.fileManager;
             var filePath = wfm.resolve(rootdirectory, action.relativeFilePath);
@@ -39,7 +43,7 @@ var todo;
                 content: wfm.readTextFileSync(filePath),
             };
         }
-        FileSystemActions.readTextFile = readTextFile;
+        FileSystemActions.textFileReaderActionImpl = textFileReaderActionImpl;
         function cacheTextFile(action, context, callback) {
             action.fileReaderAction.do(context, null, action.fileReaderAction);
             context.stringCache[action.cacheKey] = action.fileReaderAction.state.content;
@@ -214,4 +218,23 @@ var todo;
         FileSystemActions.exportProcessedDocumentsToFiles = exportProcessedDocumentsToFiles;
     })(FileSystemActions = todo.FileSystemActions || (todo.FileSystemActions = {}));
 })(todo || (todo = {}));
+(function (__global) {
+    var modInfo = {
+        name: 'todo',
+        mod: todo,
+    };
+    if (typeof __global[modInfo.name] !== "undefined") {
+        if (__global[modInfo.name] !== modInfo.mod) {
+            for (var p in modInfo.mod) {
+                __global[modInfo.name][p] = modInfo.mod[p];
+            }
+        }
+    }
+    else {
+        __global[modInfo.name] = modInfo.mod;
+    }
+})(typeof window !== "undefined" ? window :
+    typeof WorkerGlobalScope !== "undefined" ? self :
+        typeof global !== "undefined" ? global :
+            Function("return this;")());
 //# sourceMappingURL=FileSystemActions.js.map

@@ -25,4 +25,23 @@ var todo;
         StringUtils.replaceEndWith = replaceEndWith;
     })(StringUtils = todo.StringUtils || (todo.StringUtils = {}));
 })(todo || (todo = {}));
+(function (__global) {
+    var modInfo = {
+        name: 'todo',
+        mod: todo,
+    };
+    if (typeof __global[modInfo.name] !== "undefined") {
+        if (__global[modInfo.name] !== modInfo.mod) {
+            for (var p in modInfo.mod) {
+                __global[modInfo.name][p] = modInfo.mod[p];
+            }
+        }
+    }
+    else {
+        __global[modInfo.name] = modInfo.mod;
+    }
+})(typeof window !== "undefined" ? window :
+    typeof WorkerGlobalScope !== "undefined" ? self :
+        typeof global !== "undefined" ? global :
+            Function("return this;")());
 //# sourceMappingURL=StringUtils.js.map

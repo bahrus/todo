@@ -140,7 +140,10 @@ module todo.CommonActions {
     export function CompositeActionsImpl(context?: IContext, callback?: ICallback, action?: ICompositeActions){
         let cA = action;
         if(!cA) cA = this;
-        if(!cA.actions) return;
+        if(!cA.actions) {
+            console.warn('No actions found!');
+            return;
+        }
         cA.actions.forEach(subAction => {
             doActionOrActionGenerator(context, callback, cA, subAction)
         });

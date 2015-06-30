@@ -1,12 +1,17 @@
 ///<reference path='Scripts/typings/node/node.d.ts'/>
 ///<reference path='CommonActions.ts'/>
+///<reference path='FileSystemActions.ts'/>
 
 declare var global;
 if(typeof(global) !== 'undefined'){
     require('./CommonActions');
+	require('./FileSystemActions');
+	require('./NodeJSImplementations');
 }
 
 const ca = todo.CommonActions;
+const fsa = todo.FileSystemActions;
+
 type iConsoleAct = todo.CommonActions.IConsoleAction;
 type iCompositeAct = todo.CommonActions.ICompositeActions;
 type compToConsoleAction = todo.CommonActions.IObjectGenerator<iCompositeAct, iConsoleAct>;
@@ -85,9 +90,40 @@ const sendMessagesToConsole3: IToDOList2 = {
 
 sendMessagesToConsole3.do();
 
+type IEchoFileToConsoleAction = todo.CommonActions.IObjectGenerator<IEchoFile, iConsoleAct>;
 
 interface IEchoFile extends iCompositeAct{
-	
+	readFileAction: todo.FileSystemActions.ITextFileReaderAction;
+	showFileContentsInConsole: IEchoFileToConsoleAction;
+	actions: todo.CommonActions.IObjectGenerator<IEchoFile, todo.CommonActions.IAction>[]
 }
+
+const readAndDisplayFile : IEchoFile = {
+	do: ca.CompositeActionsImpl,
+	readFileAction: {
+		do: todo.FileSystemActions.textFileReaderActionImpl,
+		relativeFilePath: `Scripts\\typings\\node\\node.d.ts`,
+		rootDirectoryRetriever: fsa.commonHelperFunctions.retrieveWorkingDirectory
+	},
+	showFileContentsInConsole : i => {
+		const consoleMessage: iConsoleAct = {
+			do: ca.ConsoleActionImpl,
+			message: i.readFileAction.state.content
+		}
+		return consoleMessage;
+	},
+	actions:[
+		i => i.readFileAction,
+		i => i.showFileContentsInConsole,
+	]
+}
+
+const context : todo.FileSystemActions.IWebContext = {
+	HTMLOutputs: {},
+	JSOutputs: {},
+	stringCache: {},
+	fileManager: new todo.NodeJSImplementations.NodeJSWebFileManager(),
+}
+readAndDisplayFile.do(context);
 //const readFileAndLogContentsToConsole: 
 

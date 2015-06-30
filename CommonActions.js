@@ -84,8 +84,10 @@ var todo;
             var cA = action;
             if (!cA)
                 cA = this;
-            if (!cA.actions)
+            if (!cA.actions) {
+                console.warn('No actions found!');
                 return;
+            }
             cA.actions.forEach(function (subAction) {
                 doActionOrActionGenerator(context, callback, cA, subAction);
             });

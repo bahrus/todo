@@ -3,6 +3,11 @@
 ///<reference path='Scripts/typings/jquery/jquery.d.ts'/>
 ///<reference path='Scripts/typings/cheerio/cheerio.d.ts'/>
 
+if(typeof(global) !== 'undefined'){
+    require('./CommonActions');
+    require('./StringUtils');
+}
+
 module todo.FileSystemActions {
    
     //tsp.ParserActions = global.tsp.ParserActions;
@@ -77,7 +82,7 @@ module todo.FileSystemActions {
         state?: IFileReaderActionState;
     }
 
-    export function readTextFile(action: ITextFileReaderAction, context: IWebContext) {
+    export function textFileReaderActionImpl(context?: IWebContext, callback?: CommonActions.ICallback, action?: ITextFileReaderAction) {
         const rootdirectory = action.rootDirectoryRetriever(context);
         const wfm = context.fileManager;
         const filePath = wfm.resolve(rootdirectory, action.relativeFilePath);
@@ -334,4 +339,27 @@ module todo.FileSystemActions {
     }
     //#endregion
 }
+
+(function(__global: any) {
+    const modInfo = {
+        name: 'todo',
+        mod: todo,
+        //subMod: todo.CommonActions,
+    }
+    if (typeof __global[modInfo.name] !== "undefined") {
+        if (__global[modInfo.name] !== modInfo.mod) {
+            for (var p in modInfo.mod) {
+                __global[modInfo.name][p] = (<any>modInfo.mod)[p];
+            }
+        }
+    }
+    else {
+        __global[modInfo.name] = modInfo.mod;
+    }
+})(
+    typeof window !== "undefined" ? window :
+        typeof WorkerGlobalScope !== "undefined" ? self :
+            typeof global !== "undefined" ? global :
+                Function("return this;")());
+
 
