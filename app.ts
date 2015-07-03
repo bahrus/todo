@@ -117,8 +117,8 @@ const readAndDisplayFile : IEchoFile = {
 	]
 }
 
-const context : todo.FileSystemActions.IWebContext = {
-	fileManager: new todo.NodeJSImplementations.NodeJSWebFileManager(),
+const context : todo.CommonActions.IContext = {
+	//fileManager: new todo.NodeJSImplementations.NodeJSWebFileManager(),
 }
 readAndDisplayFile.do(context);
 //const readFileAndLogContentsToConsole: 

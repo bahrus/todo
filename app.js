@@ -77,9 +77,7 @@ var readAndDisplayFile = {
         function (i) { return i.showFileContentsInConsole; },
     ]
 };
-var context = {
-    fileManager: new todo.NodeJSImplementations.NodeJSWebFileManager(),
-};
+var context = {};
 readAndDisplayFile.do(context);
 //const readFileAndLogContentsToConsole: 
 //# sourceMappingURL=app.js.map

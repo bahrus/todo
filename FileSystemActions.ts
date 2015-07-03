@@ -1,18 +1,21 @@
 ﻿///<reference path='StringUtils.ts'/>
 ///<reference path='CommonActions.ts'/>
+///<reference path='NodeJSImplementations.ts'/>
 ///<reference path='Scripts/typings/jquery/jquery.d.ts'/>
 ///<reference path='Scripts/typings/cheerio/cheerio.d.ts'/>
 
 if(typeof(global) !== 'undefined'){
     require('./CommonActions');
     require('./StringUtils');
+    require('./NodeJSImplementations');
 }
 
 module todo.FileSystemActions {
    
     //tsp.ParserActions = global.tsp.ParserActions;
     const su = todo.StringUtils;
-    const ca = todo.CommonActions; 
+    const ca = todo.CommonActions;
+    const njsi = todo.NodeJSImplementations || global.todo.NodeJSImplementations;
     //if (typeof (global) !== 'undefined') {
     //    if (!ca) ca = global.tsp.CommonActions;
     //    if (!pa) pa = global.tsp.ParserActions;
@@ -66,7 +69,11 @@ module todo.FileSystemActions {
         }
 
         export function retrieveWorkingDirectory(context: IWebContext) {
+            if(!context.fileManager) {
+                context.fileManager = new njsi.NodeJSWebFileManager();
+            }
             const wfm = context.fileManager;
+            
             return wfm.getWorkingDirectoryPath() + wfm.getSeparator();
         }
     }
