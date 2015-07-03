@@ -33,9 +33,8 @@ var todo;
             }
             commonHelperFunctions.testForTsFileName = testForTsFileName;
             function retrieveWorkingDirectory(context) {
-                if (!context.fileManager) {
+                if (!context.fileManager)
                     context.fileManager = new njsi.NodeJSWebFileManager();
-                }
                 var wfm = context.fileManager;
                 return wfm.getWorkingDirectoryPath() + wfm.getSeparator();
             }
@@ -53,12 +52,6 @@ var todo;
             };
         }
         FileSystemActions.textFileReaderActionImpl = textFileReaderActionImpl;
-        function cacheTextFile(action, context, callback) {
-            action.fileReaderAction.do(context, null, action.fileReaderAction);
-            context.stringCache[action.cacheKey] = action.fileReaderAction.state.content;
-            ca.endAction(action, callback);
-        }
-        FileSystemActions.cacheTextFile = cacheTextFile;
         function waitForUserInput(action, context, callback) {
             if (action.debug)
                 debugger;

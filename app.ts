@@ -6,7 +6,7 @@ declare var global;
 if(typeof(global) !== 'undefined'){
     require('./CommonActions');
 	require('./FileSystemActions');
-	require('./NodeJSImplementations');
+	//require('./NodeJSImplementations');
 }
 
 const ca = todo.CommonActions;
@@ -95,6 +95,7 @@ type IEchoFileToConsoleAction = todo.CommonActions.IObjectGenerator<IEchoFile, i
 interface IEchoFile extends iCompositeAct{
 	readFileAction: todo.FileSystemActions.ITextFileReaderAction;
 	showFileContentsInConsole: IEchoFileToConsoleAction;
+	cacheFileContents: todo.CommonActions.IObjectGenerator<IEchoFile, todo.CommonActions.ICacheStringValueAction>;
 	actions: todo.CommonActions.IObjectGenerator<IEchoFile, todo.CommonActions.IAction>[]
 }
 
@@ -108,18 +109,27 @@ const readAndDisplayFile : IEchoFile = {
 		const consoleMessage: iConsoleAct = {
 			do: ca.ConsoleLogActionImpl,
 			message: i.readFileAction.state.content
-		}
+		};
 		return consoleMessage;
+	},
+	cacheFileContents : i => {
+		const cacheAction: todo.CommonActions.ICacheStringValueAction = {
+			do: ca.cacheStringValueActionImpl,
+			cacheKey: 'someKey',
+			cacheValue: i.readFileAction.state.content,
+		};
+		return cacheAction;
 	},
 	actions:[
 		i => i.readFileAction,
-		i => i.showFileContentsInConsole,
+		//i => i.showFileContentsInConsole,
+		i => i.cacheFileContents,
 	]
 }
 
-const context : todo.CommonActions.IContext = {
-	//fileManager: new todo.NodeJSImplementations.NodeJSWebFileManager(),
-}
+const context : todo.CommonActions.IContext = {};
+	
 readAndDisplayFile.do(context);
+console.log(context.stringCache['someKey']);
 //const readFileAndLogContentsToConsole: 
 

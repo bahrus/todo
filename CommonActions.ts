@@ -150,6 +150,9 @@ module todo.CommonActions {
         });
     }
     
+    //#region
+    
+    //#region not tested recently
 
     export interface IMergeAction<T> extends IAction {
         srcRefs: T[];
@@ -164,7 +167,10 @@ module todo.CommonActions {
             Object['assign'](mergeAction.destRef, srcRef);
         }
     }
-
+    //#endregion
+    
+    //#region deprecated
+    
     export interface ISubMergeAction<TDestAction extends IAction, TSrc, TProp> {
         srcRefs: TSrc[];
         destRefs: TDestAction[];
@@ -202,7 +208,20 @@ module todo.CommonActions {
         forEach?: (container: TContainer) => TListItem[];
         subActionsGenerator?: (container: TContainer) => [(listItem: TListItem) => IAction];
     }
+    //#endregion
+    
+    export interface ICacheStringValueAction extends CommonActions.IAction {
+        cacheKey: string; //TODO:  symbol
+        cacheValue: string;
+        //fileReaderAction: ITextFileReaderAction;
+    }
+    export function cacheStringValueActionImpl(context: IContext, callback?: ICallback, action?: ICacheStringValueAction) {
+        if(!action) action  = this;
+        if(!context.stringCache) context.stringCache = {};
+        context.stringCache[action.cacheKey] = action.cacheValue;
+        endAction(action, callback);
 
+    }
 }
 
 // hook global op

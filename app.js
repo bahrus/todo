@@ -4,7 +4,6 @@
 if (typeof (global) !== 'undefined') {
     require('./CommonActions');
     require('./FileSystemActions');
-    require('./NodeJSImplementations');
 }
 var ca = todo.CommonActions;
 var fsa = todo.FileSystemActions;
@@ -72,12 +71,22 @@ var readAndDisplayFile = {
         };
         return consoleMessage;
     },
+    cacheFileContents: function (i) {
+        var cacheAction = {
+            do: ca.cacheStringValueActionImpl,
+            cacheKey: 'someKey',
+            cacheValue: i.readFileAction.state.content,
+        };
+        return cacheAction;
+    },
     actions: [
         function (i) { return i.readFileAction; },
-        function (i) { return i.showFileContentsInConsole; },
+        //i => i.showFileContentsInConsole,
+        function (i) { return i.cacheFileContents; },
     ]
 };
 var context = {};
 readAndDisplayFile.do(context);
+console.log(context.stringCache['someKey']);
 //const readFileAndLogContentsToConsole: 
 //# sourceMappingURL=app.js.map

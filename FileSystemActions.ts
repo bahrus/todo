@@ -69,11 +69,8 @@ module todo.FileSystemActions {
         }
 
         export function retrieveWorkingDirectory(context: IWebContext) {
-            if(!context.fileManager) {
-                context.fileManager = new njsi.NodeJSWebFileManager();
-            }
+            if(!context.fileManager)  context.fileManager = new njsi.NodeJSWebFileManager();
             const wfm = context.fileManager;
-            
             return wfm.getWorkingDirectoryPath() + wfm.getSeparator();
         }
     }
@@ -101,16 +98,7 @@ module todo.FileSystemActions {
         };
     }
     
-    export interface ICacheFileContents extends CommonActions.IAction {
-        cacheKey: string;
-        fileReaderAction: ITextFileReaderAction;
-    }
-    export function cacheTextFile(action: ICacheFileContents, context: IWebContext, callback: CommonActions.ICallback) {
-        action.fileReaderAction.do(context, null, action.fileReaderAction);
-        context.stringCache[action.cacheKey] = action.fileReaderAction.state.content;
-        ca.endAction(action, callback);
-
-    }
+    
 //#endregion
 
     //#region Wait for User Input

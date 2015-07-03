@@ -127,6 +127,15 @@ var todo;
             }
         }
         CommonActions.subMerge = subMerge;
+        function cacheStringValueActionImpl(context, callback, action) {
+            if (!action)
+                action = this;
+            if (!context.stringCache)
+                context.stringCache = {};
+            context.stringCache[action.cacheKey] = action.cacheValue;
+            endAction(action, callback);
+        }
+        CommonActions.cacheStringValueActionImpl = cacheStringValueActionImpl;
     })(CommonActions = todo.CommonActions || (todo.CommonActions = {}));
 })(todo || (todo = {}));
 (function (__global) {
