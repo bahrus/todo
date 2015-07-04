@@ -14,7 +14,7 @@ var todo;
     (function (FileSystemActions) {
         //tsp.ParserActions = global.tsp.ParserActions;
         var su = todo.StringUtils;
-        var ca = todo.CommonActions;
+        //const ca = todo.CommonActions;
         var njsi = todo.NodeJSImplementations || global.todo.NodeJSImplementations;
         //#endregion
         //#region helper functions
@@ -61,7 +61,7 @@ var todo;
                 };
                 context.processManager.WaitForUserInputAndExit('Press ctrl c to exit', test);
             }
-            ca.endAction(action, callback);
+            todo.endAction(action, callback);
         }
         FileSystemActions.waitForUserInput = waitForUserInput;
         function selectFiles(action, context) {
@@ -132,7 +132,7 @@ var todo;
                 if (!callback) {
                     throw "Unable to minify JS files synchronously";
                 }
-                ca.endAction(action, callback);
+                todo.endAction(action, callback);
             });
         }
         FileSystemActions.minifyJSFile = minifyJSFile;
@@ -144,7 +144,7 @@ var todo;
             var selectedFilePaths = fs.state.selectedFilePaths;
             var len = selectedFilePaths.length;
             if (len === 0) {
-                ca.endAction(action, callback);
+                todo.endAction(action, callback);
                 return;
             }
             var fp = action.fileProcessor;
@@ -165,7 +165,7 @@ var todo;
                         fp.do(context, fpCallback, fp);
                     }
                     else {
-                        ca.endAction(action, callback);
+                        todo.endAction(action, callback);
                     }
                 };
                 fpCallback(null);
@@ -184,7 +184,7 @@ var todo;
                     }
                     fp.do(context, null, fp);
                 }
-                ca.endAction(action, callback);
+                todo.endAction(action, callback);
             }
         }
         FileSystemActions.selectAndProcessFiles = selectAndProcessFiles;
@@ -203,7 +203,7 @@ var todo;
                 filePath: filePath,
             });
             context.HTMLOutputs[filePath] = $;
-            ca.endAction(action, callback);
+            todo.endAction(action, callback);
         }
         FileSystemActions.storeHTMLFiles = storeHTMLFiles;
         //#endregion
@@ -215,7 +215,7 @@ var todo;
                 var $_1 = context.HTMLOutputs[filePath];
                 context.fileManager.writeTextFileSync(filePath.replace('.html', '.temp.html'), $_1.html());
             }
-            ca.endAction(action, callback);
+            todo.endAction(action, callback);
         }
         FileSystemActions.exportProcessedDocumentsToFiles = exportProcessedDocumentsToFiles;
     })(FileSystemActions = todo.FileSystemActions || (todo.FileSystemActions = {}));

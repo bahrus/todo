@@ -66,7 +66,7 @@ module todo.NodeJSImplementations {
 
     }
 
-    export class NodeJSProcessManager implements CommonActions.IProcessManager {
+    export class NodeJSProcessManager implements IProcessManager {
         WaitForUserInputAndExit(message: string, testForExit: (chunk: string, key: string) => boolean) {
             const stdin = process['openStdin']();
             process.stdin['setRawMode']();

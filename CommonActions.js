@@ -32,131 +32,128 @@ if (!Object['assign']) {
 }
 var todo;
 (function (todo) {
-    var CommonActions;
-    (function (CommonActions) {
-        CommonActions.versionKey = 'version';
-        function endAction(action, callback) {
-            if (callback)
-                callback(null);
+    todo.versionKey = 'version';
+    function endAction(action, callback) {
+        if (callback)
+            callback(null);
+    }
+    todo.endAction = endAction;
+    function ConsoleLogActionImpl(context, callback, consoleAction) {
+        var cA = consoleAction;
+        if (!cA)
+            cA = this;
+        var message;
+        var messageOrMessageGenerator = cA.message;
+        if (typeof messageOrMessageGenerator === 'string') {
+            message = messageOrMessageGenerator;
         }
-        CommonActions.endAction = endAction;
-        function ConsoleLogActionImpl(context, callback, consoleAction) {
-            var cA = consoleAction;
-            if (!cA)
-                cA = this;
-            var message;
-            var messageOrMessageGenerator = cA.message;
-            if (typeof messageOrMessageGenerator === 'string') {
-                message = messageOrMessageGenerator;
-            }
-            else if (typeof messageOrMessageGenerator === 'function') {
-                message = messageOrMessageGenerator(cA);
-                cA.state = {
-                    dynamicMessage: message,
-                };
-            }
-            else {
-                console.log(messageOrMessageGenerator);
-                throw 'Not Supported Message Type';
-            }
-            console.log(message);
+        else if (typeof messageOrMessageGenerator === 'function') {
+            message = messageOrMessageGenerator(cA);
+            cA.state = {
+                dynamicMessage: message,
+            };
         }
-        CommonActions.ConsoleLogActionImpl = ConsoleLogActionImpl;
-        function doActionOrActionGenerator(context, callback, action, subAction) {
-            var generatedAction;
-            if (typeof subAction === 'object') {
-                generatedAction = subAction;
-            }
-            else if (typeof subAction === 'function') {
-                var actionGenerator = subAction;
-                generatedAction = actionGenerator(action);
-                if (typeof generatedAction === 'function') {
-                    doActionOrActionGenerator(context, callback, action, generatedAction);
-                    return;
-                }
-            }
-            else {
-                throw 'Action Type not supported.';
-            }
-            generatedAction.do(context, callback, generatedAction);
+        else {
+            console.log(messageOrMessageGenerator);
+            throw 'Not Supported Message Type';
         }
-        function doActions(context, callback, action, actions) {
-            actions.forEach(function (subAction) {
-                doActionOrActionGenerator(context, callback, action, subAction);
-            });
+        console.log(message);
+    }
+    todo.ConsoleLogActionImpl = ConsoleLogActionImpl;
+    function doActionOrActionGenerator(context, callback, action, subAction) {
+        var generatedAction;
+        if (typeof subAction === 'object') {
+            generatedAction = subAction;
         }
-        function CompositeActionsImpl(context, callback, action) {
-            var thisAction = action;
-            if (!thisAction)
-                thisAction = this;
-            if (!thisAction.actions) {
-                console.warn('No actions found!');
+        else if (typeof subAction === 'function') {
+            var actionGenerator = subAction;
+            generatedAction = actionGenerator(action);
+            if (typeof generatedAction === 'function') {
+                doActionOrActionGenerator(context, callback, action, generatedAction);
                 return;
             }
+        }
+        else {
+            throw 'Action Type not supported.';
+        }
+        generatedAction.do(context, callback, generatedAction);
+    }
+    function doActions(context, callback, action, actions) {
+        actions.forEach(function (subAction) {
+            doActionOrActionGenerator(context, callback, action, subAction);
+        });
+    }
+    function CompositeActionsImpl(context, callback, action) {
+        var thisAction = action;
+        if (!thisAction)
+            thisAction = this;
+        if (!thisAction.actions) {
+            console.warn('No actions found!');
+            return;
+        }
+        doActions(context, callback, thisAction, thisAction.actions);
+    }
+    todo.CompositeActionsImpl = CompositeActionsImpl;
+    function RecurringActionImpl(context, callback, action) {
+        var thisAction = action;
+        if (!thisAction)
+            thisAction = this;
+        if (!thisAction.headActions && !thisAction.actions && !thisAction.tailActions) {
+            console.warn('No actions found!');
+            return;
+        }
+        if (thisAction.headActions)
+            doActions(context, callback, thisAction, thisAction.headActions);
+        while (thisAction.testForRepeat(thisAction)) {
             doActions(context, callback, thisAction, thisAction.actions);
         }
-        CommonActions.CompositeActionsImpl = CompositeActionsImpl;
-        function RecurringActionImpl(context, callback, action) {
-            var thisAction = action;
-            if (!thisAction)
-                thisAction = this;
-            if (!thisAction.headActions && !thisAction.actions && !thisAction.tailActions) {
-                console.warn('No actions found!');
-                return;
-            }
-            if (thisAction.headActions)
-                doActions(context, callback, thisAction, thisAction.headActions);
-            while (thisAction.testForRepeat(thisAction)) {
-                doActions(context, callback, thisAction, thisAction.actions);
-            }
-            if (thisAction.tailActions)
-                doActions(context, callback, thisAction, thisAction.tailActions);
+        if (thisAction.tailActions)
+            doActions(context, callback, thisAction, thisAction.tailActions);
+    }
+    todo.RecurringActionImpl = RecurringActionImpl;
+    function merge(mergeAction, context, callback) {
+        var n = mergeAction.srcRefs.length;
+        for (var i = 0; i < n; i++) {
+            var srcRef = mergeAction.srcRefs[i];
+            //TODO:  implement merge
+            Object['assign'](mergeAction.destRef, srcRef);
         }
-        CommonActions.RecurringActionImpl = RecurringActionImpl;
-        function merge(mergeAction, context, callback) {
-            var n = mergeAction.srcRefs.length;
-            for (var i = 0; i < n; i++) {
-                var srcRef = mergeAction.srcRefs[i];
-                //TODO:  implement merge
-                Object['assign'](mergeAction.destRef, srcRef);
-            }
+    }
+    todo.merge = merge;
+    function subMerge(subMergeAction, context, callback) {
+        var dpg = subMergeAction.destinationPropertyGetter;
+        var spg = subMergeAction.sourcePropertyGetter;
+        var srcRefs = subMergeAction.srcRefs;
+        if (!srcRefs) {
+            endAction(subMergeAction, callback);
+            return;
         }
-        CommonActions.merge = merge;
-        function subMerge(subMergeAction, context, callback) {
-            var dpg = subMergeAction.destinationPropertyGetter;
-            var spg = subMergeAction.sourcePropertyGetter;
-            var srcRefs = subMergeAction.srcRefs;
-            if (!srcRefs) {
-                endAction(subMergeAction, callback);
-                return;
-            }
-            var noOfSrcRefs = srcRefs.length;
-            var destRefs = subMergeAction.destRefs;
-            var noOfDestRefs = destRefs.length;
-            //const destProp = dpg(dr);
-            for (var i = 0; i < noOfSrcRefs; i++) {
-                var srcRef = srcRefs[i];
-                var srcProp = spg(srcRef);
-                for (var j = 0; j < noOfDestRefs; j++) {
-                    var destRef = destRefs[j];
-                    var destProp = dpg(destRef);
-                    //TODO:  Merge
-                    Object['assign'](destProp, srcProp);
-                    destRef.do(context, callback, destRef);
-                }
+        var noOfSrcRefs = srcRefs.length;
+        var destRefs = subMergeAction.destRefs;
+        var noOfDestRefs = destRefs.length;
+        //const destProp = dpg(dr);
+        for (var i = 0; i < noOfSrcRefs; i++) {
+            var srcRef = srcRefs[i];
+            var srcProp = spg(srcRef);
+            for (var j = 0; j < noOfDestRefs; j++) {
+                var destRef = destRefs[j];
+                var destProp = dpg(destRef);
+                //TODO:  Merge
+                Object['assign'](destProp, srcProp);
+                destRef.do(context, callback, destRef);
             }
         }
-        CommonActions.subMerge = subMerge;
-        function cacheStringValueActionImpl(context, callback, action) {
-            if (!action)
-                action = this;
-            if (!context.stringCache)
-                context.stringCache = {};
-            context.stringCache[action.cacheKey] = action.cacheValue;
-            endAction(action, callback);
-        }
-        CommonActions.cacheStringValueActionImpl = cacheStringValueActionImpl;
-    })(CommonActions = todo.CommonActions || (todo.CommonActions = {}));
+    }
+    todo.subMerge = subMerge;
+    function cacheStringValueActionImpl(context, callback, action) {
+        if (!action)
+            action = this;
+        if (!context.stringCache)
+            context.stringCache = {};
+        context.stringCache[action.cacheKey] = action.cacheValue;
+        endAction(action, callback);
+    }
+    todo.cacheStringValueActionImpl = cacheStringValueActionImpl;
 })(todo || (todo = {}));
 (function (__global) {
     var modInfo = {

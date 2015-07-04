@@ -9,28 +9,28 @@ if(typeof(global) !== 'undefined'){
 	//require('./NodeJSImplementations');
 }
 
-const ca = todo.CommonActions;
+//const ca = todo.CommonActions;
 const fsa = todo.FileSystemActions;
 
-type iConsoleAct = todo.CommonActions.IConsoleLogAction;
-type iCompositeAct = todo.CommonActions.ICompositeActions;
-type compToConsoleAction = todo.CommonActions.IObjectGenerator<iCompositeAct, iConsoleAct>;
+type iConsoleAct = todo.IConsoleLogAction;
+type iCompositeAct = todo.ICompositeActions;
+type compToConsoleAction = todo.IObjectGenerator<iCompositeAct, iConsoleAct>;
 
 
 const sendHelloWorldToConsole: iConsoleAct  = {
-	do: ca.ConsoleLogActionImpl,
+	do: todo.ConsoleLogActionImpl,
 	message: `hello, world`
 }
 
 sendHelloWorldToConsole.do();
 
 const sendYouveGotMaileToConsole: iConsoleAct = {
-	do: ca.ConsoleLogActionImpl,
+	do: todo.ConsoleLogActionImpl,
 	message: `You've got mail`
 }
 
 const sendMessagesToConsole: iCompositeAct = {
-	do: ca.CompositeActionsImpl,
+	do: todo.CompositeActionsImpl,
 	actions: [sendHelloWorldToConsole, sendYouveGotMaileToConsole]
 }
 
@@ -41,14 +41,14 @@ interface IToDoList1 extends iCompositeAct {
 }
 
 const sendMessagesToConsole2 : IToDoList1 = {
-	do: ca.CompositeActionsImpl,
+	do: todo.CompositeActionsImpl,
 	actions: [
 		{
-			do: ca.ConsoleLogActionImpl,
+			do: todo.ConsoleLogActionImpl,
 			message: `This is foo`
 		},
 		{
-			do: ca.ConsoleLogActionImpl,
+			do: todo.ConsoleLogActionImpl,
 			message: `That is bar`
 		},
 		cA => cA.actions[0]
@@ -57,7 +57,7 @@ const sendMessagesToConsole2 : IToDoList1 = {
 
 sendMessagesToConsole2.do();
 
-type IToDoList2ToConsoleAction = todo.CommonActions.IObjectGenerator<IToDOList2, iConsoleAct>;
+type IToDoList2ToConsoleAction = todo.IObjectGenerator<IToDOList2, iConsoleAct>;
 
 interface IToDOList2 extends iCompositeAct {
 	consoleAction1: iConsoleAct,
@@ -67,18 +67,18 @@ interface IToDOList2 extends iCompositeAct {
 }
 
 const sendMessagesToConsole3: IToDOList2 = {
-	do: ca.CompositeActionsImpl,
+	do: todo.CompositeActionsImpl,
 	consoleAction1:{
-		do: ca.ConsoleLogActionImpl,
+		do: todo.ConsoleLogActionImpl,
 		message: `To Err is human.`
 	},
 	consoleAction2:{
-		do: ca.ConsoleLogActionImpl,
+		do: todo.ConsoleLogActionImpl,
 		message: `To really foul things up requires a computer.`
 	},
 	consoleAction3: i => {
 		const consoleMessage: iConsoleAct = {
-			do: ca.ConsoleLogActionImpl,
+			do: todo.ConsoleLogActionImpl,
 			message: `${i.consoleAction1.message}  ${i.consoleAction2.message}`
 		};
 		return consoleMessage;
@@ -90,31 +90,31 @@ const sendMessagesToConsole3: IToDOList2 = {
 
 sendMessagesToConsole3.do();
 
-type IEchoFileToConsoleAction = todo.CommonActions.IObjectGenerator<IEchoFile, iConsoleAct>;
+type IEchoFileToConsoleAction = todo.IObjectGenerator<IEchoFile, iConsoleAct>;
 
 interface IEchoFile extends iCompositeAct{
 	readFileAction: todo.FileSystemActions.ITextFileReaderAction;
 	showFileContentsInConsole: IEchoFileToConsoleAction;
-	cacheFileContents: todo.CommonActions.IObjectGenerator<IEchoFile, todo.CommonActions.ICacheStringValueAction>;
-	actions: todo.CommonActions.IObjectGenerator<IEchoFile, todo.CommonActions.IAction>[]
+	cacheFileContents: todo.IObjectGenerator<IEchoFile, todo.ICacheStringValueAction>;
+	actions: todo.IObjectGenerator<IEchoFile, todo.IAction>[]
 }
 
 const readAndDisplayFile : IEchoFile = {
-	do: ca.CompositeActionsImpl,
+	do: todo.CompositeActionsImpl,
 	readFileAction: {
 		do: todo.FileSystemActions.textFileReaderActionImpl,
 		relativeFilePath: `.git\\config`,
 	},
 	showFileContentsInConsole : i => {
 		const consoleMessage: iConsoleAct = {
-			do: ca.ConsoleLogActionImpl,
+			do: todo.ConsoleLogActionImpl,
 			message: i.readFileAction.state.content
 		};
 		return consoleMessage;
 	},
 	cacheFileContents : i => {
-		const cacheAction: todo.CommonActions.ICacheStringValueAction = {
-			do: ca.cacheStringValueActionImpl,
+		const cacheAction: todo.ICacheStringValueAction = {
+			do: todo.cacheStringValueActionImpl,
 			cacheKey: 'someKey',
 			cacheValue: i.readFileAction.state.content,
 		};
@@ -127,12 +127,12 @@ const readAndDisplayFile : IEchoFile = {
 	]
 }
 
-const context : todo.CommonActions.IContext = {};
+const context : todo.IContext = {};
 	
 readAndDisplayFile.do(context);
 console.log(context.stringCache['someKey']);
 
-interface IIncrementAction extends todo.CommonActions.IAction{
+interface IIncrementAction extends todo.IAction{
 	currentVal?: number;
 }
 
@@ -142,14 +142,14 @@ function IncrementActionImpl(){
 	thisAction.currentVal++;
 }
 
-interface ICountToALimit extends todo.CommonActions.IRecurringAction{
+interface ICountToALimit extends todo.IRecurringAction{
 	incrementAction: IIncrementAction;
 	testForRepeat: (ctal: ICountToALimit) => boolean;
-	actions: todo.CommonActions.IObjectGenerator<ICountToALimit, todo.CommonActions.IAction>[]	
+	actions: todo.IObjectGenerator<ICountToALimit, todo.IAction>[]	
 }
 
 const counter: ICountToALimit = {
-	do: ca.RecurringActionImpl,
+	do: todo.RecurringActionImpl,
 	incrementAction: {
 		do: IncrementActionImpl,
 		currentVal: 0,

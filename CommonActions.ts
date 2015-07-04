@@ -35,7 +35,7 @@ if (!Object['assign']) {
 }
 
 
-module todo.CommonActions {
+module todo {
     
 
     export const versionKey = 'version';
@@ -231,7 +231,7 @@ module todo.CommonActions {
     }
     //#endregion
     
-    export interface ICacheStringValueAction extends CommonActions.IAction {
+    export interface ICacheStringValueAction extends IAction {
         cacheKey: string; //TODO:  symbol
         cacheValue: string;
         //fileReaderAction: ITextFileReaderAction;

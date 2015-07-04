@@ -5,31 +5,31 @@ if (typeof (global) !== 'undefined') {
     require('./CommonActions');
     require('./FileSystemActions');
 }
-var ca = todo.CommonActions;
+//const ca = todo.CommonActions;
 var fsa = todo.FileSystemActions;
 var sendHelloWorldToConsole = {
-    do: ca.ConsoleLogActionImpl,
+    do: todo.ConsoleLogActionImpl,
     message: "hello, world"
 };
 sendHelloWorldToConsole.do();
 var sendYouveGotMaileToConsole = {
-    do: ca.ConsoleLogActionImpl,
+    do: todo.ConsoleLogActionImpl,
     message: "You've got mail"
 };
 var sendMessagesToConsole = {
-    do: ca.CompositeActionsImpl,
+    do: todo.CompositeActionsImpl,
     actions: [sendHelloWorldToConsole, sendYouveGotMaileToConsole]
 };
 sendMessagesToConsole.do();
 var sendMessagesToConsole2 = {
-    do: ca.CompositeActionsImpl,
+    do: todo.CompositeActionsImpl,
     actions: [
         {
-            do: ca.ConsoleLogActionImpl,
+            do: todo.ConsoleLogActionImpl,
             message: "This is foo"
         },
         {
-            do: ca.ConsoleLogActionImpl,
+            do: todo.ConsoleLogActionImpl,
             message: "That is bar"
         },
         function (cA) { return cA.actions[0]; }
@@ -37,18 +37,18 @@ var sendMessagesToConsole2 = {
 };
 sendMessagesToConsole2.do();
 var sendMessagesToConsole3 = {
-    do: ca.CompositeActionsImpl,
+    do: todo.CompositeActionsImpl,
     consoleAction1: {
-        do: ca.ConsoleLogActionImpl,
+        do: todo.ConsoleLogActionImpl,
         message: "To Err is human."
     },
     consoleAction2: {
-        do: ca.ConsoleLogActionImpl,
+        do: todo.ConsoleLogActionImpl,
         message: "To really foul things up requires a computer."
     },
     consoleAction3: function (i) {
         var consoleMessage = {
-            do: ca.ConsoleLogActionImpl,
+            do: todo.ConsoleLogActionImpl,
             message: i.consoleAction1.message + "  " + i.consoleAction2.message
         };
         return consoleMessage;
@@ -59,21 +59,21 @@ var sendMessagesToConsole3 = {
 };
 sendMessagesToConsole3.do();
 var readAndDisplayFile = {
-    do: ca.CompositeActionsImpl,
+    do: todo.CompositeActionsImpl,
     readFileAction: {
         do: todo.FileSystemActions.textFileReaderActionImpl,
         relativeFilePath: ".git\\config",
     },
     showFileContentsInConsole: function (i) {
         var consoleMessage = {
-            do: ca.ConsoleLogActionImpl,
+            do: todo.ConsoleLogActionImpl,
             message: i.readFileAction.state.content
         };
         return consoleMessage;
     },
     cacheFileContents: function (i) {
         var cacheAction = {
-            do: ca.cacheStringValueActionImpl,
+            do: todo.cacheStringValueActionImpl,
             cacheKey: 'someKey',
             cacheValue: i.readFileAction.state.content,
         };
@@ -95,7 +95,7 @@ function IncrementActionImpl() {
     thisAction.currentVal++;
 }
 var counter = {
-    do: ca.RecurringActionImpl,
+    do: todo.RecurringActionImpl,
     incrementAction: {
         do: IncrementActionImpl,
         currentVal: 0,

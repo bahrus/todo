@@ -14,7 +14,7 @@ module todo.FileSystemActions {
    
     //tsp.ParserActions = global.tsp.ParserActions;
     const su = todo.StringUtils;
-    const ca = todo.CommonActions;
+    //const ca = todo.CommonActions;
     const njsi = todo.NodeJSImplementations || global.todo.NodeJSImplementations;
     //if (typeof (global) !== 'undefined') {
     //    if (!ca) ca = global.tsp.CommonActions;
@@ -38,13 +38,13 @@ module todo.FileSystemActions {
         minify: (filePath: string, callback: (err: Error, min: string) => void) => void;
     }
 
-    export interface IWebContext extends CommonActions.IContext {
+    export interface IWebContext extends IContext {
         HTMLOutputs?: { [key: string]: JQueryStatic };
         JSOutputs?: { [key: string]: string[] };
         fileManager: IWebFileManager;
     }
-    export interface IWebAction extends CommonActions.IAction {
-        do: (context?: IWebContext, callback?: CommonActions.ICallback, action?: IWebAction) => void;
+    export interface IWebAction extends IAction {
+        do: (context?: IWebContext, callback?: ICallback, action?: IWebAction) => void;
 
     }
 
@@ -77,16 +77,16 @@ module todo.FileSystemActions {
 //#endregion
 
     //#region File Reader
-    interface IFileReaderActionState extends CommonActions.IActionState {
+    interface IFileReaderActionState extends IActionState {
         content?: string;
     }
 
-    export interface ITextFileReaderAction extends CommonActions.IAction, IRootDirectoryRetriever {
+    export interface ITextFileReaderAction extends IAction, IRootDirectoryRetriever {
         relativeFilePath: string;
         state?: IFileReaderActionState;
     }
 
-    export function textFileReaderActionImpl(context?: IWebContext, callback?: CommonActions.ICallback, action?: ITextFileReaderAction) {
+    export function textFileReaderActionImpl(context?: IWebContext, callback?: ICallback, action?: ITextFileReaderAction) {
         if(!action.rootDirectoryRetriever){
             action.rootDirectoryRetriever = commonHelperFunctions.retrieveWorkingDirectory
         }
@@ -102,10 +102,10 @@ module todo.FileSystemActions {
 //#endregion
 
     //#region Wait for User Input
-    export interface IWaitForUserInput extends CommonActions.IAction {
+    export interface IWaitForUserInput extends IAction {
     }
 
-    export function waitForUserInput(action: IWaitForUserInput, context: IWebContext, callback: CommonActions.ICallback) {
+    export function waitForUserInput(action: IWaitForUserInput, context: IWebContext, callback: ICallback) {
         if (action.debug) debugger;
         if (context.processManager) {
             const test = (chunk: string, key: any) => {
@@ -113,7 +113,7 @@ module todo.FileSystemActions {
             }
             context.processManager.WaitForUserInputAndExit('Press ctrl c to exit', test);
         }
-        ca.endAction(action, callback);
+        todo.endAction(action, callback);
     }
 //#endregion
 
@@ -151,12 +151,12 @@ module todo.FileSystemActions {
 
     //#region File Processing
 
-    export interface IFileProcessorActionState extends CommonActions.IActionState {
+    export interface IFileProcessorActionState extends IActionState {
         filePath: string;
 
     }
 
-    export interface IHTMLFileProcessorActionState extends IFileProcessorActionState, CommonActions.IActionState {
+    export interface IHTMLFileProcessorActionState extends IFileProcessorActionState, IActionState {
         //$?: JQueryStatic
         HTMLFiles?: IHTMLFile[];
     }
@@ -216,7 +216,7 @@ module todo.FileSystemActions {
     //#endregion
 
     //#region JS File Processing
-    export function minifyJSFile(action: IFileProcessorAction, context: IWebContext, callback: CommonActions.ICallback) {
+    export function minifyJSFile(action: IFileProcessorAction, context: IWebContext, callback: ICallback) {
         console.log('Uglifying ' + action.state.filePath);
         const filePath = action.state.filePath;
         context.fileManager.minify(filePath,(err, min) => {
@@ -228,7 +228,7 @@ module todo.FileSystemActions {
             if (!callback) {
                 throw "Unable to minify JS files synchronously";
             }
-            ca.endAction(action, callback);
+            todo.endAction(action, callback);
         });
 
     }
@@ -242,14 +242,14 @@ module todo.FileSystemActions {
         fileProcessor?: IFileProcessorAction;
     }
 
-    export function selectAndProcessFiles(action: ISelectAndProcessFileAction, context: IWebContext, callback: CommonActions.ICallback) {
+    export function selectAndProcessFiles(action: ISelectAndProcessFileAction, context: IWebContext, callback: ICallback) {
         if (action.debug) debugger;
         const fs = action.fileSelector;
         fs.do(context, null, fs);
         const selectedFilePaths = fs.state.selectedFilePaths;
         const len = selectedFilePaths.length;
         if (len === 0) {
-            ca.endAction(action, callback);
+            todo.endAction(action, callback);
             return;
         }
         const fp = action.fileProcessor;
@@ -269,7 +269,7 @@ module todo.FileSystemActions {
                     }
                     fp.do(context, fpCallback, fp);
                 } else {
-                    ca.endAction(action, callback);
+                    todo.endAction(action, callback);
                 }
             }
             fpCallback(null);
@@ -286,7 +286,7 @@ module todo.FileSystemActions {
                 }
                 fp.do(context, null, fp);
             }
-            ca.endAction(action, callback);
+           todo.endAction(action, callback);
         }
 
 
@@ -309,7 +309,7 @@ module todo.FileSystemActions {
         state?: ISelectAndReadHTLMFilesActionState;
     }
 
-    export function storeHTMLFiles(action: IHTMLFileProcessorAction, context: IWebContext, callback: CommonActions.ICallback) {
+    export function storeHTMLFiles(action: IHTMLFileProcessorAction, context: IWebContext, callback: ICallback) {
         if (action.debug) debugger;
         const fm = context.fileManager;
         const filePath = action.state.filePath;
@@ -322,19 +322,19 @@ module todo.FileSystemActions {
             filePath: filePath,
         });
         context.HTMLOutputs[filePath] = $;
-        ca.endAction(action, callback);
+        todo.endAction(action, callback);
     }
 
 //#endregion
 
     //#region Exporting Processed Documents to Files
-    export function exportProcessedDocumentsToFiles(action: IExportDocumentsToFiles, context: IWebContext, callback: CommonActions.ICallback) {
+    export function exportProcessedDocumentsToFiles(action: IExportDocumentsToFiles, context: IWebContext, callback: ICallback) {
         if (action.debug) debugger;
         for (const filePath in context.HTMLOutputs) {
             const $ = <CheerioStatic><any> context.HTMLOutputs[filePath];
             context.fileManager.writeTextFileSync((<string>filePath).replace('.html', '.temp.html'), $.html());
         }
-        ca.endAction(action, callback);
+        todo.endAction(action, callback);
     }
     //#endregion
 }
