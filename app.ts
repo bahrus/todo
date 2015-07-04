@@ -132,6 +132,31 @@ const context : todo.CommonActions.IContext = {};
 readAndDisplayFile.do(context);
 console.log(context.stringCache['someKey']);
 
+interface IIncrementAction extends todo.CommonActions.IAction{
+	currentVal?: number;
+}
 
+function IncrementActionImpl(){
+	const thisAction: IIncrementAction = this;
+	if(!thisAction.currentVal) thisAction.currentVal = 0;
+	thisAction.currentVal++;
+}
 
+interface ICountToALimit extends todo.CommonActions.IRecurringAction{
+	incrementAction: IIncrementAction;
+	testForRepeat: (ctal: ICountToALimit) => boolean;
+	actions: todo.CommonActions.IObjectGenerator<ICountToALimit, todo.CommonActions.IAction>[]	
+}
 
+const counter: ICountToALimit = {
+	do: ca.RecurringActionImpl,
+	incrementAction: {
+		do: IncrementActionImpl,
+		currentVal: 0,
+	},
+	testForRepeat: i => i.incrementAction.currentVal < 10,
+	actions: [i => i.incrementAction],
+}
+
+counter.do();
+console.log(counter.incrementAction.currentVal);

@@ -86,16 +86,33 @@ var todo;
             });
         }
         function CompositeActionsImpl(context, callback, action) {
-            var cA = action;
-            if (!cA)
-                cA = this;
-            if (!cA.actions) {
+            var thisAction = action;
+            if (!thisAction)
+                thisAction = this;
+            if (!thisAction.actions) {
                 console.warn('No actions found!');
                 return;
             }
-            doActions(context, callback, cA, cA.actions);
+            doActions(context, callback, thisAction, thisAction.actions);
         }
         CommonActions.CompositeActionsImpl = CompositeActionsImpl;
+        function RecurringActionImpl(context, callback, action) {
+            var thisAction = action;
+            if (!thisAction)
+                thisAction = this;
+            if (!thisAction.headActions && !thisAction.actions && !thisAction.tailActions) {
+                console.warn('No actions found!');
+                return;
+            }
+            if (thisAction.headActions)
+                doActions(context, callback, thisAction, thisAction.headActions);
+            while (thisAction.testForRepeat(thisAction)) {
+                doActions(context, callback, thisAction, thisAction.actions);
+            }
+            if (thisAction.tailActions)
+                doActions(context, callback, thisAction, thisAction.tailActions);
+        }
+        CommonActions.RecurringActionImpl = RecurringActionImpl;
         function merge(mergeAction, context, callback) {
             var n = mergeAction.srcRefs.length;
             for (var i = 0; i < n; i++) {

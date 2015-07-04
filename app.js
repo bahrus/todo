@@ -88,4 +88,21 @@ var readAndDisplayFile = {
 var context = {};
 readAndDisplayFile.do(context);
 console.log(context.stringCache['someKey']);
+function IncrementActionImpl() {
+    var thisAction = this;
+    if (!thisAction.currentVal)
+        thisAction.currentVal = 0;
+    thisAction.currentVal++;
+}
+var counter = {
+    do: ca.RecurringActionImpl,
+    incrementAction: {
+        do: IncrementActionImpl,
+        currentVal: 0,
+    },
+    testForRepeat: function (i) { return i.incrementAction.currentVal < 10; },
+    actions: [function (i) { return i.incrementAction; }],
+};
+counter.do();
+console.log(counter.incrementAction.currentVal);
 //# sourceMappingURL=app.js.map

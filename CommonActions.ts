@@ -120,12 +120,6 @@ module todo.CommonActions {
     export interface ICompositeActions extends IAction {
         actions?: actionOrActionGenerator[];
     }
-    
-    export interface IRecurringAction<TItem> extends ICompositeActions{
-        testForRepeat?: (action: IRecurringAction<TItem>) => boolean;
-        headerActions?: actionOrActionGenerator[];
-        footerActions?: actionOrActionGenerator[];
-    }
 
     function doActionOrActionGenerator(context?: IContext, callback?:  ICallback, action?: ICompositeActions, subAction?: actionOrActionGenerator){
         let generatedAction : IAction;
@@ -149,15 +143,34 @@ module todo.CommonActions {
         });
     }
     export function CompositeActionsImpl(context?: IContext, callback?: ICallback, action?: ICompositeActions){
-        let cA = action;
-        if(!cA) cA = this;
-        if(!cA.actions) {
+        let thisAction = action;
+        if(!thisAction) thisAction = this;
+        if(!thisAction.actions) {
             console.warn('No actions found!');
             return;
         }
-        doActions(context, callback, cA, cA.actions);
+        doActions(context, callback, thisAction, thisAction.actions);
     }
     
+    export interface IRecurringAction extends ICompositeActions{
+        testForRepeat?: (action: IRecurringAction) => boolean;
+        headActions?: actionOrActionGenerator[];
+        tailActions?: actionOrActionGenerator[];
+    }
+    
+    export function RecurringActionImpl(context?: IContext, callback?: ICallback, action?: IRecurringAction){
+        let thisAction = action;
+        if(!thisAction) thisAction = this;
+        if(!thisAction.headActions && !thisAction.actions && !thisAction.tailActions){
+            console.warn('No actions found!');
+            return;
+        }
+        if(thisAction.headActions) doActions(context, callback, thisAction, thisAction.headActions);
+        while(thisAction.testForRepeat(thisAction)){
+            doActions(context, callback, thisAction, thisAction.actions);
+        }
+        if(thisAction.tailActions) doActions(context, callback, thisAction, thisAction.tailActions);
+    }
     //#region
     
     //#region not tested recently
