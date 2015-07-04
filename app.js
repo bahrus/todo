@@ -88,5 +88,4 @@ var readAndDisplayFile = {
 var context = {};
 readAndDisplayFile.do(context);
 console.log(context.stringCache['someKey']);
-//const readFileAndLogContentsToConsole: 
 //# sourceMappingURL=app.js.map

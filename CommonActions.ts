@@ -120,6 +120,12 @@ module todo.CommonActions {
     export interface ICompositeActions extends IAction {
         actions?: actionOrActionGenerator[];
     }
+    
+    export interface IRecurringAction<TItem> extends ICompositeActions{
+        testForRepeat?: (action: IRecurringAction<TItem>) => boolean;
+        headerActions?: actionOrActionGenerator[];
+        footerActions?: actionOrActionGenerator[];
+    }
 
     function doActionOrActionGenerator(context?: IContext, callback?:  ICallback, action?: ICompositeActions, subAction?: actionOrActionGenerator){
         let generatedAction : IAction;
@@ -137,7 +143,11 @@ module todo.CommonActions {
         }
         generatedAction.do(context, callback, generatedAction);
     }
-    
+    function doActions(context?: IContext, callback?: ICallback, action?: ICompositeActions,  actions?:  actionOrActionGenerator[]){
+        actions.forEach(subAction => {
+            doActionOrActionGenerator(context, callback, action, subAction)
+        });
+    }
     export function CompositeActionsImpl(context?: IContext, callback?: ICallback, action?: ICompositeActions){
         let cA = action;
         if(!cA) cA = this;
@@ -145,9 +155,7 @@ module todo.CommonActions {
             console.warn('No actions found!');
             return;
         }
-        cA.actions.forEach(subAction => {
-            doActionOrActionGenerator(context, callback, cA, subAction)
-        });
+        doActions(context, callback, cA, cA.actions);
     }
     
     //#region

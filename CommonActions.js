@@ -80,6 +80,11 @@ var todo;
             }
             generatedAction.do(context, callback, generatedAction);
         }
+        function doActions(context, callback, action, actions) {
+            actions.forEach(function (subAction) {
+                doActionOrActionGenerator(context, callback, action, subAction);
+            });
+        }
         function CompositeActionsImpl(context, callback, action) {
             var cA = action;
             if (!cA)
@@ -88,9 +93,7 @@ var todo;
                 console.warn('No actions found!');
                 return;
             }
-            cA.actions.forEach(function (subAction) {
-                doActionOrActionGenerator(context, callback, cA, subAction);
-            });
+            doActions(context, callback, cA, cA.actions);
         }
         CommonActions.CompositeActionsImpl = CompositeActionsImpl;
         function merge(mergeAction, context, callback) {
