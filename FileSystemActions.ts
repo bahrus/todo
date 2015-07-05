@@ -99,13 +99,15 @@ module todo.FileSystemActions {
     }
     
     
-//#endregion
+    //#endregion
+    
+    
 
     //#region Wait for User Input
     export interface IWaitForUserInput extends IAction {
     }
 
-    export function waitForUserInput(action: IWaitForUserInput, context: IWebContext, callback: ICallback) {
+    export function waitForUserInputImpl(context: IWebContext, callback: ICallback, action: IWaitForUserInput) {
         if (action.debug) debugger;
         if (context.processManager) {
             const test = (chunk: string, key: any) => {
@@ -135,7 +137,8 @@ module todo.FileSystemActions {
         state?: IFileSelectorActionState;
     }
 
-    export function selectFiles(action: IFileSelectorAction, context: IWebContext) {
+    export function FileSelectorActionImpl(context: IWebContext, callback: ICallback, action: IFileSelectorAction ) {
+        if(!action) action = this;
         if (action.debug) debugger;
         if (!action.state) {
             action.state = {

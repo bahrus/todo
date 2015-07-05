@@ -160,3 +160,17 @@ const counter: ICountToALimit = {
 
 counter.do();
 console.log(counter.incrementAction.currentVal);
+
+const incrementAction: IIncrementAction = {
+	do: IncrementActionImpl,
+	currentVal: 0,
+}
+
+const counter2 : todo.IRecurringAction = {
+	do: todo.RecurringActionImpl,
+	testForRepeat: i => incrementAction.currentVal < 20,
+	actions: [incrementAction]
+}
+
+counter2.do();
+console.log(incrementAction.currentVal);

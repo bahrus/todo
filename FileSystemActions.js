@@ -52,7 +52,7 @@ var todo;
             };
         }
         FileSystemActions.textFileReaderActionImpl = textFileReaderActionImpl;
-        function waitForUserInput(action, context, callback) {
+        function waitForUserInputImpl(context, callback, action) {
             if (action.debug)
                 debugger;
             if (context.processManager) {
@@ -63,8 +63,10 @@ var todo;
             }
             todo.endAction(action, callback);
         }
-        FileSystemActions.waitForUserInput = waitForUserInput;
-        function selectFiles(action, context) {
+        FileSystemActions.waitForUserInputImpl = waitForUserInputImpl;
+        function FileSelectorActionImpl(context, callback, action) {
+            if (!action)
+                action = this;
             if (action.debug)
                 debugger;
             if (!action.state) {
@@ -78,7 +80,7 @@ var todo;
             files = files.map(function (s) { return action.state.rootDirectory + s; });
             action.state.selectedFilePaths = files;
         }
-        FileSystemActions.selectFiles = selectFiles;
+        FileSystemActions.FileSelectorActionImpl = FileSelectorActionImpl;
         //function processHTMLFileSubRules(action: IHTMLFileProcessorAction, context: IWebContext, data: string) {
         //    if (action.debug) debugger;
         //    const $ = context.fileManager.loadHTML(data);

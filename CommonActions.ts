@@ -192,43 +192,43 @@ module todo {
     
     //#region deprecated
     
-    export interface ISubMergeAction<TDestAction extends IAction, TSrc, TProp> {
-        srcRefs: TSrc[];
-        destRefs: TDestAction[];
-        destinationPropertyGetter?: (destAction: TDestAction) => TProp;
-        sourcePropertyGetter?: (src: TSrc) => TProp;
-    }
+    // export interface ISubMergeAction<TDestAction extends IAction, TSrc, TProp> {
+    //     srcRefs: TSrc[];
+    //     destRefs: TDestAction[];
+    //     destinationPropertyGetter?: (destAction: TDestAction) => TProp;
+    //     sourcePropertyGetter?: (src: TSrc) => TProp;
+    // }
 
-    export function subMerge<TDestAction extends IAction, TSrc, TProp>(subMergeAction: ISubMergeAction<TDestAction, TSrc, TProp>, context: IContext, callback: ICallback) {
-        const dpg = subMergeAction.destinationPropertyGetter;
-        const spg = subMergeAction.sourcePropertyGetter;
-        const srcRefs = subMergeAction.srcRefs;
-        if (!srcRefs) {
-            endAction(subMergeAction, callback);
-            return;
-        }
-        const noOfSrcRefs = srcRefs.length;
-        const destRefs = subMergeAction.destRefs;
-        const noOfDestRefs = destRefs.length;
-        //const destProp = dpg(dr);
-        for (let i = 0; i < noOfSrcRefs; i++) {
-            const srcRef = srcRefs[i];
-            const srcProp = spg(srcRef);
-            for (let j = 0; j < noOfDestRefs; j++) {
-                const destRef = destRefs[j];
-                const destProp = dpg(destRef);
-                //TODO:  Merge
-                Object['assign'](destProp, srcProp);
-                destRef.do(context, callback, destRef);
-            }
+    // export function subMerge<TDestAction extends IAction, TSrc, TProp>(subMergeAction: ISubMergeAction<TDestAction, TSrc, TProp>, context: IContext, callback: ICallback) {
+    //     const dpg = subMergeAction.destinationPropertyGetter;
+    //     const spg = subMergeAction.sourcePropertyGetter;
+    //     const srcRefs = subMergeAction.srcRefs;
+    //     if (!srcRefs) {
+    //         endAction(subMergeAction, callback);
+    //         return;
+    //     }
+    //     const noOfSrcRefs = srcRefs.length;
+    //     const destRefs = subMergeAction.destRefs;
+    //     const noOfDestRefs = destRefs.length;
+    //     //const destProp = dpg(dr);
+    //     for (let i = 0; i < noOfSrcRefs; i++) {
+    //         const srcRef = srcRefs[i];
+    //         const srcProp = spg(srcRef);
+    //         for (let j = 0; j < noOfDestRefs; j++) {
+    //             const destRef = destRefs[j];
+    //             const destProp = dpg(destRef);
+    //             //TODO:  Merge
+    //             Object['assign'](destProp, srcProp);
+    //             destRef.do(context, callback, destRef);
+    //         }
 
-        }
-    }
+    //     }
+    // }
 
-    export interface IDoForEachAction<TContainer, TListItem> extends IAction {
-        forEach?: (container: TContainer) => TListItem[];
-        subActionsGenerator?: (container: TContainer) => [(listItem: TListItem) => IAction];
-    }
+    // export interface IDoForEachAction<TContainer, TListItem> extends IAction {
+    //     forEach?: (container: TContainer) => TListItem[];
+    //     subActionsGenerator?: (container: TContainer) => [(listItem: TListItem) => IAction];
+    // }
     //#endregion
     
     export interface ICacheStringValueAction extends IAction {

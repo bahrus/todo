@@ -120,31 +120,6 @@ var todo;
         }
     }
     todo.merge = merge;
-    function subMerge(subMergeAction, context, callback) {
-        var dpg = subMergeAction.destinationPropertyGetter;
-        var spg = subMergeAction.sourcePropertyGetter;
-        var srcRefs = subMergeAction.srcRefs;
-        if (!srcRefs) {
-            endAction(subMergeAction, callback);
-            return;
-        }
-        var noOfSrcRefs = srcRefs.length;
-        var destRefs = subMergeAction.destRefs;
-        var noOfDestRefs = destRefs.length;
-        //const destProp = dpg(dr);
-        for (var i = 0; i < noOfSrcRefs; i++) {
-            var srcRef = srcRefs[i];
-            var srcProp = spg(srcRef);
-            for (var j = 0; j < noOfDestRefs; j++) {
-                var destRef = destRefs[j];
-                var destProp = dpg(destRef);
-                //TODO:  Merge
-                Object['assign'](destProp, srcProp);
-                destRef.do(context, callback, destRef);
-            }
-        }
-    }
-    todo.subMerge = subMerge;
     function cacheStringValueActionImpl(context, callback, action) {
         if (!action)
             action = this;

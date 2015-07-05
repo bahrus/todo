@@ -105,4 +105,15 @@ var counter = {
 };
 counter.do();
 console.log(counter.incrementAction.currentVal);
+var incrementAction = {
+    do: IncrementActionImpl,
+    currentVal: 0,
+};
+var counter2 = {
+    do: todo.RecurringActionImpl,
+    testForRepeat: function (i) { return incrementAction.currentVal < 20; },
+    actions: [incrementAction]
+};
+counter2.do();
+console.log(incrementAction.currentVal);
 //# sourceMappingURL=app.js.map
