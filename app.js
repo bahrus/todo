@@ -1,8 +1,8 @@
 ///<reference path='Scripts/typings/node/node.d.ts'/>
-///<reference path='CommonActions.ts'/>
+///<reference path='todo.ts'/>
 ///<reference path='FileSystemActions.ts'/>
 if (typeof (global) !== 'undefined') {
-    require('./CommonActions');
+    require('./todo');
     require('./FileSystemActions');
 }
 //const ca = todo.CommonActions;

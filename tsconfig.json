@@ -5,7 +5,7 @@
 		"sourceMap": true
 	},
 	"files": [
-    	"CommonActions.ts",
+    	"todo.ts",
 		"StringUtils.ts",
 		"FileSystemActions.ts",
 		"NodeJSImplementations.ts",
