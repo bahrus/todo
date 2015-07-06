@@ -9,6 +9,7 @@
 		"StringUtils.ts",
 		"FileSystemActions.ts",
 		"NodeJSImplementations.ts",
-		"app.ts"
+		"app.ts",
+		"SampleBuildTasks2.ts"
   	]
 }

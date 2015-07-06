@@ -43,12 +43,12 @@ module todo.FileSystemActions {
         JSOutputs?: { [key: string]: string[] };
         fileManager: IWebFileManager;
     }
-    export interface IWebAction extends IAction {
-        do: (context?: IWebContext, callback?: ICallback, action?: IWebAction) => void;
+    // export interface IWebAction extends IAction {
+    //     do: (context?: IWebContext, callback?: ICallback, action?: IWebAction) => void;
 
-    }
+    // }
 
-    export interface IExportDocumentsToFiles extends IWebAction {
+    export interface IExportDocumentsToFiles extends IAction {
         outputRootDirectoryPath?: string;
 
     }
@@ -68,10 +68,10 @@ module todo.FileSystemActions {
             return su.endsWith(s, '.ts');
         }
 
-        export function retrieveWorkingDirectory(context: IWebContext) {
-            if(!context.fileManager)  context.fileManager = new njsi.NodeJSWebFileManager();
-            const wfm = context.fileManager;
-            return wfm.getWorkingDirectoryPath() + wfm.getSeparator();
+        export function assignFileManager(context: IContext) {
+            const webContext = <IWebContext> context;
+            if(!webContext.fileManager)  webContext.fileManager = new njsi.NodeJSWebFileManager();
+            return webContext;
         }
     }
 //#endregion
@@ -81,17 +81,16 @@ module todo.FileSystemActions {
         content?: string;
     }
 
-    export interface ITextFileReaderAction extends IAction, IRootDirectoryRetriever {
+    export interface ITextFileReaderAction extends IAction {
         relativeFilePath: string;
         state?: IFileReaderActionState;
     }
 
-    export function textFileReaderActionImpl(context?: IWebContext, callback?: ICallback, action?: ITextFileReaderAction) {
-        if(!action.rootDirectoryRetriever){
-            action.rootDirectoryRetriever = commonHelperFunctions.retrieveWorkingDirectory
-        }
-        const rootdirectory = action.rootDirectoryRetriever(context);
-        const wfm = context.fileManager;
+    export function textFileReaderActionImpl(context?: IContext, callback?: ICallback, action?: ITextFileReaderAction) {
+        if(!action) action = this;
+        const webContext = commonHelperFunctions.assignFileManager(context);
+        const rootdirectory = webContext.fileManager.getWorkingDirectoryPath();
+        const wfm = webContext.fileManager;
         const filePath = wfm.resolve(rootdirectory, action.relativeFilePath);
         action.state = {
             content: wfm.readTextFileSync(filePath),
@@ -120,61 +119,82 @@ module todo.FileSystemActions {
 //#endregion
 
     //#region File Selection
-    export interface IRootDirectoryRetriever {
-        rootDirectoryRetriever?: (context: IWebContext) => string;
+    // export interface IRootDirectoryRetriever {
+    //     rootDirectoryRetriever?: (context: IWebContext) => string;
+    // }
+
+    export class FileSelectorActionState {
+        // rootDirectoryPath: string;
+        // selectedFilePaths: string[];
+        // currentIndex: number;
+        // currentFilePath: string;
+        constructor(
+            public rootDirectoryPath: string, 
+            public selectedFilePaths: string[], 
+            public currentIndex: number, 
+            public currentFilePath: string){}
+            
+        get hasNext(){
+            return this.currentIndex < this.selectedFilePaths.length - 1;
+        }
+        
+        moveToNext(){
+            this.currentIndex++;
+            this.currentFilePath = this.selectedFilePaths[this.currentIndex];
+        }
     }
 
-    export interface IFileSelectorActionState {
-        rootDirectory: string;
-        selectedFilePaths?: string[];
-    }
-
-    export interface IFileSelectorAction extends IWebAction, IRootDirectoryRetriever {
-
+    export interface IFileSelectorAction extends IAction {
         //fileName?: string;
         fileTest?: (s: string) => boolean;
+        relativeFilePath?: string;
         recursive?: boolean;
-        state?: IFileSelectorActionState;
+        state?: FileSelectorActionState;
     }
+    
+    
 
     export function FileSelectorActionImpl(context: IWebContext, callback: ICallback, action: IFileSelectorAction ) {
         if(!action) action = this;
         if (action.debug) debugger;
-        if (!action.state) {
-            action.state = {
-                rootDirectory: action.rootDirectoryRetriever(context),
-            };
-        }
-        let files = context.fileManager.listDirectorySync(action.state.rootDirectory);
+        
+        const webContext = commonHelperFunctions.assignFileManager(context);
+        const rootDirectoryPath = webContext.fileManager.getWorkingDirectoryPath();
+        let files = context.fileManager.listDirectorySync(rootDirectoryPath);
         if (action.fileTest) files = files.filter(action.fileTest);
-        files = files.map(s => action.state.rootDirectory + s);
-        action.state.selectedFilePaths = files;
+        files = files.map(s => rootDirectoryPath + s);
+        if (!action.state) action.state = new FileSelectorActionState (
+            rootDirectoryPath,
+            files,
+            files.length > 0 ? 0 : -1,
+            files.length > 0 ? files[0] : null
+        );
     }
 //#endregion
 
     //#region File Processing
 
-    export interface IFileProcessorActionState extends IActionState {
-        filePath: string;
+    // export interface IFileProcessorActionState extends IActionState {
+    //     filePath: string;
 
-    }
+    // }
 
-    export interface IHTMLFileProcessorActionState extends IFileProcessorActionState, IActionState {
-        //$?: JQueryStatic
-        HTMLFiles?: IHTMLFile[];
-    }
-    export interface IFileProcessorAction extends IWebAction {
-        state?: IFileProcessorActionState;
-        fileSubProcessActions?: IWebAction[];
+    // export interface IHTMLFileProcessorActionState extends IFileProcessorActionState, IActionState {
+    //     //$?: JQueryStatic
+    //     HTMLFiles?: IHTMLFile[];
+    // }
+    // export interface IFileProcessorAction extends IAction {
+    //     state?: IFileProcessorActionState;
+    //     fileSubProcessActions?: IAction[];
 
 
-    }
+    // }
 
-    //#region HTML File Processing
+    // //#region HTML File Processing
 
-    export interface IHTMLFileProcessorAction extends IFileProcessorAction {
-        state?: IHTMLFileProcessorActionState;
-    }
+    // export interface IHTMLFileProcessorAction extends IFileProcessorAction {
+    //     state?: IHTMLFileProcessorActionState;
+    // }
 
     //function processHTMLFileSubRules(action: IHTMLFileProcessorAction, context: IWebContext, data: string) {
     //    if (action.debug) debugger;
@@ -219,114 +239,114 @@ module todo.FileSystemActions {
     //#endregion
 
     //#region JS File Processing
-    export function minifyJSFile(action: IFileProcessorAction, context: IWebContext, callback: ICallback) {
-        console.log('Uglifying ' + action.state.filePath);
-        const filePath = action.state.filePath;
-        context.fileManager.minify(filePath,(err, min) => {
-            if (err) {
-                console.log('Error uglifying ' + filePath);
-            } else {
-                console.log('Uglified ' + filePath);
-            }
-            if (!callback) {
-                throw "Unable to minify JS files synchronously";
-            }
-            todo.endAction(action, callback);
-        });
+    // export function minifyJSFile(action: IFileProcessorAction, context: IWebContext, callback: ICallback) {
+    //     console.log('Uglifying ' + action.state.filePath);
+    //     const filePath = action.state.filePath;
+    //     context.fileManager.minify(filePath,(err, min) => {
+    //         if (err) {
+    //             console.log('Error uglifying ' + filePath);
+    //         } else {
+    //             console.log('Uglified ' + filePath);
+    //         }
+    //         if (!callback) {
+    //             throw "Unable to minify JS files synchronously";
+    //         }
+    //         todo.endAction(action, callback);
+    //     });
 
-    }
+    // }
 //#endregion
 
     //#endregion
 
     //#region File Select and Process
-    export interface ISelectAndProcessFileAction extends IWebAction {
-        fileSelector?: IFileSelectorAction
-        fileProcessor?: IFileProcessorAction;
-    }
+    // export interface ISelectAndProcessFileAction extends IWebAction {
+    //     fileSelector?: IFileSelectorAction
+    //     fileProcessor?: IFileProcessorAction;
+    // }
 
-    export function selectAndProcessFiles(action: ISelectAndProcessFileAction, context: IWebContext, callback: ICallback) {
-        if (action.debug) debugger;
-        const fs = action.fileSelector;
-        fs.do(context, null, fs);
-        const selectedFilePaths = fs.state.selectedFilePaths;
-        const len = selectedFilePaths.length;
-        if (len === 0) {
-            todo.endAction(action, callback);
-            return;
-        }
-        const fp = action.fileProcessor;
-        if (action.async) {
-            let idx = 0;
-            const fpCallback = (err) => {
-                if (idx < len) {
-                    const filePath = selectedFilePaths[idx];
-                    idx++;
-                    if (!fp.state) {
-                        fp.state = {
-                            filePath: filePath,
-                        }
-                    } else {
-                        fp.state.filePath = filePath;
+    // export function selectAndProcessFiles(action: ISelectAndProcessFileAction, context: IWebContext, callback: ICallback) {
+    //     if (action.debug) debugger;
+    //     const fs = action.fileSelector;
+    //     fs.do(context, null, fs);
+    //     const selectedFilePaths = fs.state.selectedFilePaths;
+    //     const len = selectedFilePaths.length;
+    //     if (len === 0) {
+    //         todo.endAction(action, callback);
+    //         return;
+    //     }
+    //     const fp = action.fileProcessor;
+    //     if (action.async) {
+    //         let idx = 0;
+    //         const fpCallback = (err) => {
+    //             if (idx < len) {
+    //                 const filePath = selectedFilePaths[idx];
+    //                 idx++;
+    //                 if (!fp.state) {
+    //                     fp.state = {
+    //                         filePath: filePath,
+    //                     }
+    //                 } else {
+    //                     fp.state.filePath = filePath;
                         
-                    }
-                    fp.do(context, fpCallback, fp);
-                } else {
-                    todo.endAction(action, callback);
-                }
-            }
-            fpCallback(null);
-        } else {
-            const n = fs.state.selectedFilePaths.length;
-            for (let i = 0; i < n; i++) {
-                const filePath = fs.state.selectedFilePaths[i];
-                if (!fp.state) {
-                    fp.state = {
-                        filePath: filePath,
-                    };
-                } else {
-                    fp.state.filePath = filePath;
-                }
-                fp.do(context, null, fp);
-            }
-           todo.endAction(action, callback);
-        }
+    //                 }
+    //                 fp.do(context, fpCallback, fp);
+    //             } else {
+    //                 todo.endAction(action, callback);
+    //             }
+    //         }
+    //         fpCallback(null);
+    //     } else {
+    //         const n = fs.state.selectedFilePaths.length;
+    //         for (let i = 0; i < n; i++) {
+    //             const filePath = fs.state.selectedFilePaths[i];
+    //             if (!fp.state) {
+    //                 fp.state = {
+    //                     filePath: filePath,
+    //                 };
+    //             } else {
+    //                 fp.state.filePath = filePath;
+    //             }
+    //             fp.do(context, null, fp);
+    //         }
+    //        todo.endAction(action, callback);
+    //     }
 
 
-    }
+    // }
 
-    export interface IHTMLFile {
-        filePath?: string;
-        $: JQueryStatic;
-    }
+    // export interface IHTMLFile {
+    //     filePath?: string;
+    //     $: JQueryStatic;
+    // }
 
-    interface ISelectAndReadHTLMFilesActionState {
-        htmlFiles?: IHTMLFile[];
-    }
+    // interface ISelectAndReadHTLMFilesActionState {
+    //     htmlFiles?: IHTMLFile[];
+    // }
 
     
 
-    export interface ISelectAndReadHTMLFilesAction extends IWebAction {
-        fileSelector: IFileSelectorAction;
-        fileProcessor?: IHTMLFileProcessorAction;
-        state?: ISelectAndReadHTLMFilesActionState;
-    }
+    // export interface ISelectAndReadHTMLFilesAction extends IWebAction {
+    //     fileSelector: IFileSelectorAction;
+    //     fileProcessor?: IHTMLFileProcessorAction;
+    //     state?: ISelectAndReadHTLMFilesActionState;
+    // }
 
-    export function storeHTMLFiles(action: IHTMLFileProcessorAction, context: IWebContext, callback: ICallback) {
-        if (action.debug) debugger;
-        const fm = context.fileManager;
-        const filePath = action.state.filePath;
-        const contents = fm.readTextFileSync(filePath);
-        //action.state.$ = fm.loadHTML(contents);
-        if (!action.state.HTMLFiles) action.state.HTMLFiles = [];
-        const $ = fm.loadHTML(contents);
-        action.state.HTMLFiles.push({
-            $: $,
-            filePath: filePath,
-        });
-        context.HTMLOutputs[filePath] = $;
-        todo.endAction(action, callback);
-    }
+    // export function storeHTMLFiles(action: IHTMLFileProcessorAction, context: IWebContext, callback: ICallback) {
+    //     if (action.debug) debugger;
+    //     const fm = context.fileManager;
+    //     const filePath = action.state.filePath;
+    //     const contents = fm.readTextFileSync(filePath);
+    //     //action.state.$ = fm.loadHTML(contents);
+    //     if (!action.state.HTMLFiles) action.state.HTMLFiles = [];
+    //     const $ = fm.loadHTML(contents);
+    //     action.state.HTMLFiles.push({
+    //         $: $,
+    //         filePath: filePath,
+    //     });
+    //     context.HTMLOutputs[filePath] = $;
+    //     todo.endAction(action, callback);
+    // }
 
 //#endregion
 
