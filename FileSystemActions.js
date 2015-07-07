@@ -13,9 +13,9 @@ var todo;
     var FileSystemActions;
     (function (FileSystemActions) {
         //tsp.ParserActions = global.tsp.ParserActions;
-        var su = todo.StringUtils;
         //const ca = todo.CommonActions;
         var njsi = todo.NodeJSImplementations || global.todo.NodeJSImplementations;
+        var su = todo.StringUtils || global.todo.StringUtils;
         //#endregion
         //#region helper functions
         var commonHelperFunctions;
@@ -70,10 +70,6 @@ var todo;
         //     rootDirectoryRetriever?: (context: IWebContext) => string;
         // }
         var FileSelectorActionState = (function () {
-            // rootDirectoryPath: string;
-            // selectedFilePaths: string[];
-            // currentIndex: number;
-            // currentFilePath: string;
             function FileSelectorActionState(rootDirectoryPath, selectedFilePaths, currentIndex, currentFilePath) {
                 this.rootDirectoryPath = rootDirectoryPath;
                 this.selectedFilePaths = selectedFilePaths;
@@ -87,7 +83,7 @@ var todo;
                 enumerable: true,
                 configurable: true
             });
-            FileSelectorActionState.prototype.moveToNext = function () {
+            FileSelectorActionState.prototype.do = function () {
                 this.currentIndex++;
                 this.currentFilePath = this.selectedFilePaths[this.currentIndex];
             };

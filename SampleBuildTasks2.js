@@ -10,12 +10,14 @@ var sampleBuildTasks2;
     var fsa = todo.FileSystemActions;
     var sampleBuildTasks2 = {
         do: todo.RecurringActionImpl,
+        debug: true,
         testForRepeat: function (i) { return i.htmlFileSelector.state.hasNext; },
         htmlFileSelector: {
             do: todo.FileSystemActions.FileSelectorActionImpl,
             fileTest: fsa.commonHelperFunctions.testForHtmlFileName,
         },
-        actions: [function (i) { return i.htmlFileSelector; }],
+        headActions: [function (i) { return i.htmlFileSelector; }],
+        actions: [function (i) { return i.htmlFileSelector.state; }],
     };
     var context = {};
     sampleBuildTasks2.do(context);

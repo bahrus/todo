@@ -14,19 +14,23 @@ module sampleBuildTasks2{
 	
 	interface ISampleBuildTasks2 extends todo.IRecurringAction{
 		htmlFileSelector?: todo.FileSystemActions.IFileSelectorAction;
-		actions?: [compToConsoleAction];
+		headActions: [SampleBuildTasks2ToAction];
+		actions: [SampleBuildTasks2ToAction];
 		testForRepeat?: (action: ISampleBuildTasks2) => boolean;
 	}
 	
-	type compToConsoleAction = todo.IObjectGenerator<ISampleBuildTasks2, todo.IAction>;
+	type SampleBuildTasks2ToAction = todo.IObjectGenerator<ISampleBuildTasks2, todo.IAction>;
 	const sampleBuildTasks2 : ISampleBuildTasks2 = {
 		do: todo.RecurringActionImpl,
+		debug: true,
 		testForRepeat: i => i.htmlFileSelector.state.hasNext,
 		htmlFileSelector: {
 			do: todo.FileSystemActions.FileSelectorActionImpl,
 			fileTest: fsa.commonHelperFunctions.testForHtmlFileName,
 		},
-		actions: [i => i.htmlFileSelector],
+		headActions: [i => i.htmlFileSelector],
+		actions: [i => <todo.IAction> i.htmlFileSelector.state],
+		
 	}
 	
 	const context: todo.IContext = {};

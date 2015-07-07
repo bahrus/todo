@@ -8,14 +8,18 @@ if(typeof(global) !== 'undefined'){
     require('./todo');
     require('./StringUtils');
     require('./NodeJSImplementations');
+    
 }
+
+
 
 module todo.FileSystemActions {
    
     //tsp.ParserActions = global.tsp.ParserActions;
-    const su = todo.StringUtils;
+    
     //const ca = todo.CommonActions;
     const njsi = todo.NodeJSImplementations || global.todo.NodeJSImplementations;
+    const su = todo.StringUtils || global.todo.StringUtils;
     //if (typeof (global) !== 'undefined') {
     //    if (!ca) ca = global.tsp.CommonActions;
     //    if (!pa) pa = global.tsp.ParserActions;
@@ -123,22 +127,18 @@ module todo.FileSystemActions {
     //     rootDirectoryRetriever?: (context: IWebContext) => string;
     // }
 
-    export class FileSelectorActionState {
-        // rootDirectoryPath: string;
-        // selectedFilePaths: string[];
-        // currentIndex: number;
-        // currentFilePath: string;
+    export class FileSelectorActionState implements todo.IAction {
         constructor(
-            public rootDirectoryPath: string, 
-            public selectedFilePaths: string[], 
-            public currentIndex: number, 
-            public currentFilePath: string){}
+            public rootDirectoryPath?: string, 
+            public selectedFilePaths?: string[], 
+            public currentIndex?: number, 
+            public currentFilePath?: string){}
             
         get hasNext(){
             return this.currentIndex < this.selectedFilePaths.length - 1;
         }
         
-        moveToNext(){
+        do(){
             this.currentIndex++;
             this.currentFilePath = this.selectedFilePaths[this.currentIndex];
         }
