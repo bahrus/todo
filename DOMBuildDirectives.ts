@@ -1,10 +1,7 @@
 ﻿
 
 module tsp.DOMBuildDirectives {
-    try {
-        require('./Refs');
-        global.refs.moduleTarget = tsp;
-    } finally { }
+    
     export interface IDOMBuildDirectives extends CommonActions.ITypedActionList<IDOMBuildDirectives> {
         removeBuildDirective?: DOMActions.IDOMTransformAction;
         makeJSClobDirective?: DOMActions.IDOMTransformAction;

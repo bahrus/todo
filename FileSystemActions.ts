@@ -315,10 +315,7 @@ module todo.FileSystemActions {
 
     // }
 
-    // export interface IHTMLFile {
-    //     filePath?: string;
-    //     $: JQueryStatic;
-    // }
+
 
     // interface ISelectAndReadHTLMFilesActionState {
     //     htmlFiles?: IHTMLFile[];

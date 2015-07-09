@@ -1,25 +1,30 @@
-﻿
-module tsp.DOMActions {
-    try {
-        require('./Refs');
-        global.refs.moduleTarget = tsp;
-    } finally { }
-    const fsa = FileSystemActions;
-    const ca = CommonActions;
-    const pa = ParserActions;
+﻿///<reference path='todo.ts'/>
+///<reference path='FileSystemActions.ts'/>
+
+module todo.DOMActions {
+    
+    const su = todo.StringUtils || global.todo.StringUtils;
+    const fsa = todo.FileSystemActions || global.todo.FileSystemActions;
+    //const pa = ParserActions;
 
     //#region DOM Actions
     export interface IUglify {
         uglify(pathOfReferencingFile: string, relativeURL: string): string;
     }
+    
+    export interface IHTMLFile {
+        filePath?: string;
+        originalContent?: string;
+        $: JQueryStatic;
+    }
 
     interface IDOMState  {
-        htmlFile: FileSystemActions.IHTMLFile;
+        htmlFile: IHTMLFile;
     }
 
-    export interface IHTMLFileBuildAction extends FileSystemActions.ISelectAndProcessFileAction {
-        domTransformActions: IDOMTransformAction[];
-    }
+    //export interface IHTMLFileBuildAction extends FileSystemActions.ISelectAndProcessFileAction {
+    //    domTransformActions: IDOMTransformAction[];
+    //}
 
     //#endregion
     //#region Element Build Actions
@@ -29,32 +34,34 @@ module tsp.DOMActions {
         DOMTransform?: IDOMTransformAction;
     }
 
-    export interface IDOMElementBuildAction extends FileSystemActions.IWebAction {
+    export interface IDOMElementBuildAction extends IAction {
         state?: IDOMElementBuildActionState;
         //isDOMElementAction?: (action: IBuildAction) => boolean; 
     }
-    export function remove(action: IDOMElementBuildAction, context: FileSystemActions.IWebContext, callback: CommonActions.ICallback) {
+    export function remove(context: FileSystemActions.IWebContext, callback: todo.ICallback, action: IDOMElementBuildAction) {
         action.state.element.remove();
-        ca.endAction(action, callback);
+        endAction(action, callback);
     }
 
-    export function addToJSClob(action: IDOMElementBuildAction, context: FileSystemActions.IWebContext, callback: CommonActions.ICallback) {
+    export function addToJSClob(context: IContext, callback: ICallback, action?: IDOMElementBuildAction) {
         const state = action.state;
         const src = action.state.element.attr('src');
-        const referringDir = context.fileManager.resolve(state.htmlFile.filePath, '..', src);
-        if (!context.JSOutputs) context.JSOutputs = {};
-        const jsOutputs = context.JSOutputs;
+        fsa.commonHelperFunctions.assignFileManager(context);
+        const webContext = <FileSystemActions.IWebContext> context;
+        const referringDir = webContext.fileManager.resolve(state.htmlFile.filePath, '..', src);
+        if (!webContext.JSOutputs) webContext.JSOutputs = {};
+        const jsOutputs = webContext.JSOutputs;
         if (!jsOutputs[referringDir]) jsOutputs[state.htmlFile.filePath] = [];
-        const minifiedVersionFilePath = pa.replaceEndWith(referringDir, '.js', '.min.js');
-        if (!context.fileManager.doesFilePathExist(minifiedVersionFilePath)) {
+        const minifiedVersionFilePath = su.replaceEndWith(referringDir, '.js', '.min.js');
+        if (!webContext.fileManager.doesFilePathExist(minifiedVersionFilePath)) {
             console.log('minified filepath ' + minifiedVersionFilePath + ' does not exist.');
-            ca.endAction(action, callback);
+            endAction(action, callback);
             return;
         }
-        const minifiedContent = context.fileManager.readTextFileSync(minifiedVersionFilePath);
+        const minifiedContent = webContext.fileManager.readTextFileSync(minifiedVersionFilePath);
         jsOutputs[state.htmlFile.filePath].push(minifiedContent);
         action.state.element.remove();
-        ca.endAction(action, callback);
+        endAction(action, callback);
     }
 
     //#endregion
@@ -66,7 +73,7 @@ module tsp.DOMActions {
         treeNode?: IDOMTransformAction;
     }
 
-    export interface IDOMElementSelector extends FileSystemActions.IWebAction {
+    export interface IDOMElementSelector extends IAction {
     }
 
     export interface IDOMElementCSSSelector extends IDOMElementSelector {
@@ -74,7 +81,7 @@ module tsp.DOMActions {
         state?: IDOMElementCSSSelectorState;
     }
 
-    export function selectElements(action: IDOMElementCSSSelector, context: FileSystemActions.IWebContext, callback: CommonActions.ICallback) {
+    export function selectElements(context: FileSystemActions.IWebContext, callback?: ICallback, action?: IDOMElementCSSSelector) {
         if (action.debug) debugger;
         const aS = action.state;
         if (aS.relativeTo) {
@@ -83,7 +90,7 @@ module tsp.DOMActions {
             //aS.elements = aS.$(action.cssSelector);
             aS.elements = aS.htmlFile.$(action.cssSelector);
         }
-        ca.endAction(action, callback);
+        endAction(action, callback);
     }
     //#endregion
 
@@ -93,13 +100,13 @@ module tsp.DOMActions {
         parent?: IDOMTransformAction;
     }
 
-    export interface IDOMTransformAction extends FileSystemActions.IWebAction {
+    export interface IDOMTransformAction extends IAction {
         selector: IDOMElementCSSSelector;
         elementAction?: IDOMElementBuildAction;
         state?: IDOMTransformActionState;
     }
 
-    export function DOMTransform(action: IDOMTransformAction, context: FileSystemActions.IWebContext, callback: CommonActions.ICallback) {
+    export function DOMTransform(context: IContext, callback: ICallback, action: IDOMTransformAction) {
         let elements: JQuery;
         let p: IDOMTransformAction;
         if (action.state) {
@@ -116,7 +123,7 @@ module tsp.DOMActions {
         if (p && p.elementAction) {
             aSelSt.relativeTo = p.elementAction.state.element;
         }
-        aSel.do(aSel, context);
+        aSel.do(context, null, aSel);
         const eA = action.elementAction;
         if (eA) {
             //#region element Action
@@ -133,9 +140,9 @@ module tsp.DOMActions {
                         const $elem = aSelSt.htmlFile.$(aSelSt.elements[i]);
                         i++;
                         eA.state.element = $elem;
-                        eA.do(eA, context, eACallback);
+                        eA.do(context, eACallback, eA);
                     } else {
-                        ca.endAction(action, callback);
+                        endAction(action, callback);
                     }
                 };
                 eACallback(null);
@@ -144,51 +151,48 @@ module tsp.DOMActions {
                 for (let i = 0; i < n; i++) {
                     const $elem = aSelSt.htmlFile.$(aSelSt.elements[i]);
                     eA.state.element = $elem;
-                    eA.do(eA, context);
+                    eA.do(context, null, eA);
                 }
-                ca.endAction(action, callback);
+                endAction(action, callback);
             }
             //#endregion
         } else {
-            ca.endAction(action, callback);
+            endAction(action, callback);
         }
 
 
     }
 
-    type ISubMergeHTMLFileIntoDomTransform = CommonActions.ISubMergeAction<IDOMTransformAction, FileSystemActions.IHTMLFile, IDOMTransformActionState>;
+    //type ISubMergeHTMLFileIntoDomTransform = CommonActions.ISubMergeAction<IDOMTransformAction, FileSystemActions.IHTMLFile, IDOMTransformActionState>;
 
     //export interface IPutHTMLFileIntoDomTransformAction extends CommonActions.IAction {
     //    htmlFiles: FileSystemActions.IHTMLFile[];
     //    domTransforms: IDOMTransformAction[];
     //}
 
-    export interface IDOMTransformForEachHTMLFileAction<TContainer, TListItem> {
-        //htmlFilesGenerator?: (container: TContainer) => FileSystemActions.IHTMLFile[];
-        //domTransformsGenerator?: (container: TContainer) => IDOMTransformAction[];
-        //putHTMLFileIntoDomTransformGenerator?: (container: TContainer) => IPutHTMLFileIntoDomTransformAction;
-        htmlFiles?: FileSystemActions.IHTMLFile[];
-        domTransforms?: IDOMTransformAction[];
-    }
+    // export interface IDOMTransformForEachHTMLFileAction<TContainer, TListItem> {
+    //     //htmlFilesGenerator?: (container: TContainer) => FileSystemActions.IHTMLFile[];
+    //     //domTransformsGenerator?: (container: TContainer) => IDOMTransformAction[];
+    //     //putHTMLFileIntoDomTransformGenerator?: (container: TContainer) => IPutHTMLFileIntoDomTransformAction;
+    //     htmlFiles?: FileSystemActions.IHTMLFile[];
+    //     domTransforms?: IDOMTransformAction[];
+    // }
 
-    export function ApplyDOMTransformsOnHTMLFiles<TContainer, TListItem>(action: IDOMTransformForEachHTMLFileAction<TContainer, TListItem>, context: FileSystemActions.IWebContext, callback: CommonActions.ICallback) {
-        const htmlFiles = action.htmlFiles;
-        const domTransforms = action.domTransforms;
-        for (let i = 0, n = htmlFiles.length; i < n; i++) {
-            const htmlFile = htmlFiles[i];
-            for (let j = 0, m = domTransforms.length; j < m; j++) {
-                const domTransform = domTransforms[j];
-                domTransform.state = {
-                    htmlFile: htmlFile,
-                };
+    // export function ApplyDOMTransformsOnHTMLFiles<TContainer, TListItem>(action: IDOMTransformForEachHTMLFileAction<TContainer, TListItem>, context: FileSystemActions.IWebContext, callback: CommonActions.ICallback) {
+    //     const htmlFiles = action.htmlFiles;
+    //     const domTransforms = action.domTransforms;
+    //     for (let i = 0, n = htmlFiles.length; i < n; i++) {
+    //         const htmlFile = htmlFiles[i];
+    //         for (let j = 0, m = domTransforms.length; j < m; j++) {
+    //             const domTransform = domTransforms[j];
+    //             domTransform.state = {
+    //                 htmlFile: htmlFile,
+    //             };
                
-                domTransform.do(domTransform, context, null);
-            }
-        }
-    }
+    //             domTransform.do(domTransform, context, null);
+    //         }
+    //     }
+    // }
 //#endregion
 }
 
-try {
-    global.refs.ref = ['DOMActions', tsp.DOMActions];
-} finally { }

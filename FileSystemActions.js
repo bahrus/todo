@@ -230,10 +230,6 @@ var todo;
         //        todo.endAction(action, callback);
         //     }
         // }
-        // export interface IHTMLFile {
-        //     filePath?: string;
-        //     $: JQueryStatic;
-        // }
         // interface ISelectAndReadHTLMFilesActionState {
         //     htmlFiles?: IHTMLFile[];
         // }
