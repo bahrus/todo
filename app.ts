@@ -108,7 +108,7 @@ const readAndDisplayFile : IEchoFile = {
 	showFileContentsInConsole : i => {
 		const consoleMessage: iConsoleAct = {
 			do: todo.ConsoleLogActionImpl,
-			message: i.readFileAction.state.content
+			message: i.readFileAction.domState.content
 		};
 		return consoleMessage;
 	},
@@ -116,7 +116,7 @@ const readAndDisplayFile : IEchoFile = {
 		const cacheAction: todo.ICacheStringValueAction = {
 			do: todo.cacheStringValueActionImpl,
 			cacheKey: 'someKey',
-			cacheValue: i.readFileAction.state.content,
+			cacheValue: i.readFileAction.domState.content,
 		};
 		return cacheAction;
 	},
@@ -145,7 +145,7 @@ function IncrementActionImpl(){
 interface ICountToALimit extends todo.IRecurringAction{
 	incrementAction: IIncrementAction;
 	testForRepeat: (ctal: ICountToALimit) => boolean;
-	actions: todo.IObjectGenerator<ICountToALimit, todo.IAction>[]	
+	repeatingActions: todo.IObjectGenerator<ICountToALimit, todo.IAction>[]	
 }
 
 const counter: ICountToALimit = {
@@ -155,7 +155,7 @@ const counter: ICountToALimit = {
 		currentVal: 0,
 	},
 	testForRepeat: i => i.incrementAction.currentVal < 10,
-	actions: [i => i.incrementAction],
+	repeatingActions: [i => i.incrementAction],
 }
 
 counter.do();
@@ -169,7 +169,7 @@ const incrementAction: IIncrementAction = {
 const counter2 : todo.IRecurringAction = {
 	do: todo.RecurringActionImpl,
 	testForRepeat: i => incrementAction.currentVal < 20,
-	actions: [incrementAction]
+	repeatingActions: [incrementAction]
 }
 
 counter2.do();

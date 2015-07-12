@@ -81,7 +81,7 @@ module todo {
     
     export interface IConsoleLogAction extends IAction {
         message?: stringOrStringGenerator;
-        state?: IMessageState;
+        domState?: IMessageState;
     }
     
     type stringOrStringGenerator = string | IObjectGenerator<IConsoleLogAction, string>;
@@ -95,7 +95,7 @@ module todo {
             message = messageOrMessageGenerator;
         }else if(typeof messageOrMessageGenerator === 'function'){
             message = messageOrMessageGenerator(cA);
-            cA.state = {
+            cA.domState = {
                 dynamicMessage: message,
             };
         }else{
@@ -152,24 +152,25 @@ module todo {
         doActions(context, callback, thisAction, thisAction.actions);
     }
     
-    export interface IRecurringAction extends ICompositeActions{
+    export interface IRecurringAction extends IAction {
         testForRepeat?: (action: IRecurringAction) => boolean;
-        headActions?: actionOrActionGenerator[];
-        tailActions?: actionOrActionGenerator[];
+        repeatingActions?: actionOrActionGenerator[];
+        initActions?: actionOrActionGenerator[];
+        finalActions?: actionOrActionGenerator[];
     }
     
     export function RecurringActionImpl(context?: IContext, callback?: ICallback, action?: IRecurringAction){
         let thisAction = action;
         if(!thisAction) thisAction = this;
-        if(!thisAction.headActions && !thisAction.actions && !thisAction.tailActions){
+        if(!thisAction.initActions && !thisAction.repeatingActions && !thisAction.finalActions){
             console.warn('No actions found!');
             return;
         }
-        if(thisAction.headActions) doActions(context, callback, thisAction, thisAction.headActions);
+        if(thisAction.initActions) doActions(context, callback, thisAction, thisAction.initActions);
         while(thisAction.testForRepeat(thisAction)){
-            doActions(context, callback, thisAction, thisAction.actions);
+            doActions(context, callback, thisAction, thisAction.repeatingActions);
         }
-        if(thisAction.tailActions) doActions(context, callback, thisAction, thisAction.tailActions);
+        if(thisAction.finalActions) doActions(context, callback, thisAction, thisAction.finalActions);
     }
     //#region
     

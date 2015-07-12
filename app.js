@@ -67,7 +67,7 @@ var readAndDisplayFile = {
     showFileContentsInConsole: function (i) {
         var consoleMessage = {
             do: todo.ConsoleLogActionImpl,
-            message: i.readFileAction.state.content
+            message: i.readFileAction.domState.content
         };
         return consoleMessage;
     },
@@ -75,7 +75,7 @@ var readAndDisplayFile = {
         var cacheAction = {
             do: todo.cacheStringValueActionImpl,
             cacheKey: 'someKey',
-            cacheValue: i.readFileAction.state.content,
+            cacheValue: i.readFileAction.domState.content,
         };
         return cacheAction;
     },
@@ -101,7 +101,7 @@ var counter = {
         currentVal: 0,
     },
     testForRepeat: function (i) { return i.incrementAction.currentVal < 10; },
-    actions: [function (i) { return i.incrementAction; }],
+    repeatingActions: [function (i) { return i.incrementAction; }],
 };
 counter.do();
 console.log(counter.incrementAction.currentVal);
@@ -112,7 +112,7 @@ var incrementAction = {
 var counter2 = {
     do: todo.RecurringActionImpl,
     testForRepeat: function (i) { return incrementAction.currentVal < 20; },
-    actions: [incrementAction]
+    repeatingActions: [incrementAction]
 };
 counter2.do();
 console.log(incrementAction.currentVal);

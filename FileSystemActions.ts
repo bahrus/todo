@@ -3,6 +3,7 @@
 ///<reference path='NodeJSImplementations.ts'/>
 ///<reference path='Scripts/typings/jquery/jquery.d.ts'/>
 ///<reference path='Scripts/typings/cheerio/cheerio.d.ts'/>
+///<reference path='DOMActions.ts'/>
 
 if(typeof(global) !== 'undefined'){
     require('./todo');
@@ -87,7 +88,7 @@ module todo.FileSystemActions {
 
     export interface ITextFileReaderAction extends IAction {
         relativeFilePath: string;
-        state?: IFileReaderActionState;
+        domState?: IFileReaderActionState;
     }
 
     export function textFileReaderActionImpl(context?: IContext, callback?: ICallback, action?: ITextFileReaderAction) {
@@ -96,7 +97,7 @@ module todo.FileSystemActions {
         const rootdirectory = webContext.fileManager.getWorkingDirectoryPath();
         const wfm = webContext.fileManager;
         const filePath = wfm.resolve(rootdirectory, action.relativeFilePath);
-        action.state = {
+        action.domState = {
             content: wfm.readTextFileSync(filePath),
         };
     }
@@ -122,26 +123,30 @@ module todo.FileSystemActions {
     }
 //#endregion
 
-    //#region File Selection
-    // export interface IRootDirectoryRetriever {
-    //     rootDirectoryRetriever?: (context: IWebContext) => string;
-    // }
+//#region File Selection
+    
 
-    export class FileSelectorActionState implements todo.IAction {
+    export class FilePathGenerator implements todo.IAction {
+        public hasNext: boolean;
         constructor(
             public rootDirectoryPath?: string, 
             public selectedFilePaths?: string[], 
             public currentIndex?: number, 
-            public currentFilePath?: string){}
+            public currentFilePath?: string){
+                this.callbacks = [];
+                this.hasNext = this.currentIndex < this.selectedFilePaths.length - 1;
+            }
             
-        get hasNext(){
-            return this.currentIndex < this.selectedFilePaths.length - 1;
-        }
+        
         
         do(){
             this.currentIndex++;
             this.currentFilePath = this.selectedFilePaths[this.currentIndex];
+            this.hasNext = this.currentIndex < this.selectedFilePaths.length - 1;
+            this.callbacks.forEach(callback => callback(null));
         }
+        
+        callbacks: ICallback[];
     }
 
     export interface IFileSelectorAction extends IAction {
@@ -149,7 +154,7 @@ module todo.FileSystemActions {
         fileTest?: (s: string) => boolean;
         relativeFilePath?: string;
         recursive?: boolean;
-        state?: FileSelectorActionState;
+        filePathGenerator?: FilePathGenerator;
     }
     
     
@@ -163,12 +168,36 @@ module todo.FileSystemActions {
         let files = context.fileManager.listDirectorySync(rootDirectoryPath);
         if (action.fileTest) files = files.filter(action.fileTest);
         files = files.map(s => rootDirectoryPath + s);
-        if (!action.state) action.state = new FileSelectorActionState (
+        if (!action.filePathGenerator) action.filePathGenerator = new FilePathGenerator (
             rootDirectoryPath,
             files,
             files.length > 0 ? 0 : -1,
             files.length > 0 ? files[0] : null
         );
+    }
+//#endregion
+
+//#region Html File Selection
+    export interface IHTMLFileSelectorAction extends IFileSelectorAction {
+        htmlFileSelectorState?: DOMActions.IHTMLFile;
+    }
+    
+    
+    function loadCurrentFile(context: IWebContext, callback: ICallback, action: IHTMLFileSelectorAction ) {
+        const wfm = context.fileManager;
+        const content = wfm.readTextFileSync(action.filePathGenerator.currentFilePath);
+        const $ = context.fileManager.loadHTML(content);
+        action.htmlFileSelectorState = {
+            filePath: action.filePathGenerator.currentFilePath,
+            $: $,
+            originalContent: content,
+        };
+    
+    }
+    export function HTMLFileSelectorActionImpl(context: IWebContext, callback: ICallback, action: IHTMLFileSelectorAction ) {
+        FileSelectorActionImpl(context, callback, action);
+        action.filePathGenerator.callbacks.push((err) => loadCurrentFile(context, callback, action));
+        loadCurrentFile(context, callback, action);
     }
 //#endregion
 

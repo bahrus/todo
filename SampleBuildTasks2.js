@@ -11,16 +11,50 @@ var sampleBuildTasks2;
     var sampleBuildTasks2 = {
         do: todo.RecurringActionImpl,
         debug: true,
-        testForRepeat: function (i) { return i.htmlFileSelector.state.hasNext; },
+        testForRepeat: function (i) { return i.htmlFileSelector.filePathGenerator.hasNext; },
         htmlFileSelector: {
-            do: todo.FileSystemActions.FileSelectorActionImpl,
+            do: fsa.HTMLFileSelectorActionImpl,
             fileTest: fsa.commonHelperFunctions.testForHtmlFileName,
         },
-        headActions: [function (i) { return i.htmlFileSelector; }],
-        actions: [function (i) { return i.htmlFileSelector.state; }],
+        domBuildDirectives: {
+            removeBuildDirective: {
+                do: todo.DOMActions.RemoveDOMElementActionImpl,
+                domState: {},
+                selector: {
+                    cssSelector: 'todo-delete'
+                }
+            },
+            // makeJSClobDirective: {
+            //     do: DOMActions.DOMTransform,
+            //     selector: {
+            //         cssSelector: 'head>script[src]',
+            //         do: DOMActions.selectElements,
+            //         //debug: true,
+            //     },
+            //     elementAction: {
+            //         do: DOMActions.addToJSClob,
+            //     },
+            // },
+            actions: [
+                function (i) {
+                    i.removeBuildDirective.domState.htmlFile = i.domState.htmlFile;
+                    return i.removeBuildDirective;
+                },
+            ]
+        },
+        initActions: [function (i) { return i.htmlFileSelector; }],
+        repeatingActions: [
+            function (i) { return i.htmlFileSelector.filePathGenerator; },
+            function (i) {
+                i.domBuildDirectives.domState = {
+                    htmlFile: i.htmlFileSelector.htmlFileSelectorState,
+                };
+                return i.domBuildDirectives;
+            }
+        ],
     };
     var context = {};
     sampleBuildTasks2.do(context);
-    console.log(sampleBuildTasks2.htmlFileSelector.state.selectedFilePaths);
+    console.log(sampleBuildTasks2.htmlFileSelector.filePathGenerator.selectedFilePaths);
 })(sampleBuildTasks2 || (sampleBuildTasks2 = {}));
 //# sourceMappingURL=SampleBuildTasks2.js.map

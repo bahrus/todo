@@ -49,7 +49,7 @@ var todo;
         }
         else if (typeof messageOrMessageGenerator === 'function') {
             message = messageOrMessageGenerator(cA);
-            cA.state = {
+            cA.domState = {
                 dynamicMessage: message,
             };
         }
@@ -98,17 +98,17 @@ var todo;
         var thisAction = action;
         if (!thisAction)
             thisAction = this;
-        if (!thisAction.headActions && !thisAction.actions && !thisAction.tailActions) {
+        if (!thisAction.initActions && !thisAction.repeatingActions && !thisAction.finalActions) {
             console.warn('No actions found!');
             return;
         }
-        if (thisAction.headActions)
-            doActions(context, callback, thisAction, thisAction.headActions);
+        if (thisAction.initActions)
+            doActions(context, callback, thisAction, thisAction.initActions);
         while (thisAction.testForRepeat(thisAction)) {
-            doActions(context, callback, thisAction, thisAction.actions);
+            doActions(context, callback, thisAction, thisAction.repeatingActions);
         }
-        if (thisAction.tailActions)
-            doActions(context, callback, thisAction, thisAction.tailActions);
+        if (thisAction.finalActions)
+            doActions(context, callback, thisAction, thisAction.finalActions);
     }
     todo.RecurringActionImpl = RecurringActionImpl;
     function merge(mergeAction, context, callback) {

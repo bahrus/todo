@@ -5,7 +5,6 @@ module todo.DOMActions {
     
     const su = todo.StringUtils || global.todo.StringUtils;
     const fsa = todo.FileSystemActions || global.todo.FileSystemActions;
-    //const pa = ParserActions;
 
     //#region DOM Actions
     export interface IUglify {
@@ -18,34 +17,41 @@ module todo.DOMActions {
         $: JQueryStatic;
     }
 
-    interface IDOMState  {
-        htmlFile: IHTMLFile;
+    interface IDOMState   {
+        htmlFile?: IHTMLFile;
     }
 
-    //export interface IHTMLFileBuildAction extends FileSystemActions.ISelectAndProcessFileAction {
-    //    domTransformActions: IDOMTransformAction[];
-    //}
+    
 
     //#endregion
     //#region Element Build Actions
 
     interface IDOMElementBuildActionState extends IDOMState {
-        element: JQuery;
-        DOMTransform?: IDOMTransformAction;
+        //htmlFile: IHTMLFile;
+        elements?: JQuery;
+        //DOMTransform?: IDOMTransformAction;
     }
 
     export interface IDOMElementBuildAction extends IAction {
-        state?: IDOMElementBuildActionState;
-        //isDOMElementAction?: (action: IBuildAction) => boolean; 
+        domState?: IDOMElementBuildActionState;
     }
-    export function remove(context: FileSystemActions.IWebContext, callback: todo.ICallback, action: IDOMElementBuildAction) {
-        action.state.element.remove();
+    
+    export interface IRemoveDOMElementAction extends IDOMElementBuildAction{
+        selector: IDOMElementCSSSelector;
+    }
+    
+    export function RemoveDOMElementActionImpl(context: FileSystemActions.IWebContext, callback: todo.ICallback, action: IRemoveDOMElementAction) {
+        if(!action) action = this;
+        if(!action.selector.do) action.selector.do =  DOMElementCSSSelectorImpl;
+        action.selector.domState = action.domState;
+        action.selector.do(context, null, action.selector);
+        action.domState.elements.remove();
         endAction(action, callback);
     }
 
     export function addToJSClob(context: IContext, callback: ICallback, action?: IDOMElementBuildAction) {
-        const state = action.state;
-        const src = action.state.element.attr('src');
+        const state = action.domState;
+        const src = action.domState.elements.attr('src');
         fsa.commonHelperFunctions.assignFileManager(context);
         const webContext = <FileSystemActions.IWebContext> context;
         const referringDir = webContext.fileManager.resolve(state.htmlFile.filePath, '..', src);
@@ -60,14 +66,14 @@ module todo.DOMActions {
         }
         const minifiedContent = webContext.fileManager.readTextFileSync(minifiedVersionFilePath);
         jsOutputs[state.htmlFile.filePath].push(minifiedContent);
-        action.state.element.remove();
+        action.domState.elements.remove();
         endAction(action, callback);
     }
 
     //#endregion
 
     //#region DOM Element Css Selector
-    export interface IDOMElementCSSSelectorState extends IDOMState {
+    export interface IDOMElementCSSSelectorState extends IDOMState  {
         relativeTo?: JQuery;
         elements?: JQuery;
         treeNode?: IDOMTransformAction;
@@ -78,12 +84,12 @@ module todo.DOMActions {
 
     export interface IDOMElementCSSSelector extends IDOMElementSelector {
         cssSelector: string;
-        state?: IDOMElementCSSSelectorState;
+        domState?: IDOMElementCSSSelectorState;
     }
 
-    export function selectElements(context: FileSystemActions.IWebContext, callback?: ICallback, action?: IDOMElementCSSSelector) {
+    export function DOMElementCSSSelectorImpl(context: FileSystemActions.IWebContext, callback?: ICallback, action?: IDOMElementCSSSelector) {
         if (action.debug) debugger;
-        const aS = action.state;
+        const aS = action.domState;
         if (aS.relativeTo) {
             aS.elements = aS.relativeTo.find(action.cssSelector);
         } else {
@@ -103,32 +109,32 @@ module todo.DOMActions {
     export interface IDOMTransformAction extends IAction {
         selector: IDOMElementCSSSelector;
         elementAction?: IDOMElementBuildAction;
-        state?: IDOMTransformActionState;
+        domState?: IDOMTransformActionState;
     }
 
     export function DOMTransform(context: IContext, callback: ICallback, action: IDOMTransformAction) {
         let elements: JQuery;
         let p: IDOMTransformAction;
-        if (action.state) {
-            p = action.state.parent;
+        if (action.domState) {
+            p = action.domState.parent;
         }
         const aSel = action.selector;
-        if (!aSel.state) {
-            aSel.state = {
-                htmlFile: action.state.htmlFile,
+        if (!aSel.domState) {
+            aSel.domState = {
+                htmlFile: action.domState.htmlFile,
             };
         }
-        const aSelSt = aSel.state;
+        const aSelSt = aSel.domState;
         aSelSt.treeNode = action;
         if (p && p.elementAction) {
-            aSelSt.relativeTo = p.elementAction.state.element;
+            aSelSt.relativeTo = p.elementAction.domState.elements;
         }
         aSel.do(context, null, aSel);
         const eA = action.elementAction;
         if (eA) {
             //#region element Action
-            eA.state = {
-                element: null,
+            eA.domState = {
+                elements: null,
                 DOMTransform: action,
                 htmlFile: aSelSt.htmlFile,
             };
@@ -139,7 +145,7 @@ module todo.DOMActions {
                     if (i < n) {
                         const $elem = aSelSt.htmlFile.$(aSelSt.elements[i]);
                         i++;
-                        eA.state.element = $elem;
+                        eA.domState.elements = $elem;
                         eA.do(context, eACallback, eA);
                     } else {
                         endAction(action, callback);
@@ -150,7 +156,7 @@ module todo.DOMActions {
                 const n = aSelSt.elements.length
                 for (let i = 0; i < n; i++) {
                     const $elem = aSelSt.htmlFile.$(aSelSt.elements[i]);
-                    eA.state.element = $elem;
+                    eA.domState.elements = $elem;
                     eA.do(context, null, eA);
                 }
                 endAction(action, callback);
