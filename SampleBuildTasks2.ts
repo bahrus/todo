@@ -11,6 +11,11 @@ if(typeof global !== 'undefined'){
 }
 
 module sampleBuildTasks2{
+	export const replaceToDoPath = (s:string) => s.replace('todo', 'todox');
+	 
+}
+
+module sampleBuildTasks2{
 	const fsa = todo.FileSystemActions;
 	
 	export interface IDOMBuildDirectives extends todo.ICompositeActions, todo.DOMActions.IDOMElementBuildAction  {
@@ -25,6 +30,7 @@ module sampleBuildTasks2{
 	interface ISampleBuildTasks2 extends todo.IRecurringAction{
 		htmlFileSelector?: todo.FileSystemActions.IHTMLFileSelectorAction,
 		domBuildDirectives?: IDOMBuildDirectives,
+		htmlFileSaver?: todo.FileSystemActions.IHTMLFileSaveAction,
 		initActions: [SampleBuildTasks2ToAction];
 		repeatingActions: [SampleBuildTasks2ToAction];
 		testForRepeat?: (action: ISampleBuildTasks2) => boolean;
@@ -69,6 +75,11 @@ module sampleBuildTasks2{
 	            // }
 	        ]
 		},
+		htmlFileSaver: {
+			filePathModifier: {
+				do: replaceToDoPath,
+			}
+		},
 		initActions: [i => i.htmlFileSelector],
 		repeatingActions: [
 			i => <todo.IAction> i.htmlFileSelector.filePathGenerator,
@@ -77,8 +88,11 @@ module sampleBuildTasks2{
 					htmlFile: i.htmlFileSelector.htmlFileSelectorState,
 				};
 				return i.domBuildDirectives;
-			}
-			 
+			},
+			i => {
+				i.htmlFileSaver.htmlFileSelectorState = i.htmlFileSelector.htmlFileSelectorState
+				return i.htmlFileSaver;
+			} 
 		],
 		
 	}

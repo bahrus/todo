@@ -44,8 +44,8 @@ module todo.FileSystemActions {
     }
 
     export interface IWebContext extends IContext {
-        HTMLOutputs?: { [key: string]: JQueryStatic };
-        JSOutputs?: { [key: string]: string[] };
+        //HTMLOutputs?: { [key: string]: JQueryStatic };
+        //JSOutputs?: { [key: string]: string[] };
         fileManager: IWebFileManager;
     }
     // export interface IWebAction extends IAction {
@@ -198,6 +198,24 @@ module todo.FileSystemActions {
         FileSelectorActionImpl(context, callback, action);
         action.filePathGenerator.callbacks.push((err) => loadCurrentFile(context, callback, action));
         loadCurrentFile(context, callback, action);
+    }
+//#endregion
+
+//#region
+    export interface IHTMLFileSaveAction extends IAction{
+        htmlFileSelectorState?: DOMActions.IHTMLFile;
+        filePathModifier?:  ITypedAction<string, string>;
+    }
+    
+    export function HTMLFileSaveActionImpl(context: IWebContext, callback: ICallback, action: IHTMLFileSaveAction){
+        if(!action) action = this;
+        const $any = <any> action.htmlFileSelectorState.$;
+        const $cheerio = <CheerioStatic> $any;
+        const sOutput = $cheerio.html();
+        action.filePathModifier.arguments = action.htmlFileSelectorState.filePath;
+        action.filePathModifier.do(action.filePathModifier.arguments);
+        const saveFilePath = action.filePathModifier.returnObj;
+        context.fileManager.writeTextFileSync(saveFilePath, sOutput);
     }
 //#endregion
 
@@ -377,14 +395,14 @@ module todo.FileSystemActions {
 //#endregion
 
     //#region Exporting Processed Documents to Files
-    export function exportProcessedDocumentsToFiles(action: IExportDocumentsToFiles, context: IWebContext, callback: ICallback) {
-        if (action.debug) debugger;
-        for (const filePath in context.HTMLOutputs) {
-            const $ = <CheerioStatic><any> context.HTMLOutputs[filePath];
-            context.fileManager.writeTextFileSync((<string>filePath).replace('.html', '.temp.html'), $.html());
-        }
-        todo.endAction(action, callback);
-    }
+    // export function exportProcessedDocumentsToFiles(action: IExportDocumentsToFiles, context: IWebContext, callback: ICallback) {
+    //     if (action.debug) debugger;
+    //     for (const filePath in context.HTMLOutputs) {
+    //         const $ = <CheerioStatic><any> context.HTMLOutputs[filePath];
+    //         context.fileManager.writeTextFileSync((<string>filePath).replace('.html', '.temp.html'), $.html());
+    //     }
+    //     todo.endAction(action, callback);
+    // }
     //#endregion
 }
 

@@ -78,6 +78,11 @@ module todo {
         (action: TInput) : TObject;
     }
     
+    export interface ITypedAction<TInput, TOutput>{
+        arguments?: TInput;
+        do?: IObjectGenerator<TInput, TOutput>;
+        returnObj?: TOutput;
+    }
     
     export interface IConsoleLogAction extends IAction {
         message?: stringOrStringGenerator;

@@ -17,29 +17,6 @@ var todo;
             todo.endAction(action, callback);
         }
         DOMActions.RemoveDOMElementActionImpl = RemoveDOMElementActionImpl;
-        function addToJSClob(context, callback, action) {
-            var state = action.domState;
-            var src = action.domState.elements.attr('src');
-            fsa.commonHelperFunctions.assignFileManager(context);
-            var webContext = context;
-            var referringDir = webContext.fileManager.resolve(state.htmlFile.filePath, '..', src);
-            if (!webContext.JSOutputs)
-                webContext.JSOutputs = {};
-            var jsOutputs = webContext.JSOutputs;
-            if (!jsOutputs[referringDir])
-                jsOutputs[state.htmlFile.filePath] = [];
-            var minifiedVersionFilePath = su.replaceEndWith(referringDir, '.js', '.min.js');
-            if (!webContext.fileManager.doesFilePathExist(minifiedVersionFilePath)) {
-                console.log('minified filepath ' + minifiedVersionFilePath + ' does not exist.');
-                todo.endAction(action, callback);
-                return;
-            }
-            var minifiedContent = webContext.fileManager.readTextFileSync(minifiedVersionFilePath);
-            jsOutputs[state.htmlFile.filePath].push(minifiedContent);
-            action.domState.elements.remove();
-            todo.endAction(action, callback);
-        }
-        DOMActions.addToJSClob = addToJSClob;
         function DOMElementCSSSelectorImpl(context, callback, action) {
             if (action.debug)
                 debugger;

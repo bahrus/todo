@@ -6,6 +6,10 @@ if (typeof global !== 'undefined') {
     require('./FileSystemActions');
 }
 var sampleBuildTasks2;
+(function (sampleBuildTasks2) {
+    sampleBuildTasks2.replaceToDoPath = function (s) { return s.replace('todo', 'todox'); };
+})(sampleBuildTasks2 || (sampleBuildTasks2 = {}));
+var sampleBuildTasks2;
 (function (sampleBuildTasks2_1) {
     var fsa = todo.FileSystemActions;
     var sampleBuildTasks2 = {
@@ -42,6 +46,11 @@ var sampleBuildTasks2;
                 },
             ]
         },
+        htmlFileSaver: {
+            filePathModifier: {
+                do: sampleBuildTasks2_1.replaceToDoPath,
+            }
+        },
         initActions: [function (i) { return i.htmlFileSelector; }],
         repeatingActions: [
             function (i) { return i.htmlFileSelector.filePathGenerator; },
@@ -50,6 +59,10 @@ var sampleBuildTasks2;
                     htmlFile: i.htmlFileSelector.htmlFileSelectorState,
                 };
                 return i.domBuildDirectives;
+            },
+            function (i) {
+                i.htmlFileSaver.htmlFileSelectorState = i.htmlFileSelector.htmlFileSelectorState;
+                return i.htmlFileSaver;
             }
         ],
     };

@@ -49,26 +49,26 @@ module todo.DOMActions {
         endAction(action, callback);
     }
 
-    export function addToJSClob(context: IContext, callback: ICallback, action?: IDOMElementBuildAction) {
-        const state = action.domState;
-        const src = action.domState.elements.attr('src');
-        fsa.commonHelperFunctions.assignFileManager(context);
-        const webContext = <FileSystemActions.IWebContext> context;
-        const referringDir = webContext.fileManager.resolve(state.htmlFile.filePath, '..', src);
-        if (!webContext.JSOutputs) webContext.JSOutputs = {};
-        const jsOutputs = webContext.JSOutputs;
-        if (!jsOutputs[referringDir]) jsOutputs[state.htmlFile.filePath] = [];
-        const minifiedVersionFilePath = su.replaceEndWith(referringDir, '.js', '.min.js');
-        if (!webContext.fileManager.doesFilePathExist(minifiedVersionFilePath)) {
-            console.log('minified filepath ' + minifiedVersionFilePath + ' does not exist.');
-            endAction(action, callback);
-            return;
-        }
-        const minifiedContent = webContext.fileManager.readTextFileSync(minifiedVersionFilePath);
-        jsOutputs[state.htmlFile.filePath].push(minifiedContent);
-        action.domState.elements.remove();
-        endAction(action, callback);
-    }
+    // export function addToJSClob(context: IContext, callback: ICallback, action?: IDOMElementBuildAction) {
+    //     const state = action.domState;
+    //     const src = action.domState.elements.attr('src');
+    //     fsa.commonHelperFunctions.assignFileManager(context);
+    //     const webContext = <FileSystemActions.IWebContext> context;
+    //     const referringDir = webContext.fileManager.resolve(state.htmlFile.filePath, '..', src);
+    //     if (!webContext.JSOutputs) webContext.JSOutputs = {};
+    //     const jsOutputs = webContext.JSOutputs;
+    //     if (!jsOutputs[referringDir]) jsOutputs[state.htmlFile.filePath] = [];
+    //     const minifiedVersionFilePath = su.replaceEndWith(referringDir, '.js', '.min.js');
+    //     if (!webContext.fileManager.doesFilePathExist(minifiedVersionFilePath)) {
+    //         console.log('minified filepath ' + minifiedVersionFilePath + ' does not exist.');
+    //         endAction(action, callback);
+    //         return;
+    //     }
+    //     const minifiedContent = webContext.fileManager.readTextFileSync(minifiedVersionFilePath);
+    //     jsOutputs[state.htmlFile.filePath].push(minifiedContent);
+    //     action.domState.elements.remove();
+    //     endAction(action, callback);
+    // }
 
     //#endregion
 

@@ -116,166 +116,18 @@ var todo;
             loadCurrentFile(context, callback, action);
         }
         FileSystemActions.HTMLFileSelectorActionImpl = HTMLFileSelectorActionImpl;
-        //#endregion
-        //#region File Processing
-        // export interface IFileProcessorActionState extends IActionState {
-        //     filePath: string;
-        // }
-        // export interface IHTMLFileProcessorActionState extends IFileProcessorActionState, IActionState {
-        //     //$?: JQueryStatic
-        //     HTMLFiles?: IHTMLFile[];
-        // }
-        // export interface IFileProcessorAction extends IAction {
-        //     state?: IFileProcessorActionState;
-        //     fileSubProcessActions?: IAction[];
-        // }
-        // //#region HTML File Processing
-        // export interface IHTMLFileProcessorAction extends IFileProcessorAction {
-        //     state?: IHTMLFileProcessorActionState;
-        // }
-        //function processHTMLFileSubRules(action: IHTMLFileProcessorAction, context: IWebContext, data: string) {
-        //    if (action.debug) debugger;
-        //    const $ = context.fileManager.loadHTML(data);
-        //    action.state.$ = $;
-        //    if (action.fileSubProcessActions) {
-        //        const n = action.fileSubProcessActions.length;
-        //        for (const i = 0; i < n; i++) {
-        //            const fspa = <IHTMLFileProcessorAction> action.fileSubProcessActions[i];
-        //            fspa.state = {
-        //                $: action.state.$,
-        //                filePath: action.state.filePath,
-        //            };
-        //            fspa.do(fspa, context);
-        //        }
-        //    }
-        //    if (!context.HTMLOutputs) context.HTMLOutputs = {};
-        //    context.HTMLOutputs[action.state.filePath] = action.state.$;
-        //    if (action.debug) {
-        //        const $any = <any> action.state.$;
-        //        const $cheerio = <CheerioStatic> $any;
-        //        const sOutput = $cheerio.html();
-        //        debugger;
-        //    }
-        //}
-        //export function processHTMLFile(action: IHTMLFileProcessorAction, context: IWebContext, callback: CommonActions.ICallback) {
-        //    const wfm = context.fileManager;
-        //    console.log('processing ' + action.state.filePath);
-        //    if (callback) {
-        //        wfm.readTextFileAsync(action.state.filePath,(err, data) => {
-        //            processHTMLFileSubRules(action, context, data);
-        //            callback(err);
-        //        });
-        //    } else {
-        //        const data = wfm.readTextFileSync(action.state.filePath);
-        //        processHTMLFileSubRules(action, context, data);
-        //        ca.endAction(action, callback);
-        //    }
-        //}
-        //#endregion
-        //#region JS File Processing
-        // export function minifyJSFile(action: IFileProcessorAction, context: IWebContext, callback: ICallback) {
-        //     console.log('Uglifying ' + action.state.filePath);
-        //     const filePath = action.state.filePath;
-        //     context.fileManager.minify(filePath,(err, min) => {
-        //         if (err) {
-        //             console.log('Error uglifying ' + filePath);
-        //         } else {
-        //             console.log('Uglified ' + filePath);
-        //         }
-        //         if (!callback) {
-        //             throw "Unable to minify JS files synchronously";
-        //         }
-        //         todo.endAction(action, callback);
-        //     });
-        // }
-        //#endregion
-        //#endregion
-        //#region File Select and Process
-        // export interface ISelectAndProcessFileAction extends IWebAction {
-        //     fileSelector?: IFileSelectorAction
-        //     fileProcessor?: IFileProcessorAction;
-        // }
-        // export function selectAndProcessFiles(action: ISelectAndProcessFileAction, context: IWebContext, callback: ICallback) {
-        //     if (action.debug) debugger;
-        //     const fs = action.fileSelector;
-        //     fs.do(context, null, fs);
-        //     const selectedFilePaths = fs.state.selectedFilePaths;
-        //     const len = selectedFilePaths.length;
-        //     if (len === 0) {
-        //         todo.endAction(action, callback);
-        //         return;
-        //     }
-        //     const fp = action.fileProcessor;
-        //     if (action.async) {
-        //         let idx = 0;
-        //         const fpCallback = (err) => {
-        //             if (idx < len) {
-        //                 const filePath = selectedFilePaths[idx];
-        //                 idx++;
-        //                 if (!fp.state) {
-        //                     fp.state = {
-        //                         filePath: filePath,
-        //                     }
-        //                 } else {
-        //                     fp.state.filePath = filePath;
-        //                 }
-        //                 fp.do(context, fpCallback, fp);
-        //             } else {
-        //                 todo.endAction(action, callback);
-        //             }
-        //         }
-        //         fpCallback(null);
-        //     } else {
-        //         const n = fs.state.selectedFilePaths.length;
-        //         for (let i = 0; i < n; i++) {
-        //             const filePath = fs.state.selectedFilePaths[i];
-        //             if (!fp.state) {
-        //                 fp.state = {
-        //                     filePath: filePath,
-        //                 };
-        //             } else {
-        //                 fp.state.filePath = filePath;
-        //             }
-        //             fp.do(context, null, fp);
-        //         }
-        //        todo.endAction(action, callback);
-        //     }
-        // }
-        // interface ISelectAndReadHTLMFilesActionState {
-        //     htmlFiles?: IHTMLFile[];
-        // }
-        // export interface ISelectAndReadHTMLFilesAction extends IWebAction {
-        //     fileSelector: IFileSelectorAction;
-        //     fileProcessor?: IHTMLFileProcessorAction;
-        //     state?: ISelectAndReadHTLMFilesActionState;
-        // }
-        // export function storeHTMLFiles(action: IHTMLFileProcessorAction, context: IWebContext, callback: ICallback) {
-        //     if (action.debug) debugger;
-        //     const fm = context.fileManager;
-        //     const filePath = action.state.filePath;
-        //     const contents = fm.readTextFileSync(filePath);
-        //     //action.state.$ = fm.loadHTML(contents);
-        //     if (!action.state.HTMLFiles) action.state.HTMLFiles = [];
-        //     const $ = fm.loadHTML(contents);
-        //     action.state.HTMLFiles.push({
-        //         $: $,
-        //         filePath: filePath,
-        //     });
-        //     context.HTMLOutputs[filePath] = $;
-        //     todo.endAction(action, callback);
-        // }
-        //#endregion
-        //#region Exporting Processed Documents to Files
-        function exportProcessedDocumentsToFiles(action, context, callback) {
-            if (action.debug)
-                debugger;
-            for (var filePath in context.HTMLOutputs) {
-                var $_1 = context.HTMLOutputs[filePath];
-                context.fileManager.writeTextFileSync(filePath.replace('.html', '.temp.html'), $_1.html());
-            }
-            todo.endAction(action, callback);
+        function HTMLFileSaveActionImpl(context, callback, action) {
+            if (!action)
+                action = this;
+            var $any = action.htmlFileSelectorState.$;
+            var $cheerio = $any;
+            var sOutput = $cheerio.html();
+            action.filePathModifier.arguments = action.htmlFileSelectorState.filePath;
+            action.filePathModifier.do(action.filePathModifier.arguments);
+            var saveFilePath = action.filePathModifier.returnObj;
+            context.fileManager.writeTextFileSync(saveFilePath, sOutput);
         }
-        FileSystemActions.exportProcessedDocumentsToFiles = exportProcessedDocumentsToFiles;
+        FileSystemActions.HTMLFileSaveActionImpl = HTMLFileSaveActionImpl;
     })(FileSystemActions = todo.FileSystemActions || (todo.FileSystemActions = {}));
 })(todo || (todo = {}));
 (function (__global) {
