@@ -1,5 +1,9 @@
 ///<reference path='todo.ts'/>
 ///<reference path='FileSystemActions.ts'/>
+if (typeof global !== 'undefined') {
+    require('./todo');
+    require('./FileSystemActions');
+}
 var todo;
 (function (todo) {
     var DOMActions;
@@ -90,4 +94,23 @@ var todo;
         DOMActions.DOMTransform = DOMTransform;
     })(DOMActions = todo.DOMActions || (todo.DOMActions = {}));
 })(todo || (todo = {}));
+(function (__global) {
+    var modInfo = {
+        name: 'todo',
+        mod: todo,
+    };
+    if (typeof __global[modInfo.name] !== "undefined") {
+        if (__global[modInfo.name] !== modInfo.mod) {
+            for (var p in modInfo.mod) {
+                __global[modInfo.name][p] = modInfo.mod[p];
+            }
+        }
+    }
+    else {
+        __global[modInfo.name] = modInfo.mod;
+    }
+})(typeof window !== "undefined" ? window :
+    typeof WorkerGlobalScope !== "undefined" ? self :
+        typeof global !== "undefined" ? global :
+            Function("return this;")());
 //# sourceMappingURL=DOMActions.js.map

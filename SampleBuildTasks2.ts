@@ -7,6 +7,7 @@ declare var global;
 if(typeof global !== 'undefined'){
     require('./todo');
 	require('./FileSystemActions');
+	require('./DOMActions');
 	//require('./NodeJSImplementations');
 }
 
@@ -16,7 +17,8 @@ module sampleBuildTasks2{
 }
 
 module sampleBuildTasks2{
-	const fsa = todo.FileSystemActions;
+	const fsa = todo.FileSystemActions || global.todo.FileSystemActions;
+	const da = todo.DOMActions || global.todo.DOMActions;
 	
 	export interface IDOMBuildDirectives extends todo.ICompositeActions, todo.DOMActions.IDOMElementBuildAction  {
         removeBuildDirective?: todo.DOMActions.IRemoveDOMElementAction;
@@ -47,7 +49,7 @@ module sampleBuildTasks2{
 		},
 		domBuildDirectives: {
 			removeBuildDirective: {
-	            do: todo.DOMActions.RemoveDOMElementActionImpl,
+	            do: da.RemoveDOMElementActionImpl,
 	            domState:{},
 	            selector:{
 	                cssSelector: 'todo-delete'

@@ -1,6 +1,11 @@
 ﻿///<reference path='todo.ts'/>
 ///<reference path='FileSystemActions.ts'/>
 
+if(typeof global !== 'undefined'){
+    require('./todo');
+    require('./FileSystemActions');
+}
+
 module todo.DOMActions {
     
     const su = todo.StringUtils || global.todo.StringUtils;
@@ -202,3 +207,24 @@ module todo.DOMActions {
 //#endregion
 }
 
+(function(__global: any) {
+    const modInfo = {
+        name: 'todo',
+        mod: todo,
+        //subMod: todo.CommonActions,
+    }
+    if (typeof __global[modInfo.name] !== "undefined") {
+        if (__global[modInfo.name] !== modInfo.mod) {
+            for (var p in modInfo.mod) {
+                __global[modInfo.name][p] = (<any>modInfo.mod)[p];
+            }
+        }
+    }
+    else {
+        __global[modInfo.name] = modInfo.mod;
+    }
+})(
+    typeof window !== "undefined" ? window :
+        typeof WorkerGlobalScope !== "undefined" ? self :
+            typeof global !== "undefined" ? global :
+                Function("return this;")());

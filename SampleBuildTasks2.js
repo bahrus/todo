@@ -4,6 +4,7 @@
 if (typeof global !== 'undefined') {
     require('./todo');
     require('./FileSystemActions');
+    require('./DOMActions');
 }
 var sampleBuildTasks2;
 (function (sampleBuildTasks2) {
@@ -11,7 +12,8 @@ var sampleBuildTasks2;
 })(sampleBuildTasks2 || (sampleBuildTasks2 = {}));
 var sampleBuildTasks2;
 (function (sampleBuildTasks2_1) {
-    var fsa = todo.FileSystemActions;
+    var fsa = todo.FileSystemActions || global.todo.FileSystemActions;
+    var da = todo.DOMActions || global.todo.DOMActions;
     var sampleBuildTasks2 = {
         do: todo.RecurringActionImpl,
         debug: true,
@@ -22,7 +24,7 @@ var sampleBuildTasks2;
         },
         domBuildDirectives: {
             removeBuildDirective: {
-                do: todo.DOMActions.RemoveDOMElementActionImpl,
+                do: da.RemoveDOMElementActionImpl,
                 domState: {},
                 selector: {
                     cssSelector: 'todo-delete'
