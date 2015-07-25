@@ -1,20 +1,23 @@
 ﻿///<reference path='Scripts/typings/polymer/polymer.d.ts'/>
+///<reference path='PolymerElementActions.ts'/>
 
 const config: polymer.Base = {
     is: 'todo-init',
     extends: 'script',
 
     created: () => {
-        //console.log(this);
-        
-        const that = <HTMLScriptElement> eval('this');
+        console.log(this);
+        const that = <HTMLScriptElement> eval('this'); //mystery why this is necessary
         debugger;
         console.log(that);
-        const target = <any> that.previousElementSibling;
+        const target = <todo.Polymer.PolymerElement> that.previousElementSibling;
         if (target) {
-            debugger;
+            const inner = that.innerText;
+            const action = eval(inner);
+            action.polymerElement = target;
             //nextEl.__data__.employees.push({ first: 'Bruce', last: 'Anderson' });
-            target.push('employees', { first: 'Bruce', last: 'Anderson' });
+            //target.push('employees', { first: 'Bruce', last: 'Anderson' });
+            action.do();
         }
     },
 

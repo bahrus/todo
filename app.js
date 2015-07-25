@@ -82,6 +82,7 @@ var readAndDisplayFile = {
     actions: [
         function (i) { return i.readFileAction; },
         //i => i.showFileContentsInConsole,
+        //i => i.showFileContentsInConsole,
         function (i) { return i.cacheFileContents; },
     ]
 };

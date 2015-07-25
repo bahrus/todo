@@ -11,6 +11,8 @@
 		"NodeJSImplementations.ts",
 		"DOMActions.ts",
 		"app.ts",
-		"SampleBuildTasks2.ts"
+		"SampleBuildTasks2.ts",
+		"PolymerElementActions.ts",
+		"todoInitTests.ts"
   	]
 }
