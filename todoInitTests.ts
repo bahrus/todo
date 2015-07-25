@@ -4,7 +4,7 @@
 ///<reference path='PolymerElementActions.ts'/>
 
 module todoTests{
-    export const pushMyName : todo.Polymer.IPushIntoModelArrayAction = {
+    export const pushMyName : todo.Polymer.IPushIntoModelArrayAction<any> = {
         do: todo.Polymer.pushIntoModelArrayActionImpl,
         pathToArray: 'employees',
         arrayRef: [{ first: 'Bruce', last: 'Anderson' }],
