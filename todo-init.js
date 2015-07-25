@@ -7,7 +7,6 @@ var config = {
     created: function () {
         console.log(_this);
         var that = eval('this'); //mystery why this is necessary
-        debugger;
         console.log(that);
         var target = that.previousElementSibling;
         if (target) {

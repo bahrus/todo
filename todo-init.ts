@@ -8,7 +8,6 @@ const config: polymer.Base = {
     created: () => {
         console.log(this);
         const that = <HTMLScriptElement> eval('this'); //mystery why this is necessary
-        debugger;
         console.log(that);
         const target = <todo.Polymer.PolymerElement> that.previousElementSibling;
         if (target) {
