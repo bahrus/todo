@@ -20,7 +20,6 @@ const config: polymer.Base = {
             action.do();
         }
     },
-
     attached: () => {
         console.log(this);
         //debugger;

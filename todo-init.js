@@ -1,18 +1,22 @@
 ///<reference path='Scripts/typings/polymer/polymer.d.ts'/>
+///<reference path='PolymerElementActions.ts'/>
 var _this = this;
 var config = {
     is: 'todo-init',
     extends: 'script',
     created: function () {
-        //console.log(this);
-        var that = eval('this');
+        console.log(_this);
+        var that = eval('this'); //mystery why this is necessary
         debugger;
         console.log(that);
         var target = that.previousElementSibling;
         if (target) {
-            debugger;
+            var inner = that.innerText;
+            var action = eval(inner);
+            action.polymerElement = target;
             //nextEl.__data__.employees.push({ first: 'Bruce', last: 'Anderson' });
-            target.push('employees', { first: 'Bruce', last: 'Anderson' });
+            //target.push('employees', { first: 'Bruce', last: 'Anderson' });
+            action.do();
         }
     },
     attached: function () {
