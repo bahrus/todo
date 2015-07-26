@@ -26,6 +26,8 @@ const initExtension: polymer.Base = {
 
 const todoInitScript = Polymer(initExtension);
 
+const loadFileFn = 'loadFile';
+
 //<link is="todo-include" href="HTML1.html"/>
 const includeExtension: polymer.Base = {
     is: 'todo-include',
@@ -34,11 +36,11 @@ const includeExtension: polymer.Base = {
     properties: {
         href: {
           type: String,
-          observer: 'loadFile'
+          observer: loadFileFn,// 'loadFile'
         }
     },
 
-    loadFile: function(path) {
+    [loadFileFn]: function(path) {
         const that =   eval('this'); 
         if (that.href) {
             console.log(that.href);

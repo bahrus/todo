@@ -18,18 +18,20 @@ var initExtension = {
     },
 };
 var todoInitScript = Polymer(initExtension);
+var loadFileFn = 'loadFile';
 //<link is="todo-include" href="HTML1.html"/>
-var includeExtension = {
-    is: 'todo-include',
-    extends: 'link',
-    //from http://stackoverflow.com/questions/31053947/dynamically-load-html-page-using-polymer-importhref
-    properties: {
-        href: {
-            type: String,
-            observer: 'loadFile'
+var includeExtension = (_a = {
+        is: 'todo-include',
+        extends: 'link',
+        //from http://stackoverflow.com/questions/31053947/dynamically-load-html-page-using-polymer-importhref
+        properties: {
+            href: {
+                type: String,
+                observer: loadFileFn,
+            }
         }
     },
-    loadFile: function (path) {
+    _a[loadFileFn] = function (path) {
         var that = eval('this');
         if (that.href) {
             console.log(that.href);
@@ -45,6 +47,8 @@ var includeExtension = {
             });
         }
     },
-};
+    _a
+);
 var includeScript = Polymer(includeExtension);
+var _a;
 //# sourceMappingURL=todo-polymer.js.map
