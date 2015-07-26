@@ -12,7 +12,7 @@
 		"DOMActions.ts",
 		"app.ts",
 		"SampleBuildTasks2.ts",
-		"todo-init.ts",
+		"todo-polymer.ts",
 		"PolymerElementActions.ts",
 		"todoInitTests.ts",
 		"employee-list.ts"

@@ -17,4 +17,4 @@ var config = {
     },
 };
 var todoInitScript = Polymer(config);
-//# sourceMappingURL=todo-init.js.map
+//# sourceMappingURL=todo-polymer.js.map

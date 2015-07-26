@@ -2,12 +2,10 @@
       href="Scripts/polymer.html">
 
 <dom-module id="employee-list">
-
-  <template>
-      <div>Name: <span>[[test]]</span></div>
-      <template>
-        <iframe src="[[test]]" hidden></iframe>
-      </template>
+  <template
+    <div>Name: <span>[[test]]</span></div>
+    <link is="include" href="HTML1.html"/>
+    
     <div> Employee list: </div>
     <template is="dom-repeat" items="{{employees}}">
         <div>First name: <span>[[item.first]]</span></div>
