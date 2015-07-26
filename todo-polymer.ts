@@ -47,6 +47,7 @@ const includeExtension: polymer.Base = {
                     that.async(() =>{
                         console.log(link.import.body);
                         console.log(that.parentNode);
+                        that.style.display = 'inline-block';
                         Polymer.dom(that).appendChild(link.import.body.firstChild);
                     }, 1);
                     
@@ -58,14 +59,7 @@ const includeExtension: polymer.Base = {
         }
     },
     
-    // attached: () => {
-    //     console.log(this);
-    //     const that =   eval('this'); //mystery why this is necessary
-    //     console.log(that);
-    //     that.async(() => {
-    //         console.log(that);
-    //     }, 1);
-    // },
+   
 }
 
 const includeScript = Polymer(includeExtension);

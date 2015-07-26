@@ -37,6 +37,7 @@ var includeExtension = {
                 that.async(function () {
                     console.log(link.import.body);
                     console.log(that.parentNode);
+                    that.style.display = 'inline-block';
                     Polymer.dom(that).appendChild(link.import.body.firstChild);
                 }, 1);
             }, function () {
