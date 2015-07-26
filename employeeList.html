@@ -1,10 +1,10 @@
-﻿<link rel="import"
-      href="Scripts/polymer.html">
+﻿<link rel="import" href="Scripts/polymer.html">
+<link rel="import" href="todo-polymer.html"/>"
 
 <dom-module id="employee-list">
   <template
     <div>Name: <span>[[test]]</span></div>
-    <link is="include" href="HTML1.html"/>
+    <div is="todo-include" href="HTML1.html"/>
     
     <div> Employee list: </div>
     <template is="dom-repeat" items="{{employees}}">
