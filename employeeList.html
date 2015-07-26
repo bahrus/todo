@@ -4,8 +4,10 @@
 <dom-module id="employee-list">
 
   <template>
-      <div>name:</div>
-      <div>{{test}}</div>
+      <div>Name: <span>[[test]]</span></div>
+      <template>
+        <iframe src="[[test]]" hidden></iframe>
+      </template>
     <div> Employee list: </div>
     <template is="dom-repeat" items="{{employees}}">
         <div>First name: <span>[[item.first]]</span></div>
