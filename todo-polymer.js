@@ -21,7 +21,7 @@ var todoInitScript = Polymer(initExtension);
 //<link is="todo-include" href="HTML1.html"/>
 var includeExtension = {
     is: 'todo-include',
-    extends: 'div',
+    extends: 'link',
     //from http://stackoverflow.com/questions/31053947/dynamically-load-html-page-using-polymer-importhref
     properties: {
         href: {
@@ -30,16 +30,20 @@ var includeExtension = {
         }
     },
     loadFile: function (path) {
-        var _this = this;
-        if (this.href) {
-            console.log(this.href);
-            var link = this.importHref(this.href, function () {
-                Polymer.dom(_this.$.content).appendChild(link.import.body);
+        var that = eval('this');
+        if (that.href) {
+            console.log(that.href);
+            var link = that.importHref(that.href, function () {
+                that.async(function () {
+                    console.log(link.import.body);
+                    console.log(that.parentNode);
+                    Polymer.dom(that).appendChild(link.import.body.firstChild);
+                }, 1);
             }, function () {
                 console.log("error");
             });
         }
-    }
+    },
 };
 var includeScript = Polymer(includeExtension);
 //# sourceMappingURL=todo-polymer.js.map
