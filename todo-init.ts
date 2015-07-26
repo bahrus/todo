@@ -9,24 +9,29 @@ const config: polymer.Base = {
         console.log(this);
         const that = <HTMLScriptElement> eval('this'); //mystery why this is necessary
         console.log(that);
-        const target = <todo.Polymer.PolymerElement> that.previousElementSibling;
-        if (target) {
-            const inner = that.innerText;
-            const action = eval(inner);
-            action.polymerElement = target;
-            //nextEl.__data__.employees.push({ first: 'Bruce', last: 'Anderson' });
-            //target.push('employees', { first: 'Bruce', last: 'Anderson' });
-            action.do();
-        }
+        return;
+
     },
     attached: () => {
-        console.log(this);
-        //debugger;
+        const that =   eval('this'); //mystery why this is necessary
+        that.async(() => {
+            //setTimeout(() =>{
+                const target = <todo.Polymer.PolymerElement> that.nextElementSibling;
+                if (target) {
+                    const inner = that.innerText;
+                    const action = eval(inner);
+                    action.polymerElement = target;
+                    //nextEl.__data__.employees.push({ first: 'Bruce', last: 'Anderson' });
+                    //target.push('employees', { first: 'Bruce', last: 'Anderson' });
+                    action.do();
+                }
+            //})
+
+        }, 1);
     },
 
     ready: () => {
-        console.log(this);
-        //debugger;
+
     },
 
     //instanceTemplate: (template) => {
