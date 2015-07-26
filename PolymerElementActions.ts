@@ -1,7 +1,7 @@
 ///<reference path='Scripts/typings/polymer/polymer.d.ts'/>
 ///<reference path="todo.ts"/>
 
-module todo.Polymer{
+module todo.PolymerActions {
 	export interface PolymerElement extends HTMLElement{
 		/**
 		 * See https://www.polymer-project.org/1.0/docs/devguide/templates.html#dom-repeat

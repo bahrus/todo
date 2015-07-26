@@ -5,7 +5,7 @@
 var todoTests;
 (function (todoTests) {
     todoTests.pushMyName = {
-        do: todo.Polymer.pushIntoModelArrayActionImpl,
+        do: todo.PolymerActions.pushIntoModelArrayActionImpl,
         pathToArray: 'employees',
         arrayRef: [{ first: 'Bruce', last: 'Anderson' }],
     };
