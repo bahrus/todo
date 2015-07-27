@@ -13,7 +13,7 @@ module todoTests {
                 {first: 'Sally', last: 'Johnson'}
             ];
 
-            this[test] = 'iah';
+            this[test] = 'HTML1.html';
         },
 
 

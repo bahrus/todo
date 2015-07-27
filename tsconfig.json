@@ -13,7 +13,7 @@
 		"app.ts",
 		"SampleBuildTasks2.ts",
 		"todo-polymer.ts",
-		"PolymerElementActions.ts",
+		"PolymerActions.ts",
 		"todoInitTests.ts",
 		"employee-list.ts"
   	]

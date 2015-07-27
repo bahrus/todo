@@ -14,7 +14,7 @@ var todoTests;
                 { first: 'Bob', last: 'Smith' },
                 { first: 'Sally', last: 'Johnson' }
             ];
-            this[test] = 'iah';
+            this[test] = 'HTML1.html';
         },
         //instanceTemplate: function (template) {
         //    //debugger;
