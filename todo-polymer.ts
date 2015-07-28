@@ -1,5 +1,5 @@
 ﻿///<reference path='Scripts/typings/polymer/polymer.d.ts'/>
-///<reference path='PolymerElementActions.ts'/>
+///<reference path='PolymerActions.ts'/>
 
 //<script is="todo-init">todoTests.pushMyName</script>
 module todo.customElements {

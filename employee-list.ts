@@ -28,6 +28,10 @@ module todoTests {
         //}
         listen: function (node, eventNamemethodName) {
             debugger;
+        },
+        
+        changeInclude: function(e) {
+            this.set(test, 'HTML2.html');
         }
     });
 }

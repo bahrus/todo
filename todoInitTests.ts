@@ -1,7 +1,7 @@
 /**
  * Created by Bruce on 7/25/2015.
  */
-///<reference path='PolymerElementActions.ts'/>
+///<reference path='PolymerActions.ts'/>
 
 module todoTests{
     export const pushMyName : todo.PolymerActions.IPushIntoModelArrayAction<any> = {

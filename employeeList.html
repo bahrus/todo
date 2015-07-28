@@ -4,6 +4,7 @@
 <dom-module id="employee-list">
   <template
     <div>Name: <span>[[test]]</span></div>
+    <div on-click="changeInclude">ClickMeToChange</div>
     <link is="todo-include" href="[[test]]"/>
     
     <div> Employee list: </div>
@@ -14,6 +15,7 @@
 
   </template>
 
+   <link href="employee-list.ts" rel="design-time" />
   <script src="employee-list.js">
     
   </script>
