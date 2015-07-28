@@ -16,18 +16,11 @@ var todoTests;
             ];
             this[test] = 'HTML1.html';
         },
-        //instanceTemplate: function (template) {
-        //    //debugger;
-        //    var dom = document.importNode(template._content || template.content, true);
-        //    return dom;
-        //},
-        //scopeSubtree: function (a, b) {
-        //    debugger;
-        //}
-        listen: function (node, eventNamemethodName) {
+        // listen: function (node, eventNamemethodName) {
+        //     debugger;
+        // },
+        changeInclude: function () {
             debugger;
-        },
-        changeInclude: function (e) {
             this.set(test, 'HTML2.html');
         }
     });

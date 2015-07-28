@@ -17,20 +17,12 @@ module todoTests {
         },
 
 
-        //instanceTemplate: function (template) {
-        //    //debugger;
-        //    var dom = document.importNode(template._content || template.content, true);
-        //    return dom;
-        //},
-
-        //scopeSubtree: function (a, b) {
-        //    debugger;
-        //}
-        listen: function (node, eventNamemethodName) {
-            debugger;
-        },
         
-        changeInclude: function(e) {
+        // listen: function (node, eventNamemethodName) {
+        //     debugger;
+        // },
+        
+        changeInclude: function() {
             this.set(test, 'HTML2.html');
         }
     });
