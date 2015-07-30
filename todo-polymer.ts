@@ -51,7 +51,7 @@ module todo.customElements {
         },
     
         [loadFileFn]: function(path) {
-            const that =   eval('this'); 
+            const that =   eval('this'); //mystery why this is necessary
             if (that.href) {
                 var link = that.importHref(that.href, 
                     () => {
@@ -87,10 +87,13 @@ module todo.customElements {
                     const attributes = eval(inner);
                     for(var i = 0, n = attributes.length; i < n; i++){
                         const attributePart = attributes[i];
-                        for(var key in attributePart){
+                        for(const key in attributePart){
                             //Polymer.dom(target).setAttribute(key,  attributePart[key]);
-                            that.domHost.listen(target, 'click', attributePart[key]);
-                            // target.setAttribute(key, attributePart[key]);
+                            if(key.indexOf('on-') === 0){
+                                const eventName = key.substring(3);
+                                that.domHost.listen(target, eventName, attributePart[key]);
+                            }
+                            
                         }
                     }
                     

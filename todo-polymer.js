@@ -43,7 +43,7 @@ var todo;
                 }
             },
             _a[loadFileFn] = function (path) {
-                var that = eval('this');
+                var that = eval('this'); //mystery why this is necessary
                 if (that.href) {
                     var link = that.importHref(that.href, function () {
                         that.async(function () {
@@ -72,7 +72,10 @@ var todo;
                             var attributePart = attributes[i];
                             for (var key in attributePart) {
                                 //Polymer.dom(target).setAttribute(key,  attributePart[key]);
-                                that.domHost.listen(target, 'click', attributePart[key]);
+                                if (key.indexOf('on-') === 0) {
+                                    var eventName = key.substring(3);
+                                    that.domHost.listen(target, eventName, attributePart[key]);
+                                }
                             }
                         }
                     }
