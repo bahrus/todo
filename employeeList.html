@@ -2,8 +2,12 @@
 <link rel="import" href="todo-polymer.html"/>"
 
 <dom-module id="employee-list">
-  <template
+  
+  <template>
     <div>Name: <span>[[test]]</span></div>
+    <!--<script is="todo-attr">
+      [{'on-click': 'changeInclude'}]
+    </script>-->
     <div on-click="changeInclude">ClickMeToChange2</div>
     <link is="todo-include" href="[[test]]"/>
     

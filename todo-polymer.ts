@@ -4,6 +4,14 @@
 //<script is="todo-init">todoTests.pushMyName</script>
 module todo.customElements {
     
+    function nextNonScriptSibling(el: HTMLElement) : Element{
+        let nextElement = el.nextElementSibling;
+        while(nextElement && nextElement.tagName === 'SCRIPT'){
+            nextElement = nextElement.nextElementSibling;
+        }
+        return nextElement;
+    }
+    
     const initExtension: polymer.Base = {
         is: 'todo-init',
         extends: 'script',
@@ -12,7 +20,7 @@ module todo.customElements {
         attached: () => {
             const that =   eval('this'); //mystery why this is necessary
             that.async(() => {
-                const target = <todo.PolymerActions.PolymerElement> that.nextElementSibling;
+                const target = <todo.PolymerActions.PolymerElement> nextNonScriptSibling(that);
                 if (target) {
                     const inner = that.innerText;
                     const action = eval(inner);
@@ -64,4 +72,31 @@ module todo.customElements {
     }
     
     const includeScript = Polymer(includeExtension);
+    
+    const attrExtension: polymer.Base = {
+        is: 'todo-attr',
+        extends: 'script',
+    
+        
+        attached: () => {
+            const that =   eval('this'); //mystery why this is necessary
+            //that.async(() => {
+                const target = <todo.PolymerActions.PolymerElement> nextNonScriptSibling(that) ;
+                if (target) {
+                    const inner = that.innerText;
+                    const attributes = eval(inner);
+                    for(var i = 0, n = attributes.length; i < n; i++){
+                        const attributePart = attributes[i];
+                        for(var key in attributePart){
+                            target.setAttribute(key, attributePart[key]);
+                        }
+                    }
+                    
+                }
+            //}, 1);
+        },
+   
+    }; 
+    
+    const attrScript = Polymer(attrExtension);
 }

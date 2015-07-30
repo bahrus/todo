@@ -1,6 +1,7 @@
 ﻿///<reference path='Scripts/typings/polymer/polymer.d.ts'/>
 module todoTests {
     const test = 'test';
+    const changeInclude = 'changeInclude';
     Polymer({
         is: 'employee-list',
         properties: {
@@ -22,7 +23,7 @@ module todoTests {
         //     debugger;
         // },
         
-        changeInclude: function() {
+        [changeInclude]: function() {
             this.set(test, 'HTML2.html');
         }
     });
