@@ -80,7 +80,7 @@ module todo.customElements {
         
         attached: () => {
             const that =   eval('this'); //mystery why this is necessary
-            //that.async(() => {
+            that.async(() => {
                 const target = <todo.PolymerActions.PolymerElement> nextNonScriptSibling(that) ;
                 if (target) {
                     const inner = that.innerText;
@@ -88,12 +88,14 @@ module todo.customElements {
                     for(var i = 0, n = attributes.length; i < n; i++){
                         const attributePart = attributes[i];
                         for(var key in attributePart){
-                            target.setAttribute(key, attributePart[key]);
+                            //Polymer.dom(target).setAttribute(key,  attributePart[key]);
+                            that.domHost.listen(target, 'click', attributePart[key]);
+                            // target.setAttribute(key, attributePart[key]);
                         }
                     }
                     
                 }
-            //}, 1);
+            }, 1);
         },
    
     }; 

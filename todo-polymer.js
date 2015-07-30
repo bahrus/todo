@@ -63,19 +63,20 @@ var todo;
             extends: 'script',
             attached: function () {
                 var that = eval('this'); //mystery why this is necessary
-                //that.async(() => {
-                var target = nextNonScriptSibling(that);
-                if (target) {
-                    var inner = that.innerText;
-                    var attributes = eval(inner);
-                    for (var i = 0, n = attributes.length; i < n; i++) {
-                        var attributePart = attributes[i];
-                        for (var key in attributePart) {
-                            target.setAttribute(key, attributePart[key]);
+                that.async(function () {
+                    var target = nextNonScriptSibling(that);
+                    if (target) {
+                        var inner = that.innerText;
+                        var attributes = eval(inner);
+                        for (var i = 0, n = attributes.length; i < n; i++) {
+                            var attributePart = attributes[i];
+                            for (var key in attributePart) {
+                                //Polymer.dom(target).setAttribute(key,  attributePart[key]);
+                                that.domHost.listen(target, 'click', attributePart[key]);
+                            }
                         }
                     }
-                }
-                //}, 1);
+                }, 1);
             },
         };
         var attrScript = Polymer(attrExtension);
