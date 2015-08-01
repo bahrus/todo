@@ -92,6 +92,8 @@ module todo.customElements {
                             if(key.indexOf('on-') === 0){
                                 const eventName = key.substring(3);
                                 that.domHost.listen(target, eventName, attributePart[key]);
+                            }else{
+                                Polymer.dom(target).setAttribute(key,  attributePart[key]); //untested code
                             }
                             
                         }
