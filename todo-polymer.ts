@@ -1,7 +1,6 @@
 ﻿///<reference path='Scripts/typings/polymer/polymer.d.ts'/>
 ///<reference path='PolymerActions.ts'/>
 
-//<script is="todo-init">todoTests.pushMyName</script>
 module todo.customElements {
     
     function nextNonScriptSibling(el: HTMLElement) : Element{
@@ -11,7 +10,6 @@ module todo.customElements {
         }
         return nextElement;
     }
-    
     const initExtension: polymer.Base = {
         is: 'todo-init',
         extends: 'script',
@@ -106,4 +104,21 @@ module todo.customElements {
     }; 
     
     const attrScript = Polymer(attrExtension);
+
+    const xhrExtension: polymer.Base = {
+        is: 'todo-xhr',
+        extends: 'form',
+        properties: {
+            result: {
+              type: Object,
+              //observer: loadFileFn,// 'loadFile'
+            },
+            transformer:{
+                type: String,
+            },
+        }   
+        attached: () =>{
+            const that = eval('this'); //mystery why this is necessary
+        }
+    }
 }

@@ -1,6 +1,5 @@
 ///<reference path='Scripts/typings/polymer/polymer.d.ts'/>
 ///<reference path='PolymerActions.ts'/>
-//<script is="todo-init">todoTests.pushMyName</script>
 var todo;
 (function (todo) {
     var customElements;
@@ -26,7 +25,7 @@ var todo;
                         action.do();
                     }
                 }, 1);
-            },
+            }
         };
         var todoInitScript = Polymer(initExtension);
         var loadFileFn = 'loadFile';
@@ -38,7 +37,7 @@ var todo;
                 properties: {
                     href: {
                         type: String,
-                        observer: loadFileFn,
+                        observer: loadFileFn
                     }
                 }
             },
@@ -76,13 +75,20 @@ var todo;
                                     var eventName = key.substring(3);
                                     that.domHost.listen(target, eventName, attributePart[key]);
                                 }
+                                else {
+                                    Polymer.dom(target).setAttribute(key, attributePart[key]); //untested code
+                                }
                             }
                         }
                     }
                 }, 1);
-            },
+            }
         };
         var attrScript = Polymer(attrExtension);
+        var xhrExtion = {
+            is: 'todo-xhr',
+            extends: 'form'
+        };
         var _a;
     })(customElements = todo.customElements || (todo.customElements = {}));
 })(todo || (todo = {}));
