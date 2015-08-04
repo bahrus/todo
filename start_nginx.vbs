@@ -19,3 +19,9 @@ If not fso.FileExists(accessLogsFilePath) Then
     a.WriteLine("")
     a.Close
 End If
+
+Set oShell = WScript.CreateObject ("WScript.Shell")
+oShell.run CurrentDirectory & "\nginx.exe"
+Set oShell = Nothing
+set objShell = CreateObject("WScript.Shell")
+objShell.run("http://localhost")
