@@ -14,6 +14,11 @@ var todo;
         var initExtension = {
             is: 'todo-init',
             extends: 'script',
+            properties: {
+                allowedTargets: {
+                    type: String
+                }
+            },
             attached: function () {
                 var that = eval('this'); //mystery why this is necessary
                 that.async(function () {
@@ -85,10 +90,6 @@ var todo;
             }
         };
         var attrScript = Polymer(attrExtension);
-        var xhrExtion = {
-            is: 'todo-xhr',
-            extends: 'form'
-        };
         var _a;
     })(customElements = todo.customElements || (todo.customElements = {}));
 })(todo || (todo = {}));

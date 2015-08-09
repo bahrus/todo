@@ -3,6 +3,9 @@
 
 module todo.customElements {
     
+
+    
+    
     function nextNonScriptSibling(el: HTMLElement) : Element{
         let nextElement = el.nextElementSibling;
         while(nextElement && nextElement.tagName === 'SCRIPT'){
@@ -13,7 +16,12 @@ module todo.customElements {
     const initExtension: polymer.Base = {
         is: 'todo-init',
         extends: 'script',
-    
+        properties: {
+            allowedTargets: {
+                type: String, //used for compile time checks
+
+            },
+        },
         
         attached: () => {
             const that =   eval('this'); //mystery why this is necessary
@@ -45,7 +53,7 @@ module todo.customElements {
             href: {
               type: String,
               observer: loadFileFn,// 'loadFile'
-            }
+            },
         },
     
         [loadFileFn]: function(path) {
@@ -105,20 +113,36 @@ module todo.customElements {
     
     const attrScript = Polymer(attrExtension);
 
-    const xhrExtension: polymer.Base = {
-        is: 'todo-xhr',
-        extends: 'form',
-        properties: {
-            result: {
-              type: Object,
-              //observer: loadFileFn,// 'loadFile'
-            },
-            transformer:{
-                type: String,
-            },
-        }   
-        attached: () =>{
-            const that = eval('this'); //mystery why this is necessary
-        }
-    }
+
+
+
+
+    //const xhrExtension: polymer.Base = {
+    //    is: 'todo-xhr',
+    //    extends: 'form',
+    //    properties: {
+    //        successAction:{ //IStoreResultAction
+    //            type: String,
+    //        },
+    //        errorAction:{ //IStoreResultAction
+    //            type: String,
+    //        },
+    //        autoSubmit:{ //submit whenever any text field or actionn changes, and validator is satisfied
+    //            type: Boolean,
+    //        },
+    //        validator:{
+    //            type: String,
+    //        }
+    //    },
+    //    attached: () =>{
+    //        const that = <HTMLFormElement> eval('this'); //mystery why this is necessary
+    //        that.addEventListener('submit', (ev: Event) => {
+    //            ev.preventDefault();
+    //            var request = new XMLHttpRequest();
+    //            request.open("POST", "submitform.php");
+    //            const frmData = new FixedFormData(that);
+    //            request.send(<any> frmData);
+    //        });
+    //    }
+    //}
 }
