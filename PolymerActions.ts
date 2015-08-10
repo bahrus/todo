@@ -53,27 +53,46 @@ module todo.PolymerActions {
 	}
 
 	export interface IXHRExtensionAction extends IPolymerAction{
-		successAction: IStoreResultAction;
-		errorAction: IStoreResultAction;
-		autoSubmit:  boolean;
-		validator:  (fd: FormData) => boolean;
+		successAction?: IStoreResultAction;
+		errorAction?: IStoreResultAction;
+		autoSubmit?:  boolean;
+		validator?:  (fd: FormData) => boolean;
 	}
 
 	export function IXHRExtensionImpl(context: todo.IContext, callback: todo.ICallback, action: IXHRExtensionAction) {
+		if(!action) action = <IXHRExtensionAction> this;
 		const polyEl =  action.polymerElement;
 		if(polyEl.tagName !== 'FORM') throw `Not allowed to add XHRExtension to ${polyEl.tagName} element.`;
 		const frmEl = <HTMLFormElement><any> polyEl;
 		frmEl.addEventListener('submit', (ev:Event) => {
-			//region handle submit event, turn it into ajax call
+			//region handle submit event, turn it into ajax call if passes validation
 			ev.preventDefault();
-			const request = new XMLHttpRequest();
-			const action = frmEl.action;
-			const method = frmEl.method;
-			request.open(method, action);
 			const frmData = new FixedFormData(frmEl);
+			if(action.validator){
+				if(!action.validator(frmData)) return;
+			}
+			const request = new XMLHttpRequest();
+			const frmAction = frmEl.action;
+			const method = frmEl.method;
+			request.open(method, frmAction);
+			
 			request.send(<any> frmData);
 			//endregion
 		});
-
+		const mutObserver = new MutationObserver(mutations =>{
+			mutations.forEach(mutation => {
+				console.log(mutation);
+				
+			});
+			if(action.autoSubmit){
+				frmEl.submit();
+			}
+		});
+		const mutObserverConfig : MutationObserverInit = {
+			childList: true,
+			attributes: true,
+			subtree: true,
+		}
+		mutObserver.observe(frmEl, mutObserverConfig);
 	}
 }

@@ -16,8 +16,8 @@ var todo;
             extends: 'script',
             properties: {
                 allowedTargets: {
-                    type: String
-                }
+                    type: String,
+                },
             },
             attached: function () {
                 var that = eval('this'); //mystery why this is necessary
@@ -30,7 +30,7 @@ var todo;
                         action.do();
                     }
                 }, 1);
-            }
+            },
         };
         var todoInitScript = Polymer(initExtension);
         var loadFileFn = 'loadFile';
@@ -42,8 +42,8 @@ var todo;
                 properties: {
                     href: {
                         type: String,
-                        observer: loadFileFn
-                    }
+                        observer: loadFileFn,
+                    },
                 }
             },
             _a[loadFileFn] = function (path) {
@@ -87,7 +87,7 @@ var todo;
                         }
                     }
                 }, 1);
-            }
+            },
         };
         var attrScript = Polymer(attrExtension);
         var _a;

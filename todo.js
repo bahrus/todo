@@ -50,7 +50,7 @@ var todo;
         else if (typeof messageOrMessageGenerator === 'function') {
             message = messageOrMessageGenerator(cA);
             cA.domState = {
-                dynamicMessage: message
+                dynamicMessage: message,
             };
         }
         else {
@@ -133,7 +133,7 @@ var todo;
 (function (__global) {
     var modInfo = {
         name: 'todo',
-        mod: todo
+        mod: todo,
     };
     if (typeof __global[modInfo.name] !== "undefined") {
         if (__global[modInfo.name] !== modInfo.mod) {

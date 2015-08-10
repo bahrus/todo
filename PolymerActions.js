@@ -13,21 +13,41 @@ var todo;
         PolymerActions.pushIntoModelArrayActionImpl = pushIntoModelArrayActionImpl;
         var FixedFormData = FormData;
         function IXHRExtensionImpl(context, callback, action) {
+            if (!action)
+                action = this;
             var polyEl = action.polymerElement;
             if (polyEl.tagName !== 'FORM')
                 throw "Not allowed to add XHRExtension to " + polyEl.tagName + " element.";
             var frmEl = polyEl;
             frmEl.addEventListener('submit', function (ev) {
-                //region handle submit event, turn it into ajax call
+                //region handle submit event, turn it into ajax call if passes validation
                 ev.preventDefault();
-                var request = new XMLHttpRequest();
-                var action = frmEl.action;
-                var method = frmEl.method;
-                request.open(method, action);
                 var frmData = new FixedFormData(frmEl);
+                if (action.validator) {
+                    if (!action.validator(frmData))
+                        return;
+                }
+                var request = new XMLHttpRequest();
+                var frmAction = frmEl.action;
+                var method = frmEl.method;
+                request.open(method, frmAction);
                 request.send(frmData);
                 //endregion
             });
+            var mutObserver = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    console.log(mutation);
+                });
+                if (action.autoSubmit) {
+                    frmEl.submit();
+                }
+            });
+            var mutObserverConfig = {
+                childList: true,
+                attributes: true,
+                subtree: true,
+            };
+            mutObserver.observe(frmEl, mutObserverConfig);
         }
         PolymerActions.IXHRExtensionImpl = IXHRExtensionImpl;
     })(PolymerActions = todo.PolymerActions || (todo.PolymerActions = {}));

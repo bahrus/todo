@@ -114,35 +114,4 @@ module todo.customElements {
     const attrScript = Polymer(attrExtension);
 
 
-
-
-
-    //const xhrExtension: polymer.Base = {
-    //    is: 'todo-xhr',
-    //    extends: 'form',
-    //    properties: {
-    //        successAction:{ //IStoreResultAction
-    //            type: String,
-    //        },
-    //        errorAction:{ //IStoreResultAction
-    //            type: String,
-    //        },
-    //        autoSubmit:{ //submit whenever any text field or actionn changes, and validator is satisfied
-    //            type: Boolean,
-    //        },
-    //        validator:{
-    //            type: String,
-    //        }
-    //    },
-    //    attached: () =>{
-    //        const that = <HTMLFormElement> eval('this'); //mystery why this is necessary
-    //        that.addEventListener('submit', (ev: Event) => {
-    //            ev.preventDefault();
-    //            var request = new XMLHttpRequest();
-    //            request.open("POST", "submitform.php");
-    //            const frmData = new FixedFormData(that);
-    //            request.send(<any> frmData);
-    //        });
-    //    }
-    //}
 }
