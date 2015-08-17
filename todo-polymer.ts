@@ -29,8 +29,8 @@ module todo.customElements {
                 const target = <todo.PolymerActions.PolymerElement> nextNonScriptSibling(that);
                 if (target) {
                     const inner = that.innerText;
-                    const action = eval(inner);
-                    action.polymerElement = target;
+                    const action = <todo.PolymerActions.IPolymerAction> eval(inner);
+                    action.targetElement = target;
                     action.do();
                 }
             }, 1);
