@@ -7,30 +7,31 @@ var todo;
         function pushIntoModelArrayActionImpl(context, callback, action) {
             if (!action)
                 action = this;
-            var el = action.polymerElement;
+            var el = action.targetElement;
             action.arrayRef.forEach(function (itm) { return el.push(action.pathToArray, itm); });
         }
         PolymerActions.pushIntoModelArrayActionImpl = pushIntoModelArrayActionImpl;
         var FixedFormData = FormData; //Temporary until typescript 1.6
+        function IStoreResultActionImpl(context, callback, action) {
+            var result = action.resultMessage;
+            delete action.resultMessage;
+        }
         function deepCompare(lhs, rhs) {
-            for (var key in lhs) {
-                if (lhs[key] !== rhs[key]) {
-                    return false;
-                }
-            }
-            for (var key in rhs) {
-                if (rhs[key] !== lhs[key]) {
-                    return false;
-                }
-            }
-            return true;
+            return JSON.stringify(lhs) === JSON.stringify(rhs);
         }
         function processData(context, callback, action, data) {
+            //const frmEl = <HTMLFormElement> action.targetElement;
+            if (action.successAction) {
+                if (!action.successAction.do) {
+                    action.successAction.do = IStoreResultActionImpl;
+                }
+            }
         }
+        var lastTransaction = 'lastTransaction';
         function IXHRExtensionImpl(context, callback, action) {
             if (!action)
                 action = this;
-            var polyEl = action.polymerElement;
+            var polyEl = action.targetElement;
             if (polyEl.tagName !== 'FORM')
                 throw "Not allowed to add XHRExtension to " + polyEl.tagName + " element.";
             var frmEl = polyEl;
@@ -45,14 +46,15 @@ var todo;
                 var request = new XMLHttpRequest();
                 var frmAction = frmEl.action;
                 var method = frmEl.method;
+                var lt = lastTransaction;
                 if (action.cacheLastTransaction) {
-                    var lastTransaction = frmEl.get['lastTransaction'];
-                    if (lastTransaction) {
-                        if ((lastTransaction.frmAction === frmAction) && (lastTransaction.method === method)) {
-                            if (deepCompare(lastTransaction.frmData, frmData)) {
+                    var lastTransaction_1 = frmEl[lt];
+                    if (lastTransaction_1) {
+                        if ((lastTransaction_1.frmAction === frmAction) && (lastTransaction_1.method === method)) {
+                            if (deepCompare(lastTransaction_1.frmData, frmData)) {
                                 //get from cache
                                 if (action.reprocessEvenWhenCached) {
-                                    processData(context, callback, action, lastTransaction.data);
+                                    processData(context, callback, action, lastTransaction_1.data);
                                 }
                                 return;
                             }
@@ -79,7 +81,7 @@ var todo;
                                 frmData: frmData,
                                 data: request.responseText
                             };
-                            frm[''];
+                            frmEl[lastTransaction] = thisTransaction;
                         }
                     }
                 };
@@ -96,7 +98,7 @@ var todo;
                 var mutObserverConfig = {
                     childList: true,
                     attributes: true,
-                    subtree: true,
+                    subtree: true
                 };
                 mutObserver.observe(frmEl, mutObserverConfig);
                 frmEl.submit();

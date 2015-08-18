@@ -56,8 +56,9 @@ module todo.PolymerActions {
 		resultMessage?: string;
 	}
 	
-	function IStoreResultActionImpl(context:todo.IContext, callback: todo.ICallback, action: IStoreResultAction cd){
-		let result = <any> action.resultMessage;
+	function IStoreResultActionImpl(context:todo.IContext, callback: todo.ICallback, action: IStoreResultAction){
+		const result = <any> action.resultMessage;
+		delete action.resultMessage;
 	}
 
 	export interface IXHRExtensionAction extends IPolymerAction{
@@ -74,17 +75,7 @@ module todo.PolymerActions {
 	
 	
 	function deepCompare(lhs: FormData, rhs: FormData){ //is there an es 2015 function that does this?
-		for(const key in lhs){
-			if(lhs[key] !== rhs[key]){
-				return false;
-			}
-		}
-		for(const key in rhs){
-			if(rhs[key] !== lhs[key]){
-				return false;
-			}
-		}
-		return true;
+		return JSON.stringify(lhs) === JSON.stringify(rhs);
 	}
 	
 	function processData(context:todo.IContext, callback: todo.ICallback, action: IXHRExtensionAction, data: any) {
@@ -103,10 +94,13 @@ module todo.PolymerActions {
 		frmData: FormData;
 		data: string;	
 	}
-	
+
+    const lastTransaction = 'lastTransaction';
+
 	export function IXHRExtensionImpl(context: todo.IContext, callback: todo.ICallback, action: IXHRExtensionAction) {
 		if(!action) action = <IXHRExtensionAction> this;
 		const polyEl =  action.targetElement;
+
 		if(polyEl.tagName !== 'FORM') throw `Not allowed to add XHRExtension to ${polyEl.tagName} element.`;
 		const frmEl = <HTMLFormElement><any> polyEl;
 		frmEl.addEventListener('submit', (ev:Event) => {
@@ -116,12 +110,12 @@ module todo.PolymerActions {
 			if(action.validator){
 				if(!action.validator(frmData)) return;
 			}
-			
 			const request = new XMLHttpRequest();
 			const frmAction = frmEl.action;
 			const method = frmEl.method;
+			const lt = lastTransaction;
 			if(action.cacheLastTransaction){
-				const lastTransaction = <IXHRTransaction> frmEl.getAttribute('lastTransaction');
+				const lastTransaction = <IXHRTransaction> frmEl[lt];
 				if(lastTransaction){
 					if((lastTransaction.frmAction === frmAction) && (lastTransaction.method === method)){
 						if(deepCompare(lastTransaction.frmData, frmData)){
@@ -154,7 +148,7 @@ module todo.PolymerActions {
 							frmData: frmData,
 							data: request.responseText
 						};
-						frm['']
+						frmEl[lastTransaction] = thisTransaction;
 					}
 				}
 			}
