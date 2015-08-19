@@ -22,14 +22,15 @@ var todo;
             attached: function () {
                 var that = eval('this'); //mystery why this is necessary
                 that.async(function () {
+                    console.log('hack! can we make this deterministic?');
                     var target = nextNonScriptSibling(that);
                     if (target) {
                         var inner = that.innerText;
                         var action = eval(inner);
-                        action.polymerElement = target;
-                        action.do();
+                        action.targetElement = target;
+                        action.do(null, null, action);
                     }
-                }, 1);
+                }, 1000);
             },
         };
         var todoInitScript = Polymer(initExtension);

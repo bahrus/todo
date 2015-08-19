@@ -50,15 +50,28 @@ module todo.PolymerActions {
 		targetSelector?: string;
 		transformer?: Function;
 		targetPath?: string;
+		
 	}
 	
 	export interface IStoreResultAction extends IStoreResultConfig, todo.PolymerActions.IPolymerAction{
 		resultMessage?: string;
+		formElement?: HTMLFormElement;
 	}
 	
 	function IStoreResultActionImpl(context:todo.IContext, callback: todo.ICallback, action: IStoreResultAction){
 		const result = <any> action.resultMessage;
-		delete action.resultMessage;
+		let targetElements = [action.formElement];
+		
+		if(action.targetSelector){
+			throw "not implemented";
+		}
+		if(!action.targetPath){
+			throw "targetPath not specified."
+		}
+		targetElements.forEach(targetElement =>{
+			targetElement[action.targetPath] = result;
+		});
+		debugger;
 	}
 
 	export interface IXHRExtensionAction extends IPolymerAction{
@@ -81,9 +94,15 @@ module todo.PolymerActions {
 	function processData(context:todo.IContext, callback: todo.ICallback, action: IXHRExtensionAction, data: any) {
 		//const frmEl = <HTMLFormElement> action.targetElement;
 		if(action.successAction){
-			if(!action.successAction.do){
-				action.successAction.do = IStoreResultActionImpl;
+			const sA = action.successAction;
+			if(!sA.do){
+				sA.do = IStoreResultActionImpl;
 			}
+			sA.resultMessage = data;
+			sA.formElement = <HTMLFormElement> action.targetElement;
+			sA.do(context, callback, sA);
+			delete sA.resultMessage;
+			delete sA.formElement;
 		}
 		
 	}
@@ -103,9 +122,12 @@ module todo.PolymerActions {
 
 		if(polyEl.tagName !== 'FORM') throw `Not allowed to add XHRExtension to ${polyEl.tagName} element.`;
 		const frmEl = <HTMLFormElement><any> polyEl;
-		frmEl.addEventListener('submit', (ev:Event) => {
+		
+		//frmEl.addEventListener('submit', (ev:Event) => {
+		frmEl.submit = () =>{
 			//region handle submit event, turn it into ajax call if passes validation
-			ev.preventDefault();
+			//const ev = window.event;
+			//ev.preventDefault();
 			const frmData = new FixedFormData(frmEl); //Temporary until typescript 1.6
 			if(action.validator){
 				if(!action.validator(frmData)) return;
@@ -150,11 +172,12 @@ module todo.PolymerActions {
 						};
 						frmEl[lastTransaction] = thisTransaction;
 					}
+					processData(context, callback, action, request.responseText);
 				}
 			}
 			request.send(<any> frmData);
 			//endregion
-		});
+		}
 		if(action.autoSubmit){
 			const mutObserver = new MutationObserver(mutations =>{
 				mutations.forEach(mutation => {

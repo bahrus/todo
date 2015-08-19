@@ -26,17 +26,18 @@ module todo.customElements {
         attached: () => {
             const that =   eval('this'); //mystery why this is necessary
             that.async(() => {
+                console.log('hack! can we make this deterministic?')
                 const target = <todo.PolymerActions.PolymerElement> nextNonScriptSibling(that);
                 if (target) {
                     const inner = that.innerText;
                     const action = <todo.PolymerActions.IPolymerAction> eval(inner);
                     action.targetElement = target;
-                    action.do();
+                    action.do(null, null, action);
                 }
-            }, 1);
+            }, 1000);
         },
     
-        
+       
         
     }; 
 

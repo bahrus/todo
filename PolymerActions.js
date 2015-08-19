@@ -14,7 +14,17 @@ var todo;
         var FixedFormData = FormData; //Temporary until typescript 1.6
         function IStoreResultActionImpl(context, callback, action) {
             var result = action.resultMessage;
-            delete action.resultMessage;
+            var targetElements = [action.formElement];
+            if (action.targetSelector) {
+                throw "not implemented";
+            }
+            if (!action.targetPath) {
+                throw "targetPath not specified.";
+            }
+            targetElements.forEach(function (targetElement) {
+                targetElement[action.targetPath] = result;
+            });
+            debugger;
         }
         function deepCompare(lhs, rhs) {
             return JSON.stringify(lhs) === JSON.stringify(rhs);
@@ -22,9 +32,15 @@ var todo;
         function processData(context, callback, action, data) {
             //const frmEl = <HTMLFormElement> action.targetElement;
             if (action.successAction) {
-                if (!action.successAction.do) {
-                    action.successAction.do = IStoreResultActionImpl;
+                var sA = action.successAction;
+                if (!sA.do) {
+                    sA.do = IStoreResultActionImpl;
                 }
+                sA.resultMessage = data;
+                sA.formElement = action.targetElement;
+                sA.do(context, callback, sA);
+                delete sA.resultMessage;
+                delete sA.formElement;
             }
         }
         var lastTransaction = 'lastTransaction';
@@ -35,9 +51,11 @@ var todo;
             if (polyEl.tagName !== 'FORM')
                 throw "Not allowed to add XHRExtension to " + polyEl.tagName + " element.";
             var frmEl = polyEl;
-            frmEl.addEventListener('submit', function (ev) {
+            //frmEl.addEventListener('submit', (ev:Event) => {
+            frmEl.submit = function () {
                 //region handle submit event, turn it into ajax call if passes validation
-                ev.preventDefault();
+                //const ev = window.event;
+                //ev.preventDefault();
                 var frmData = new FixedFormData(frmEl); //Temporary until typescript 1.6
                 if (action.validator) {
                     if (!action.validator(frmData))
@@ -83,11 +101,12 @@ var todo;
                             };
                             frmEl[lastTransaction] = thisTransaction;
                         }
+                        processData(context, callback, action, request.responseText);
                     }
                 };
                 request.send(frmData);
                 //endregion
-            });
+            };
             if (action.autoSubmit) {
                 var mutObserver = new MutationObserver(function (mutations) {
                     mutations.forEach(function (mutation) {
@@ -98,7 +117,7 @@ var todo;
                 var mutObserverConfig = {
                     childList: true,
                     attributes: true,
-                    subtree: true
+                    subtree: true,
                 };
                 mutObserver.observe(frmEl, mutObserverConfig);
                 frmEl.submit();
