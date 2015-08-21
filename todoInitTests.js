@@ -9,7 +9,6 @@ var todoTests;
         pathToArray: 'employees',
         arrayRef: [{ first: 'Bruce', last: 'Anderson' }],
     };
-    todoTests.storeTSConfig = {};
     todoTests.formDataSource = {
         do: todo.PolymerActions.IXHRExtensionImpl,
         autoSubmit: true,

@@ -10,9 +10,6 @@ module todoTests{
         arrayRef: [{ first: 'Bruce', last: 'Anderson' }],
     };
 
-    export const storeTSConfig: todo.PolymerActions.IStoreResultAction = {
-
-    }
 
     export const formDataSource: todo.PolymerActions.IXHRExtensionAction = {
         do: todo.PolymerActions.IXHRExtensionImpl,

@@ -24,7 +24,6 @@ var todo;
             targetElements.forEach(function (targetElement) {
                 targetElement[action.targetPath] = result;
             });
-            debugger;
         }
         function deepCompare(lhs, rhs) {
             return JSON.stringify(lhs) === JSON.stringify(rhs);
@@ -117,7 +116,7 @@ var todo;
                 var mutObserverConfig = {
                     childList: true,
                     attributes: true,
-                    subtree: true,
+                    subtree: true
                 };
                 mutObserver.observe(frmEl, mutObserverConfig);
                 frmEl.submit();

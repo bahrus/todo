@@ -16,13 +16,25 @@ var todo;
             extends: 'script',
             properties: {
                 allowedTargets: {
-                    type: String,
-                },
+                    type: String
+                }
             },
             attached: function () {
                 var that = eval('this'); //mystery why this is necessary
-                that.async(function () {
-                    console.log('hack! can we make this deterministic?');
+                //that.async(() => {
+                //    console.log('hack! can we make this deterministic?')
+                //    const target = <todo.PolymerActions.PolymerElement> nextNonScriptSibling(that);
+                //    if (target) {
+                //        const inner = that.innerText;
+                //        const action = <todo.PolymerActions.IPolymerAction> eval(inner);
+                //        action.targetElement = target;
+                //        action.do(null, null, action);
+                //    }
+                //}, 1000);
+                var thisEl = that;
+                console.log(thisEl.parentNode);
+                //const events = ['load', 'activate', 'beforeactivate'];
+                window.addEventListener('load', function (ev) {
                     var target = nextNonScriptSibling(that);
                     if (target) {
                         var inner = that.innerText;
@@ -30,8 +42,8 @@ var todo;
                         action.targetElement = target;
                         action.do(null, null, action);
                     }
-                }, 1000);
-            },
+                });
+            }
         };
         var todoInitScript = Polymer(initExtension);
         var loadFileFn = 'loadFile';
@@ -43,8 +55,8 @@ var todo;
                 properties: {
                     href: {
                         type: String,
-                        observer: loadFileFn,
-                    },
+                        observer: loadFileFn
+                    }
                 }
             },
             _a[loadFileFn] = function (path) {
@@ -88,7 +100,7 @@ var todo;
                         }
                     }
                 }, 1);
-            },
+            }
         };
         var attrScript = Polymer(attrExtension);
         var _a;

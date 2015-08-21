@@ -71,7 +71,6 @@ module todo.PolymerActions {
 		targetElements.forEach(targetElement =>{
 			targetElement[action.targetPath] = result;
 		});
-		debugger;
 	}
 
 	export interface IXHRExtensionAction extends IPolymerAction{
