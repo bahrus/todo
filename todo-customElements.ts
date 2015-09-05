@@ -153,7 +153,15 @@ module todo.customElements {
     function getScrollDim(dimension: string){
         var outer = document.createElement("div");
         outer.style.visibility = "hidden";
-        outer.style.width = "100px";
+        switch(dimension){
+            case 'Height':
+                outer.style.height = "100px";
+                break;
+            case 'Width':
+                outer.style.width = "100px";
+                break;
+        }
+
         outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
 
         document.body.appendChild(outer);
@@ -188,6 +196,16 @@ module todo.customElements {
                 type: Number,
                 value: 317
             },
-        }
+        },
+        ready: function () {
+            this[calculateStyles]();
+        },
+        [calculateStyles]: function () {
+            this[outerStyle] = `width:${this[pixelWidth]}px;height:${getScrollDim('Height')}px;background-color:red;overflow-x:auto;display:inline-block`;
+            const innerWidth = this[maxValue] * this[pixelWidth];
+            this[innerStyle] = `width:${innerWidth}px; background-color:green`
+        },
     };
+
+    const hScrollScript = Polymer(hScrollControl);
 }

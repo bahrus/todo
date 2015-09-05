@@ -126,7 +126,14 @@ var todo;
         function getScrollDim(dimension) {
             var outer = document.createElement("div");
             outer.style.visibility = "hidden";
-            outer.style.width = "100px";
+            switch (dimension) {
+                case 'Height':
+                    outer.style.height = "100px";
+                    break;
+                case 'Width':
+                    outer.style.width = "100px";
+                    break;
+            }
             outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
             document.body.appendChild(outer);
             var offDim = 'offset' + dimension;
@@ -143,21 +150,32 @@ var todo;
             return dimNoScroll - dimWithScroll;
         }
         var vScrollScript = Polymer(vScrollControl);
-        var hScrollControl = {
-            is: 'todo-hscroll',
-            properties: (_d = {},
-                _d[maxValue] = {
-                    type: Number,
-                    value: 100
-                },
-                _d[pixelWidth] = {
-                    type: Number,
-                    value: 317
-                },
-                _d
-            )
-        };
-        var _a, _b, _c, _d;
+        var hScrollControl = (_d = {
+                is: 'todo-hscroll',
+                properties: (_e = {},
+                    _e[maxValue] = {
+                        type: Number,
+                        value: 100
+                    },
+                    _e[pixelWidth] = {
+                        type: Number,
+                        value: 317
+                    },
+                    _e
+                ),
+                ready: function () {
+                    this[calculateStyles]();
+                }
+            },
+            _d[calculateStyles] = function () {
+                this[outerStyle] = "width:" + this[pixelWidth] + "px;height:" + getScrollDim('Height') + "px;background-color:red;overflow-x:auto;display:inline-block";
+                var innerWidth = this[maxValue] * this[pixelWidth];
+                this[innerStyle] = "width:" + innerWidth + "px; background-color:green";
+            },
+            _d
+        );
+        var hScrollScript = Polymer(hScrollControl);
+        var _a, _b, _c, _d, _e;
     })(customElements = todo.customElements || (todo.customElements = {}));
 })(todo || (todo = {}));
 //# sourceMappingURL=todo-customElements.js.map
