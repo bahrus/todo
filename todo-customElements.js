@@ -95,41 +95,49 @@ var todo;
         var maxValue = 'maxValue';
         var pixelHeight = 'pixelHeight';
         var pixelWidth = 'pixelWidth';
-        var vScrollControl = {
-            is: 'todo-vscroll',
-            properties: (_b = {},
-                _b[maxValue] = {
-                    type: Number,
-                    value: 1000
-                },
-                _b[pixelHeight] = {
-                    type: Number,
-                    value: 291
-                },
-                _b
-            ),
-            ready: function () {
-                debugger;
-                this.temp = 'i am here';
-                this.outerStyle = 'color:red';
-            }
-        };
+        var calculateStyles = 'calculateStyles';
+        var outerStyle = 'outerStyle';
+        var innerStyle = 'innerStyle';
+        var vScrollControl = (_b = {
+                is: 'todo-vscroll',
+                properties: (_c = {},
+                    _c[maxValue] = {
+                        type: Number,
+                        value: 1000
+                    },
+                    _c[pixelHeight] = {
+                        type: Number,
+                        value: 291
+                    },
+                    _c
+                ),
+                ready: function () {
+                    this[calculateStyles]();
+                }
+            },
+            _b[calculateStyles] = function () {
+                this[outerStyle] = "height:" + this[pixelHeight] + "px;background-color:red;overflow-y:auto;";
+                var innerHeight = this[maxValue] * this[pixelHeight];
+                this[innerStyle] = "height:" + innerHeight + "px; background-color:green";
+            },
+            _b
+        );
         var vScrollScript = Polymer(vScrollControl);
         var hScrollControl = {
             is: 'todo-hscroll',
-            properties: (_c = {},
-                _c[maxValue] = {
+            properties: (_d = {},
+                _d[maxValue] = {
                     type: Number,
                     value: 100
                 },
-                _c[pixelWidth] = {
+                _d[pixelWidth] = {
                     type: Number,
                     value: 317
                 },
-                _c
+                _d
             )
         };
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
     })(customElements = todo.customElements || (todo.customElements = {}));
 })(todo || (todo = {}));
 //# sourceMappingURL=todo-customElements.js.map

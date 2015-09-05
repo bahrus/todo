@@ -121,6 +121,9 @@ module todo.customElements {
     const maxValue = 'maxValue';
     const pixelHeight = 'pixelHeight';
     const pixelWidth = 'pixelWidth';
+    const calculateStyles = 'calculateStyles';
+    const outerStyle = 'outerStyle';
+    const innerStyle = 'innerStyle';
 
     const vScrollControl: polymer.Base = {
         is: 'todo-vscroll',
@@ -136,9 +139,12 @@ module todo.customElements {
             },
         },
         ready: function(){
-            debugger;
-            this.temp = 'i am here';
-            this.outerStyle = 'color:red';
+            this[calculateStyles]();
+        },
+        [calculateStyles]: function(){
+            this[outerStyle] = `height:${this[pixelHeight]}px;background-color:red;overflow-y:auto;`;
+            const innerHeight = this[maxValue] * this[pixelHeight];
+            this[innerStyle] = `height:${innerHeight}px; background-color:green`
         }
     };
 
