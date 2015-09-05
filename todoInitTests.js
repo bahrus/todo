@@ -7,13 +7,13 @@ var todoTests;
     todoTests.pushMyName = {
         do: todo.PolymerActions.pushIntoModelArrayActionImpl,
         pathToArray: 'employees',
-        arrayRef: [{ first: 'Bruce', last: 'Anderson' }],
+        arrayRef: [{ first: 'Bruce', last: 'Anderson' }]
     };
     todoTests.formDataSource = {
         do: todo.PolymerActions.IXHRExtensionImpl,
         autoSubmit: true,
         successAction: {
-            targetPath: 'tsConfig',
+            targetPath: 'tsConfig'
         }
     };
 })(todoTests || (todoTests = {}));

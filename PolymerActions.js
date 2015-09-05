@@ -25,23 +25,6 @@ var todo;
                 targetElement[action.targetPath] = result;
             });
         }
-        function deepCompare(lhs, rhs) {
-            return JSON.stringify(lhs) === JSON.stringify(rhs);
-        }
-        function processData(context, callback, action, data) {
-            //const frmEl = <HTMLFormElement> action.targetElement;
-            if (action.successAction) {
-                var sA = action.successAction;
-                if (!sA.do) {
-                    sA.do = IStoreResultActionImpl;
-                }
-                sA.resultMessage = data;
-                sA.formElement = action.targetElement;
-                sA.do(context, callback, sA);
-                delete sA.resultMessage;
-                delete sA.formElement;
-            }
-        }
         var lastTransaction = 'lastTransaction';
         function IXHRExtensionImpl(context, callback, action) {
             if (!action)
@@ -123,6 +106,39 @@ var todo;
             }
         }
         PolymerActions.IXHRExtensionImpl = IXHRExtensionImpl;
+        function processData(context, callback, action, data) {
+            //const frmEl = <HTMLFormElement> action.targetElement;
+            if (action.successAction) {
+                var sA = action.successAction;
+                if (!sA.do) {
+                    sA.do = IStoreResultActionImpl;
+                }
+                sA.resultMessage = data;
+                sA.formElement = action.targetElement;
+                sA.do(context, callback, sA);
+                delete sA.resultMessage;
+                delete sA.formElement;
+            }
+        }
+        //endregion
+        function deepCompare(lhs, rhs) {
+            return JSON.stringify(lhs) === JSON.stringify(rhs);
+        }
+        var HashBinding = (function () {
+            function HashBinding() {
+                this.currentValues = {};
+                //region listen for hash address changes
+                window.addEventListener("hashchange", this.handleHashChange, false);
+                //endregion
+            }
+            HashBinding.prototype.handleHashChange = function () {
+            };
+            HashBinding.prototype.commit = function () {
+            };
+            HashBinding.prototype.parseHash = function () {
+            };
+            return HashBinding;
+        })();
     })(PolymerActions = todo.PolymerActions || (todo.PolymerActions = {}));
 })(todo || (todo = {}));
 //# sourceMappingURL=PolymerActions.js.map

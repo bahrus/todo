@@ -20,9 +20,10 @@ which satisfies the following "soft" conditions:
 
 1)  It holds data for nested objects, including subobjects and functions
 2)  The hosting language can load the nested data with certainty that doing 
-so will have no effect on anything -- no impact on externally defined 
+so will have no effect on anything (other than the cpu cycles / memory requirements to load the data)
+ -- no impact on externally defined
 parameters, no webservice or database calls, no function calls, etc.  
-The syntax must be completely innert, in other words.
+The syntax must be completely inert, in other words.
 3)  The syntax  is as minimal as possible, and is relatively easy to parse.
 
 In the case of the programming language Typescript, we define a subset called 
@@ -36,3 +37,7 @@ In the case of the programming language Typescript, we define a subset called
 
 
 
+
+Browser history management
+
+todo.Polymer.updateHash

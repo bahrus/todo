@@ -21,19 +21,8 @@ var todo;
             },
             attached: function () {
                 var that = eval('this'); //mystery why this is necessary
-                //that.async(() => {
-                //    console.log('hack! can we make this deterministic?')
-                //    const target = <todo.PolymerActions.PolymerElement> nextNonScriptSibling(that);
-                //    if (target) {
-                //        const inner = that.innerText;
-                //        const action = <todo.PolymerActions.IPolymerAction> eval(inner);
-                //        action.targetElement = target;
-                //        action.do(null, null, action);
-                //    }
-                //}, 1000);
-                var thisEl = that;
-                console.log(thisEl.parentNode);
-                //const events = ['load', 'activate', 'beforeactivate'];
+                //const thisEl = <HTMLElement> that;
+                //console.log(thisEl.parentNode);
                 window.addEventListener('load', function (ev) {
                     var target = nextNonScriptSibling(that);
                     if (target) {
@@ -80,7 +69,7 @@ var todo;
             extends: 'script',
             attached: function () {
                 var that = eval('this'); //mystery why this is necessary
-                that.async(function () {
+                window.addEventListener('load', function (ev) {
                     var target = nextNonScriptSibling(that);
                     if (target) {
                         var inner = that.innerText;
@@ -99,11 +88,43 @@ var todo;
                             }
                         }
                     }
-                }, 1);
+                });
             }
         };
         var attrScript = Polymer(attrExtension);
-        var _a;
+        var maxValue = 'maxValue';
+        var pixelHeight = 'pixelHeight';
+        var pixelWidth = 'pixelWidth';
+        var vScrollControl = {
+            is: 'todo-vscroll',
+            properties: (_b = {},
+                _b[maxValue] = {
+                    type: Number,
+                    value: 1000
+                },
+                _b[pixelHeight] = {
+                    type: Number,
+                    value: 291
+                },
+                _b
+            )
+        };
+        var vScrollScript = Polymer(vScrollControl);
+        var hScrollControl = {
+            is: 'todo-hscroll',
+            properties: (_c = {},
+                _c[maxValue] = {
+                    type: Number,
+                    value: 100
+                },
+                _c[pixelWidth] = {
+                    type: Number,
+                    value: 317
+                },
+                _c
+            )
+        };
+        var _a, _b, _c;
     })(customElements = todo.customElements || (todo.customElements = {}));
 })(todo || (todo = {}));
-//# sourceMappingURL=todo-polymer.js.map
+//# sourceMappingURL=todo-customElements.js.map

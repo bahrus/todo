@@ -39,6 +39,8 @@ module todo.PolymerActions {
 		objRef?: T
 	}
 
+
+	//region forms support
 	interface FixedFormData { //Temporary until typescript 1.6
 		prototype: FormData;
 		new (form?: HTMLFormElement): FormData;
@@ -83,37 +85,8 @@ module todo.PolymerActions {
 		reprocessEvenWhenCached?: boolean;
 		
 	}
-	
-	
-	
-	function deepCompare(lhs: FormData, rhs: FormData){ //is there an es 2015 function that does this?
-		return JSON.stringify(lhs) === JSON.stringify(rhs);
-	}
-	
-	function processData(context:todo.IContext, callback: todo.ICallback, action: IXHRExtensionAction, data: any) {
-		//const frmEl = <HTMLFormElement> action.targetElement;
-		if(action.successAction){
-			const sA = action.successAction;
-			if(!sA.do){
-				sA.do = IStoreResultActionImpl;
-			}
-			sA.resultMessage = data;
-			sA.formElement = <HTMLFormElement> action.targetElement;
-			sA.do(context, callback, sA);
-			delete sA.resultMessage;
-			delete sA.formElement;
-		}
-		
-	}
-	
-	interface IXHRTransaction{
-		frmAction: string;
-		method: string;
-		frmData: FormData;
-		data: string;	
-	}
 
-    const lastTransaction = 'lastTransaction';
+	const lastTransaction = 'lastTransaction';
 
 	export function IXHRExtensionImpl(context: todo.IContext, callback: todo.ICallback, action: IXHRExtensionAction) {
 		if(!action) action = <IXHRExtensionAction> this;
@@ -121,7 +94,7 @@ module todo.PolymerActions {
 
 		if(polyEl.tagName !== 'FORM') throw `Not allowed to add XHRExtension to ${polyEl.tagName} element.`;
 		const frmEl = <HTMLFormElement><any> polyEl;
-		
+
 		//frmEl.addEventListener('submit', (ev:Event) => {
 		frmEl.submit = () =>{
 			//region handle submit event, turn it into ajax call if passes validation
@@ -148,7 +121,7 @@ module todo.PolymerActions {
 						}
 					}
 				}
-				
+
 			}
 			let url = frmAction;
 			if(action.addTimestampToPreventServerSideCaching){
@@ -183,7 +156,7 @@ module todo.PolymerActions {
 					console.log(mutation);
 					frmEl.submit()
 				});
-				
+
 			});
 			const mutObserverConfig : MutationObserverInit = {
 				childList: true,
@@ -193,6 +166,64 @@ module todo.PolymerActions {
 			mutObserver.observe(frmEl, mutObserverConfig);
 			frmEl.submit();
 		}
-		
+
+	}
+
+	function processData(context:todo.IContext, callback: todo.ICallback, action: IXHRExtensionAction, data: any) {
+		//const frmEl = <HTMLFormElement> action.targetElement;
+		if(action.successAction){
+			const sA = action.successAction;
+			if(!sA.do){
+				sA.do = IStoreResultActionImpl;
+			}
+			sA.resultMessage = data;
+			sA.formElement = <HTMLFormElement> action.targetElement;
+			sA.do(context, callback, sA);
+			delete sA.resultMessage;
+			delete sA.formElement;
+		}
+
+	}
+
+	interface IXHRTransaction{
+		frmAction: string;
+		method: string;
+		frmData: FormData;
+		data: string;
+	}
+	//endregion
+	
+	function deepCompare(lhs: FormData, rhs: FormData){ //is there an es 2015 function that does this?
+		return JSON.stringify(lhs) === JSON.stringify(rhs);
+	}
+	
+
+	class HashBinding{
+
+		currentValues : {[key: string] : string} = {};
+
+		constructor(){
+			//region listen for hash address changes
+			window.addEventListener("hashchange", this.handleHashChange, false);
+			//endregion
+		}
+
+		private handleHashChange(){
+
+		}
+
+		public commit(){
+
+		}
+
+		public parseHash(){
+
+		}
+	}
+
+	interface IHashToken{
+		type: Function;
+		targetSelector : string;
+		targetPath: string;
 	}
 }

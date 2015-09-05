@@ -1,12 +1,13 @@
 ﻿<link rel="import" href="Scripts/polymer.html">
-<link rel="import" href="todo-polymer.html"/>"
+<link rel="import" href="todo-customElements.html"/>"
 
 <dom-module id="employee-list">
   
   <template>
     <div>Name: <span>[[test]]</span></div>
+
     <script is="todo-attr">
-      [{'on-click': 'changeInclude'}]
+      [{'on-click': todoTests.changeInclude}]
     </script>
     <div>ClickMeToChange2</div>
     <link is="todo-include" all href="[[test]]"/>

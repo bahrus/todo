@@ -1,7 +1,7 @@
 ﻿///<reference path='Scripts/typings/polymer/polymer.d.ts'/>
 module todoTests {
     const test = 'test';
-    const changeInclude = 'changeInclude';
+    export const changeInclude = 'changeInclude';
     Polymer({
         is: 'employee-list',
         properties: {

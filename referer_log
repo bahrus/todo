@@ -9,7 +9,7 @@ http://localhost/todoInitTests.html -> /todo-polymer.html
 http://localhost/todoInitTests.html -> /employeeList.html
 http://localhost/todo-polymer.html -> /Scripts/polymer.html
 http://localhost/todo-polymer.html -> /PolymerActions.js
-http://localhost/todo-polymer.html -> /todo-polymer.js
+http://localhost/todo-polymer.html -> /todo-customElements.js
 http://localhost/employeeList.html -> /employee-list.js
 http://localhost/Scripts/polymer.html -> /Scripts/polymer-mini.html
 http://localhost/Scripts/polymer-mini.html -> /Scripts/polymer-micro.html

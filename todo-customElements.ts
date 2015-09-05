@@ -25,20 +25,9 @@ module todo.customElements {
         
         attached: () => {
             const that =   eval('this'); //mystery why this is necessary
-            //that.async(() => {
-            //    console.log('hack! can we make this deterministic?')
-            //    const target = <todo.PolymerActions.PolymerElement> nextNonScriptSibling(that);
-            //    if (target) {
-            //        const inner = that.innerText;
-            //        const action = <todo.PolymerActions.IPolymerAction> eval(inner);
-            //        action.targetElement = target;
-            //        action.do(null, null, action);
-            //    }
-            //}, 1000);
-            const thisEl = <HTMLElement> that;
-            console.log(thisEl.parentNode);
+            //const thisEl = <HTMLElement> that;
+            //console.log(thisEl.parentNode);
 
-            //const events = ['load', 'activate', 'beforeactivate'];
             window.addEventListener('load', ev =>{
                 const target = <todo.PolymerActions.PolymerElement> nextNonScriptSibling(that);
                 if (target) {
@@ -102,8 +91,8 @@ module todo.customElements {
         
         attached: () => {
             const that =   eval('this'); //mystery why this is necessary
-            that.async(() => {
-                const target = <todo.PolymerActions.PolymerElement> nextNonScriptSibling(that) ;
+            window.addEventListener('load', ev =>{
+                const target = <todo.PolymerActions.PolymerElement> nextNonScriptSibling(that);
                 if (target) {
                     const inner = that.innerText;
                     const attributes = eval(inner);
@@ -117,17 +106,50 @@ module todo.customElements {
                             }else{
                                 Polymer.dom(target).setAttribute(key,  attributePart[key]); //untested code
                             }
-                            
+
                         }
                     }
-                    
+
                 }
-            }, 1);
+            });
         },
    
     }; 
     
     const attrScript = Polymer(attrExtension);
 
+    const maxValue = 'maxValue';
+    const pixelHeight = 'pixelHeight';
+    const pixelWidth = 'pixelWidth';
 
+    const vScrollControl: polymer.Base = {
+        is: 'todo-vscroll',
+        properties:{
+            [maxValue] : {
+                type: Number,
+                value: 1000,
+
+            },
+            [pixelHeight] : {
+                type: Number,
+                value: 291,
+            },
+        }
+    };
+
+    const vScrollScript = Polymer(vScrollControl);
+
+    const hScrollControl: polymer.Base = {
+        is: 'todo-hscroll',
+        properties: {
+            [maxValue]: {
+                type: Number,
+                value: 100,
+            },
+            [pixelWidth]:{
+                type: Number,
+                value: 317
+            },
+        }
+    };
 }

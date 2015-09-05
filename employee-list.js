@@ -2,7 +2,7 @@
 var todoTests;
 (function (todoTests) {
     var test = 'test';
-    var changeInclude = 'changeInclude';
+    todoTests.changeInclude = 'changeInclude';
     Polymer((_a = {
             is: 'employee-list',
             properties: (_b = {},
@@ -21,7 +21,7 @@ var todoTests;
         // listen: function (node, eventNamemethodName) {
         //     debugger;
         // },
-        _a[changeInclude] = function () {
+        _a[todoTests.changeInclude] = function () {
             this.set(test, 'HTML2.html');
         },
         _a
