@@ -124,29 +124,56 @@ module todo.customElements {
     const calculateStyles = 'calculateStyles';
     const outerStyle = 'outerStyle';
     const innerStyle = 'innerStyle';
+    const getScrollbarWidth = 'getScrollbarWidth';
 
     const vScrollControl: polymer.Base = {
         is: 'todo-vscroll',
-        properties:{
-            [maxValue] : {
+        properties: {
+            [maxValue]: {
                 type: Number,
                 value: 1000,
 
             },
-            [pixelHeight] : {
+            [pixelHeight]: {
                 type: Number,
                 value: 291,
             },
         },
-        ready: function(){
+        ready: function () {
             this[calculateStyles]();
         },
-        [calculateStyles]: function(){
-            this[outerStyle] = `height:${this[pixelHeight]}px;background-color:red;overflow-y:auto;`;
+        [calculateStyles]: function () {
+            this[outerStyle] = `height:${this[pixelHeight]}px;width:${getScrollDim('Width')}px;background-color:red;overflow-y:auto;display:inline-block`;
             const innerHeight = this[maxValue] * this[pixelHeight];
             this[innerStyle] = `height:${innerHeight}px; background-color:green`
-        }
+        },
+
     };
+
+    function getScrollDim(dimension: string){
+        var outer = document.createElement("div");
+        outer.style.visibility = "hidden";
+        outer.style.width = "100px";
+        outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
+
+        document.body.appendChild(outer);
+        const offDim = 'offset' + dimension;
+        const dimNoScroll = outer[offDim];
+        // force scrollbars
+        outer.style.overflow = "scroll";
+
+        // add innerdiv
+        const inner = document.createElement("div");
+        inner.style[dimension.toLowerCase()] = "100%";
+        outer.appendChild(inner);
+
+        const dimWithScroll = inner[offDim];
+
+        // remove divs
+        outer.parentNode.removeChild(outer);
+
+        return dimNoScroll - dimWithScroll;
+    }
 
     const vScrollScript = Polymer(vScrollControl);
 

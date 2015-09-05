@@ -98,6 +98,7 @@ var todo;
         var calculateStyles = 'calculateStyles';
         var outerStyle = 'outerStyle';
         var innerStyle = 'innerStyle';
+        var getScrollbarWidth = 'getScrollbarWidth';
         var vScrollControl = (_b = {
                 is: 'todo-vscroll',
                 properties: (_c = {},
@@ -116,12 +117,31 @@ var todo;
                 }
             },
             _b[calculateStyles] = function () {
-                this[outerStyle] = "height:" + this[pixelHeight] + "px;background-color:red;overflow-y:auto;";
+                this[outerStyle] = "height:" + this[pixelHeight] + "px;width:" + getScrollDim('Width') + "px;background-color:red;overflow-y:auto;display:inline-block";
                 var innerHeight = this[maxValue] * this[pixelHeight];
                 this[innerStyle] = "height:" + innerHeight + "px; background-color:green";
             },
             _b
         );
+        function getScrollDim(dimension) {
+            var outer = document.createElement("div");
+            outer.style.visibility = "hidden";
+            outer.style.width = "100px";
+            outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
+            document.body.appendChild(outer);
+            var offDim = 'offset' + dimension;
+            var dimNoScroll = outer[offDim];
+            // force scrollbars
+            outer.style.overflow = "scroll";
+            // add innerdiv
+            var inner = document.createElement("div");
+            inner.style[dimension.toLowerCase()] = "100%";
+            outer.appendChild(inner);
+            var dimWithScroll = inner[offDim];
+            // remove divs
+            outer.parentNode.removeChild(outer);
+            return dimNoScroll - dimWithScroll;
+        }
         var vScrollScript = Polymer(vScrollControl);
         var hScrollControl = {
             is: 'todo-hscroll',
