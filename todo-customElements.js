@@ -107,7 +107,12 @@ var todo;
                     value: 291
                 },
                 _b
-            )
+            ),
+            ready: function () {
+                debugger;
+                this.temp = 'i am here';
+                this.outerStyle = 'color:red';
+            }
         };
         var vScrollScript = Polymer(vScrollControl);
         var hScrollControl = {

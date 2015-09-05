@@ -134,6 +134,11 @@ module todo.customElements {
                 type: Number,
                 value: 291,
             },
+        },
+        ready: function(){
+            debugger;
+            this.temp = 'i am here';
+            this.outerStyle = 'color:red';
         }
     };
 
