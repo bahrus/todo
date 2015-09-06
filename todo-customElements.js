@@ -101,6 +101,8 @@ var todo;
         var getScrollbarWidth = 'getScrollbarWidth';
         var handleScrollEvent = 'handleScrollEvent';
         var maxVerticalElementsInViewPane = 'maxVerticalElementsInViewPane';
+        var oldVal = 'oldVal';
+        var oldScrollTop = 'oldScrollTop';
         var vScrollControl = (_b = {
                 is: 'todo-vscroll',
                 properties: (_c = {},
@@ -129,7 +131,17 @@ var todo;
                 this[innerStyle] = "height:" + innerHeight + "px; background-color:green";
             },
             _b[handleScrollEvent] = function (e, detail) {
+                var scrollTop = e.srcElement.scrollTop;
+                console.log(scrollTop);
                 var newVal = Math.ceil((e.srcElement.scrollTop - 1) / this[pixelHeight]);
+                var thisOldVal = this[oldVal];
+                if (newVal === thisOldVal) {
+                    var thisOldScrollTop = this[oldScrollTop];
+                    if (scrollTop > thisOldScrollTop) {
+                        e.srcElement.scrollTop = e.srcElement.scrollTop + (scrollTop - thisOldScrollTop);
+                        return;
+                    }
+                }
                 var eventDetail = {
                     originalEventDetail: detail,
                     originalEvent: e,
@@ -137,6 +149,8 @@ var todo;
                     newValue: newVal
                 };
                 this.fire('scroll', eventDetail);
+                this[oldVal] = newVal;
+                this[oldScrollTop] = scrollTop;
             },
             _b
         );

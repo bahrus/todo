@@ -127,6 +127,8 @@ module todo.customElements {
     const getScrollbarWidth = 'getScrollbarWidth';
     const handleScrollEvent = 'handleScrollEvent';
     const maxVerticalElementsInViewPane = 'maxVerticalElementsInViewPane';
+    const oldVal = 'oldVal';
+    const oldScrollTop = 'oldScrollTop';
 
     const vScrollControl: polymer.Base = {
         is: 'todo-vscroll',
@@ -155,7 +157,17 @@ module todo.customElements {
             this[innerStyle] = `height:${innerHeight}px; background-color:green`
         },
         [handleScrollEvent]: function(e: Event, detail: any){
+            const scrollTop = e.srcElement.scrollTop;
+            console.log(scrollTop);
             const newVal = Math.ceil( (e.srcElement.scrollTop - 1) / this[pixelHeight]) ;
+            const thisOldVal = this[oldVal];
+            if(newVal === thisOldVal){
+                const thisOldScrollTop = this[oldScrollTop];
+                if(scrollTop > thisOldScrollTop){
+                    e.srcElement.scrollTop = e.srcElement.scrollTop + (scrollTop - thisOldScrollTop);
+                    return;
+                }
+            }
             const eventDetail = {
                 originalEventDetail: detail,
                 originalEvent: e,
@@ -163,6 +175,8 @@ module todo.customElements {
                 newValue: newVal,
             }
             this.fire('scroll', eventDetail);
+            this[oldVal] = newVal;
+            this[oldScrollTop] = scrollTop;
         }
     };
 
