@@ -125,6 +125,8 @@ module todo.customElements {
     const outerStyle = 'outerStyle';
     const innerStyle = 'innerStyle';
     const getScrollbarWidth = 'getScrollbarWidth';
+    const handleScrollEvent = 'handleScrollEvent';
+    const maxVerticalElementsInViewPane = 'maxVerticalElementsInViewPane';
 
     const vScrollControl: polymer.Base = {
         is: 'todo-vscroll',
@@ -138,16 +140,30 @@ module todo.customElements {
                 type: Number,
                 value: 291,
             },
+            [maxVerticalElementsInViewPane]:{
+                type: Number,
+                value: 10,
+            }
         },
         ready: function () {
             this[calculateStyles]();
         },
         [calculateStyles]: function () {
             this[outerStyle] = `height:${this[pixelHeight]}px;width:${getScrollDim('Width')}px;background-color:red;overflow-y:auto;display:inline-block`;
-            const innerHeight = this[maxValue] * this[pixelHeight];
+            const innerHeight =  (this[maxValue] - this[maxVerticalElementsInViewPane]) * this[pixelHeight];
+            //const innerHeight = this[maxValue];
             this[innerStyle] = `height:${innerHeight}px; background-color:green`
         },
-
+        [handleScrollEvent]: function(e: Event, detail: any){
+            const newVal = Math.ceil( (e.srcElement.scrollTop - 1) / this[pixelHeight]) ;
+            const eventDetail = {
+                originalEventDetail: detail,
+                originalEvent: e,
+                oldValue: 2,
+                newValue: newVal,
+            }
+            this.fire('scroll', eventDetail);
+        }
     };
 
     function getScrollDim(dimension: string){

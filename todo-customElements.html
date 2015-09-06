@@ -6,7 +6,7 @@
 
 <dom-module id="todo-vscroll">
     <template>
-        <div style$="[[outerStyle]]">
+        <div style$="[[outerStyle]]" on-scroll="handleScrollEvent">
             <div style$="[[innerStyle]]">&nbsp;</div>
 
         </div>

@@ -12,7 +12,17 @@
      <link href="todoInitTests.ts" rel="design-time"/>
     <script src="todoInitTests.js"></script>
 
+     <input type="text" id="verticalScrollValue">
+
      <todo-vscroll></todo-vscroll>
+
+     <script>
+         const vscroll = document.querySelector('todo-vscroll');
+         const verticalScrollValue = document.querySelector('#verticalScrollValue');
+         vscroll.addEventListener('scroll', function(e){
+             verticalScrollValue.value = e.detail.newValue;
+         });
+     </script>
 
      <todo-hscroll></todo-hscroll>
 

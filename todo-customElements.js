@@ -99,6 +99,8 @@ var todo;
         var outerStyle = 'outerStyle';
         var innerStyle = 'innerStyle';
         var getScrollbarWidth = 'getScrollbarWidth';
+        var handleScrollEvent = 'handleScrollEvent';
+        var maxVerticalElementsInViewPane = 'maxVerticalElementsInViewPane';
         var vScrollControl = (_b = {
                 is: 'todo-vscroll',
                 properties: (_c = {},
@@ -110,6 +112,10 @@ var todo;
                         type: Number,
                         value: 291
                     },
+                    _c[maxVerticalElementsInViewPane] = {
+                        type: Number,
+                        value: 10
+                    },
                     _c
                 ),
                 ready: function () {
@@ -118,8 +124,19 @@ var todo;
             },
             _b[calculateStyles] = function () {
                 this[outerStyle] = "height:" + this[pixelHeight] + "px;width:" + getScrollDim('Width') + "px;background-color:red;overflow-y:auto;display:inline-block";
-                var innerHeight = this[maxValue] * this[pixelHeight];
+                var innerHeight = (this[maxValue] - this[maxVerticalElementsInViewPane]) * this[pixelHeight];
+                //const innerHeight = this[maxValue];
                 this[innerStyle] = "height:" + innerHeight + "px; background-color:green";
+            },
+            _b[handleScrollEvent] = function (e, detail) {
+                var newVal = Math.ceil((e.srcElement.scrollTop - 1) / this[pixelHeight]);
+                var eventDetail = {
+                    originalEventDetail: detail,
+                    originalEvent: e,
+                    oldValue: 2,
+                    newValue: newVal
+                };
+                this.fire('scroll', eventDetail);
             },
             _b
         );
