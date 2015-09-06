@@ -157,14 +157,15 @@ module todo.customElements {
             this[innerStyle] = `height:${innerHeight}px; background-color:green`
         },
         [handleScrollEvent]: function(e: Event, detail: any){
-            const scrollTop = e.srcElement.scrollTop;
+            const srcElement = e.srcElement;
+            const scrollTop = srcElement.scrollTop;
             console.log(scrollTop);
-            const newVal = Math.ceil( (e.srcElement.scrollTop - 1) / this[pixelHeight]) ;
+            const newVal = Math.ceil( (scrollTop - 1) / this[pixelHeight]) ;
             const thisOldVal = this[oldVal];
             if(newVal === thisOldVal){
                 const thisOldScrollTop = this[oldScrollTop];
-                if(scrollTop > thisOldScrollTop){
-                    e.srcElement.scrollTop = e.srcElement.scrollTop + (scrollTop - thisOldScrollTop);
+                if(scrollTop != thisOldScrollTop){
+                    srcElement.scrollTop = srcElement.scrollTop + (scrollTop - thisOldScrollTop);
                     return;
                 }
             }
@@ -174,9 +175,13 @@ module todo.customElements {
                 oldValue: 2,
                 newValue: newVal,
             }
+            //debugger;
+            //Polymer.dom(this.root).setAttribute('value', newVal.toString());
+            this.setAttribute('value', newVal.toString());
             this.fire('scroll', eventDetail);
             this[oldVal] = newVal;
             this[oldScrollTop] = scrollTop;
+
         }
     };
 
