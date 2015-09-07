@@ -102,7 +102,71 @@ var todo;
         var handleScrollEvent = 'handleScrollEvent';
         var maxVerticalElementsInViewPane = 'maxVerticalElementsInViewPane';
         var oldVal = 'oldVal';
-        var oldScrollTop = 'oldScrollTop';
+        var oldScrollDimVal = 'oldScrollDimVal';
+        function getScrollDim(dimension) {
+            var outer = document.createElement("div");
+            outer.style.visibility = "hidden";
+            switch (dimension) {
+                case 'Height':
+                    outer.style.height = "100px";
+                    break;
+                case 'Width':
+                    outer.style.width = "100px";
+                    break;
+            }
+            outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
+            document.body.appendChild(outer);
+            var offDim = 'offset' + dimension;
+            var dimNoScroll = outer[offDim];
+            // force scrollbars
+            outer.style.overflow = "scroll";
+            // add innerdiv
+            var inner = document.createElement("div");
+            inner.style[dimension.toLowerCase()] = "100%";
+            outer.appendChild(inner);
+            var dimWithScroll = inner[offDim];
+            // remove divs
+            outer.parentNode.removeChild(outer);
+            return dimNoScroll - dimWithScroll;
+        }
+        function handleScrollEventForDim(e, temp, direction) {
+            var scrollDim;
+            var pixelDim;
+            switch (direction) {
+                case 'v':
+                    scrollDim = 'scrollTop';
+                    pixelDim = pixelHeight;
+                    break;
+                case 'h':
+                    scrollDim = 'scrollLeft';
+                    pixelDim = pixelWidth;
+                    break;
+            }
+            var srcElement = e.srcElement;
+            var scrollDimVal = srcElement[scrollDim];
+            console.log(scrollDimVal);
+            var newVal = Math.ceil((scrollDimVal - 1) / temp[pixelDim]);
+            var thisOldVal = temp[oldVal];
+            if (newVal === thisOldVal) {
+                var thisOldScrollDimVal = temp[oldScrollDimVal];
+                if (scrollDimVal != thisOldScrollDimVal) {
+                    srcElement.scrollTop = srcElement.scrollTop + (scrollDimVal - thisOldScrollDimVal);
+                    return;
+                }
+            }
+            var eventDetail = {
+                originalEvent: e,
+                oldValue: thisOldVal,
+                newValue: newVal
+            };
+            //debugger;
+            //Polymer.dom(this.root).setAttribute('value', newVal.toString());
+            var _thisDomapi = temp;
+            _thisDomapi.setAttribute('value', newVal.toString());
+            temp.fire('scroll', eventDetail);
+            temp[oldVal] = newVal;
+            temp[oldScrollDimVal] = scrollDimVal;
+        }
         var vScrollControl = (_b = {
                 is: 'todo-vscroll',
                 properties: (_c = {},
@@ -130,60 +194,12 @@ var todo;
                 //const innerHeight = this[maxValue];
                 this[innerStyle] = "height:" + innerHeight + "px; background-color:green";
             },
-            _b[handleScrollEvent] = function (e, detail) {
-                var srcElement = e.srcElement;
-                var scrollTop = srcElement.scrollTop;
-                console.log(scrollTop);
-                var newVal = Math.ceil((scrollTop - 1) / this[pixelHeight]);
-                var thisOldVal = this[oldVal];
-                if (newVal === thisOldVal) {
-                    var thisOldScrollTop = this[oldScrollTop];
-                    if (scrollTop != thisOldScrollTop) {
-                        srcElement.scrollTop = srcElement.scrollTop + (scrollTop - thisOldScrollTop);
-                        return;
-                    }
-                }
-                var eventDetail = {
-                    originalEventDetail: detail,
-                    originalEvent: e,
-                    oldValue: 2,
-                    newValue: newVal
-                };
-                //debugger;
-                //Polymer.dom(this.root).setAttribute('value', newVal.toString());
-                this.setAttribute('value', newVal.toString());
-                this.fire('scroll', eventDetail);
-                this[oldVal] = newVal;
-                this[oldScrollTop] = scrollTop;
+            _b[handleScrollEvent] = function (e) {
+                var temp = this;
+                handleScrollEventForDim(e, temp, 'v');
             },
             _b
         );
-        function getScrollDim(dimension) {
-            var outer = document.createElement("div");
-            outer.style.visibility = "hidden";
-            switch (dimension) {
-                case 'Height':
-                    outer.style.height = "100px";
-                    break;
-                case 'Width':
-                    outer.style.width = "100px";
-                    break;
-            }
-            outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
-            document.body.appendChild(outer);
-            var offDim = 'offset' + dimension;
-            var dimNoScroll = outer[offDim];
-            // force scrollbars
-            outer.style.overflow = "scroll";
-            // add innerdiv
-            var inner = document.createElement("div");
-            inner.style[dimension.toLowerCase()] = "100%";
-            outer.appendChild(inner);
-            var dimWithScroll = inner[offDim];
-            // remove divs
-            outer.parentNode.removeChild(outer);
-            return dimNoScroll - dimWithScroll;
-        }
         var vScrollScript = Polymer(vScrollControl);
         var hScrollControl = (_d = {
                 is: 'todo-hscroll',

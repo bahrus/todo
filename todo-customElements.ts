@@ -128,62 +128,7 @@ module todo.customElements {
     const handleScrollEvent = 'handleScrollEvent';
     const maxVerticalElementsInViewPane = 'maxVerticalElementsInViewPane';
     const oldVal = 'oldVal';
-    const oldScrollTop = 'oldScrollTop';
-
-    const vScrollControl: polymer.Base = {
-        is: 'todo-vscroll',
-        properties: {
-            [maxValue]: {
-                type: Number,
-                value: 1000,
-
-            },
-            [pixelHeight]: {
-                type: Number,
-                value: 291,
-            },
-            [maxVerticalElementsInViewPane]:{
-                type: Number,
-                value: 10,
-            }
-        },
-        ready: function () {
-            this[calculateStyles]();
-        },
-        [calculateStyles]: function () {
-            this[outerStyle] = `height:${this[pixelHeight]}px;width:${getScrollDim('Width')}px;background-color:red;overflow-y:auto;display:inline-block`;
-            const innerHeight =  (this[maxValue] - this[maxVerticalElementsInViewPane]) * this[pixelHeight];
-            //const innerHeight = this[maxValue];
-            this[innerStyle] = `height:${innerHeight}px; background-color:green`
-        },
-        [handleScrollEvent]: function(e: Event, detail: any){
-            const srcElement = e.srcElement;
-            const scrollTop = srcElement.scrollTop;
-            console.log(scrollTop);
-            const newVal = Math.ceil( (scrollTop - 1) / this[pixelHeight]) ;
-            const thisOldVal = this[oldVal];
-            if(newVal === thisOldVal){
-                const thisOldScrollTop = this[oldScrollTop];
-                if(scrollTop != thisOldScrollTop){
-                    srcElement.scrollTop = srcElement.scrollTop + (scrollTop - thisOldScrollTop);
-                    return;
-                }
-            }
-            const eventDetail = {
-                originalEventDetail: detail,
-                originalEvent: e,
-                oldValue: 2,
-                newValue: newVal,
-            }
-            //debugger;
-            //Polymer.dom(this.root).setAttribute('value', newVal.toString());
-            this.setAttribute('value', newVal.toString());
-            this.fire('scroll', eventDetail);
-            this[oldVal] = newVal;
-            this[oldScrollTop] = scrollTop;
-
-        }
-    };
+    const oldScrollDimVal = 'oldScrollDimVal';
 
     function getScrollDim(dimension: string){
         var outer = document.createElement("div");
@@ -217,6 +162,81 @@ module todo.customElements {
 
         return dimNoScroll - dimWithScroll;
     }
+
+    function handleScrollEventForDim(e: Event, temp: polymer.Base, direction: string){
+        let scrollDim: string;
+        let pixelDim: string;
+        switch(direction){
+            case 'v':
+                scrollDim = 'scrollTop';
+                pixelDim = pixelHeight;
+                break;
+            case 'h':
+                scrollDim = 'scrollLeft';
+                pixelDim = pixelWidth;
+                break;
+        }
+        const srcElement = e.srcElement;
+        const scrollDimVal = srcElement[scrollDim];
+        console.log(scrollDimVal);
+        const newVal = Math.ceil( (scrollDimVal - 1) / temp[pixelDim]) ;
+        const thisOldVal = temp[oldVal];
+        if(newVal === thisOldVal){
+            const thisOldScrollDimVal = temp[oldScrollDimVal];
+            if(scrollDimVal != thisOldScrollDimVal){
+                srcElement.scrollTop = srcElement.scrollTop + (scrollDimVal - thisOldScrollDimVal);
+                return;
+            }
+        }
+        const eventDetail = {
+            originalEvent: e,
+            oldValue: thisOldVal,
+            newValue: newVal,
+        };
+        //debugger;
+        //Polymer.dom(this.root).setAttribute('value', newVal.toString());
+        const _thisDomapi = <polymer.DomApi><any> temp;
+        _thisDomapi.setAttribute('value', newVal.toString());
+
+        temp.fire('scroll', eventDetail);
+        temp[oldVal] = newVal;
+        temp[oldScrollDimVal] = scrollDimVal;
+    }
+
+    const vScrollControl: polymer.Base = {
+        is: 'todo-vscroll',
+        properties: {
+            [maxValue]: {
+                type: Number,
+                value: 1000,
+
+            },
+            [pixelHeight]: {
+                type: Number,
+                value: 291,
+            },
+            [maxVerticalElementsInViewPane]:{
+                type: Number,
+                value: 10,
+            }
+        },
+        ready: function () {
+            this[calculateStyles]();
+        },
+        [calculateStyles]: function () {
+            this[outerStyle] = `height:${this[pixelHeight]}px;width:${getScrollDim('Width')}px;background-color:red;overflow-y:auto;display:inline-block`;
+            const innerHeight =  (this[maxValue] - this[maxVerticalElementsInViewPane]) * this[pixelHeight];
+            //const innerHeight = this[maxValue];
+            this[innerStyle] = `height:${innerHeight}px; background-color:green`
+        },
+        [handleScrollEvent]: function(e: Event) {
+            const temp = this;
+            handleScrollEventForDim(e, temp, 'v');
+
+        }
+    };
+
+
 
     const vScrollScript = Polymer(vScrollControl);
 
