@@ -127,6 +127,7 @@ module todo.customElements {
     const getScrollbarWidth = 'getScrollbarWidth';
     const handleScrollEvent = 'handleScrollEvent';
     const maxVerticalElementsInViewPane = 'maxVerticalElementsInViewPane';
+    //const maxHorizontalElementsInViewPane = 'maxHorizontalElementsInViewPane';
     const oldVal = 'oldVal';
     const oldScrollDimVal = 'oldScrollDimVal';
 
@@ -249,17 +250,20 @@ module todo.customElements {
                 type: Number,
                 value: 317
             },
+            [maxVerticalElementsInViewPane]:{
+                type: Number,
+                value: 10,
+            }
         },
         ready: function () {
             this[calculateStyles]();
         },
         [calculateStyles]: function () {
             this[outerStyle] = `width:${this[pixelWidth]}px;height:${getScrollDim('Height')}px;background-color:red;overflow-x:auto;display:inline-block`;
-            const innerWidth = this[maxValue] * this[pixelWidth];
+            const innerWidth = (this[maxValue] - this[maxVerticalElementsInViewPane]) * this[pixelWidth];
             this[innerStyle] = `width:${innerWidth}px; background-color:green`
         },
         [handleScrollEvent]: function(e: Event) {
-            debugger;
             handleScrollEventForDim(e, this, 'h');
         }
     };

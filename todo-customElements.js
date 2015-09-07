@@ -101,6 +101,7 @@ var todo;
         var getScrollbarWidth = 'getScrollbarWidth';
         var handleScrollEvent = 'handleScrollEvent';
         var maxVerticalElementsInViewPane = 'maxVerticalElementsInViewPane';
+        //const maxHorizontalElementsInViewPane = 'maxHorizontalElementsInViewPane';
         var oldVal = 'oldVal';
         var oldScrollDimVal = 'oldScrollDimVal';
         function getScrollDim(dimension) {
@@ -211,6 +212,10 @@ var todo;
                         type: Number,
                         value: 317
                     },
+                    _e[maxVerticalElementsInViewPane] = {
+                        type: Number,
+                        value: 10
+                    },
                     _e
                 ),
                 ready: function () {
@@ -219,11 +224,10 @@ var todo;
             },
             _d[calculateStyles] = function () {
                 this[outerStyle] = "width:" + this[pixelWidth] + "px;height:" + getScrollDim('Height') + "px;background-color:red;overflow-x:auto;display:inline-block";
-                var innerWidth = this[maxValue] * this[pixelWidth];
+                var innerWidth = (this[maxValue] - this[maxVerticalElementsInViewPane]) * this[pixelWidth];
                 this[innerStyle] = "width:" + innerWidth + "px; background-color:green";
             },
             _d[handleScrollEvent] = function (e) {
-                debugger;
                 handleScrollEventForDim(e, this, 'h');
             },
             _d
