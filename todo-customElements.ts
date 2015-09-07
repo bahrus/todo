@@ -163,7 +163,7 @@ module todo.customElements {
         return dimNoScroll - dimWithScroll;
     }
 
-    function handleScrollEventForDim(e: Event, temp: polymer.Base, direction: string){
+    function handleScrollEventForDim(e: Event, scrollEl: polymer.Base, direction: string){
         let scrollDim: string;
         let pixelDim: string;
         switch(direction){
@@ -179,12 +179,12 @@ module todo.customElements {
         const srcElement = e.srcElement;
         const scrollDimVal = srcElement[scrollDim];
         console.log(scrollDimVal);
-        const newVal = Math.ceil( (scrollDimVal - 1) / temp[pixelDim]) ;
-        const thisOldVal = temp[oldVal];
+        const newVal = Math.ceil( (scrollDimVal - 1) / scrollEl[pixelDim]) ;
+        const thisOldVal = scrollEl[oldVal];
         if(newVal === thisOldVal){
-            const thisOldScrollDimVal = temp[oldScrollDimVal];
+            const thisOldScrollDimVal = scrollEl[oldScrollDimVal];
             if(scrollDimVal != thisOldScrollDimVal){
-                srcElement.scrollTop = srcElement.scrollTop + (scrollDimVal - thisOldScrollDimVal);
+                srcElement[scrollDim] = srcElement[scrollDim] + (scrollDimVal - thisOldScrollDimVal);
                 return;
             }
         }
@@ -195,12 +195,12 @@ module todo.customElements {
         };
         //debugger;
         //Polymer.dom(this.root).setAttribute('value', newVal.toString());
-        const _thisDomapi = <polymer.DomApi><any> temp;
+        const _thisDomapi = <polymer.DomApi><any> scrollEl;
         _thisDomapi.setAttribute('value', newVal.toString());
 
-        temp.fire('scroll', eventDetail);
-        temp[oldVal] = newVal;
-        temp[oldScrollDimVal] = scrollDimVal;
+        scrollEl.fire('scroll', eventDetail);
+        scrollEl[oldVal] = newVal;
+        scrollEl[oldScrollDimVal] = scrollDimVal;
     }
 
     const vScrollControl: polymer.Base = {
@@ -230,9 +230,7 @@ module todo.customElements {
             this[innerStyle] = `height:${innerHeight}px; background-color:green`
         },
         [handleScrollEvent]: function(e: Event) {
-            const temp = this;
-            handleScrollEventForDim(e, temp, 'v');
-
+            handleScrollEventForDim(e, this, 'v');
         }
     };
 
@@ -260,6 +258,10 @@ module todo.customElements {
             const innerWidth = this[maxValue] * this[pixelWidth];
             this[innerStyle] = `width:${innerWidth}px; background-color:green`
         },
+        [handleScrollEvent]: function(e: Event) {
+            debugger;
+            handleScrollEventForDim(e, this, 'h');
+        }
     };
 
     const hScrollScript = Polymer(hScrollControl);

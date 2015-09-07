@@ -15,7 +15,7 @@
 
 <dom-module id="todo-hscroll">
     <template>
-        <div style$="[[outerStyle]]">
+        <div style$="[[outerStyle]]" on-scroll="handleScrollEvent">
             <div style$="[[innerStyle]]">&nbsp;</div>
         </div>
     </template>

@@ -129,7 +129,7 @@ var todo;
             outer.parentNode.removeChild(outer);
             return dimNoScroll - dimWithScroll;
         }
-        function handleScrollEventForDim(e, temp, direction) {
+        function handleScrollEventForDim(e, scrollEl, direction) {
             var scrollDim;
             var pixelDim;
             switch (direction) {
@@ -145,12 +145,12 @@ var todo;
             var srcElement = e.srcElement;
             var scrollDimVal = srcElement[scrollDim];
             console.log(scrollDimVal);
-            var newVal = Math.ceil((scrollDimVal - 1) / temp[pixelDim]);
-            var thisOldVal = temp[oldVal];
+            var newVal = Math.ceil((scrollDimVal - 1) / scrollEl[pixelDim]);
+            var thisOldVal = scrollEl[oldVal];
             if (newVal === thisOldVal) {
-                var thisOldScrollDimVal = temp[oldScrollDimVal];
+                var thisOldScrollDimVal = scrollEl[oldScrollDimVal];
                 if (scrollDimVal != thisOldScrollDimVal) {
-                    srcElement.scrollTop = srcElement.scrollTop + (scrollDimVal - thisOldScrollDimVal);
+                    srcElement[scrollDim] = srcElement[scrollDim] + (scrollDimVal - thisOldScrollDimVal);
                     return;
                 }
             }
@@ -161,11 +161,11 @@ var todo;
             };
             //debugger;
             //Polymer.dom(this.root).setAttribute('value', newVal.toString());
-            var _thisDomapi = temp;
+            var _thisDomapi = scrollEl;
             _thisDomapi.setAttribute('value', newVal.toString());
-            temp.fire('scroll', eventDetail);
-            temp[oldVal] = newVal;
-            temp[oldScrollDimVal] = scrollDimVal;
+            scrollEl.fire('scroll', eventDetail);
+            scrollEl[oldVal] = newVal;
+            scrollEl[oldScrollDimVal] = scrollDimVal;
         }
         var vScrollControl = (_b = {
                 is: 'todo-vscroll',
@@ -195,8 +195,7 @@ var todo;
                 this[innerStyle] = "height:" + innerHeight + "px; background-color:green";
             },
             _b[handleScrollEvent] = function (e) {
-                var temp = this;
-                handleScrollEventForDim(e, temp, 'v');
+                handleScrollEventForDim(e, this, 'v');
             },
             _b
         );
@@ -222,6 +221,10 @@ var todo;
                 this[outerStyle] = "width:" + this[pixelWidth] + "px;height:" + getScrollDim('Height') + "px;background-color:red;overflow-x:auto;display:inline-block";
                 var innerWidth = this[maxValue] * this[pixelWidth];
                 this[innerStyle] = "width:" + innerWidth + "px; background-color:green";
+            },
+            _d[handleScrollEvent] = function (e) {
+                debugger;
+                handleScrollEventForDim(e, this, 'h');
             },
             _d
         );
