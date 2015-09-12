@@ -177,6 +177,7 @@ module todo.customElements {
                 pixelDim = pixelWidth;
                 break;
         }
+        //const srcElement = e.target;
         const srcElement = e.srcElement;
         const scrollDimVal = srcElement[scrollDim];
         console.log(scrollDimVal);

@@ -143,6 +143,7 @@ var todo;
                     pixelDim = pixelWidth;
                     break;
             }
+            //const srcElement = e.target;
             var srcElement = e.srcElement;
             var scrollDimVal = srcElement[scrollDim];
             console.log(scrollDimVal);
