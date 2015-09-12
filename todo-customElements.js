@@ -100,7 +100,7 @@ var todo;
         var innerStyle = 'innerStyle';
         var getScrollbarWidth = 'getScrollbarWidth';
         var handleScrollEvent = 'handleScrollEvent';
-        var maxVerticalElementsInViewPane = 'maxVerticalElementsInViewPane';
+        var maxDimElementsInViewPane = 'maxDimElementsInViewPane';
         //const maxHorizontalElementsInViewPane = 'maxHorizontalElementsInViewPane';
         var oldVal = 'oldVal';
         var oldScrollDimVal = 'oldScrollDimVal';
@@ -179,7 +179,7 @@ var todo;
                         type: Number,
                         value: 291
                     },
-                    _c[maxVerticalElementsInViewPane] = {
+                    _c[maxDimElementsInViewPane] = {
                         type: Number,
                         value: 10
                     },
@@ -191,7 +191,7 @@ var todo;
             },
             _b[calculateStyles] = function () {
                 this[outerStyle] = "height:" + this[pixelHeight] + "px;width:" + getScrollDim('Width') + "px;background-color:red;overflow-y:auto;display:inline-block";
-                var innerHeight = (this[maxValue] - this[maxVerticalElementsInViewPane]) * this[pixelHeight];
+                var innerHeight = (this[maxValue] - this[maxDimElementsInViewPane]) * this[pixelHeight];
                 //const innerHeight = this[maxValue];
                 this[innerStyle] = "height:" + innerHeight + "px; background-color:green";
             },
@@ -212,7 +212,7 @@ var todo;
                         type: Number,
                         value: 317
                     },
-                    _e[maxVerticalElementsInViewPane] = {
+                    _e[maxDimElementsInViewPane] = {
                         type: Number,
                         value: 10
                     },
@@ -224,7 +224,7 @@ var todo;
             },
             _d[calculateStyles] = function () {
                 this[outerStyle] = "width:" + this[pixelWidth] + "px;height:" + getScrollDim('Height') + "px;background-color:red;overflow-x:auto;display:inline-block";
-                var innerWidth = (this[maxValue] - this[maxVerticalElementsInViewPane]) * this[pixelWidth];
+                var innerWidth = (this[maxValue] - this[maxDimElementsInViewPane]) * this[pixelWidth];
                 this[innerStyle] = "width:" + innerWidth + "px; background-color:green";
             },
             _d[handleScrollEvent] = function (e) {

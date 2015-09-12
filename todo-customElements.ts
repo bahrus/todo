@@ -126,7 +126,7 @@ module todo.customElements {
     const innerStyle = 'innerStyle';
     const getScrollbarWidth = 'getScrollbarWidth';
     const handleScrollEvent = 'handleScrollEvent';
-    const maxVerticalElementsInViewPane = 'maxVerticalElementsInViewPane';
+    const maxDimElementsInViewPane = 'maxDimElementsInViewPane';
     //const maxHorizontalElementsInViewPane = 'maxHorizontalElementsInViewPane';
     const oldVal = 'oldVal';
     const oldScrollDimVal = 'oldScrollDimVal';
@@ -216,7 +216,7 @@ module todo.customElements {
                 type: Number,
                 value: 291,
             },
-            [maxVerticalElementsInViewPane]:{
+            [maxDimElementsInViewPane]:{
                 type: Number,
                 value: 10,
             }
@@ -226,7 +226,7 @@ module todo.customElements {
         },
         [calculateStyles]: function () {
             this[outerStyle] = `height:${this[pixelHeight]}px;width:${getScrollDim('Width')}px;background-color:red;overflow-y:auto;display:inline-block`;
-            const innerHeight =  (this[maxValue] - this[maxVerticalElementsInViewPane]) * this[pixelHeight];
+            const innerHeight =  (this[maxValue] - this[maxDimElementsInViewPane]) * this[pixelHeight];
             //const innerHeight = this[maxValue];
             this[innerStyle] = `height:${innerHeight}px; background-color:green`
         },
@@ -250,7 +250,7 @@ module todo.customElements {
                 type: Number,
                 value: 317
             },
-            [maxVerticalElementsInViewPane]:{
+            [maxDimElementsInViewPane]:{
                 type: Number,
                 value: 10,
             }
@@ -260,7 +260,7 @@ module todo.customElements {
         },
         [calculateStyles]: function () {
             this[outerStyle] = `width:${this[pixelWidth]}px;height:${getScrollDim('Height')}px;background-color:red;overflow-x:auto;display:inline-block`;
-            const innerWidth = (this[maxValue] - this[maxVerticalElementsInViewPane]) * this[pixelWidth];
+            const innerWidth = (this[maxValue] - this[maxDimElementsInViewPane]) * this[pixelWidth];
             this[innerStyle] = `width:${innerWidth}px; background-color:green`
         },
         [handleScrollEvent]: function(e: Event) {
