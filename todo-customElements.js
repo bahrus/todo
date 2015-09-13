@@ -144,9 +144,8 @@ var todo;
                     break;
             }
             //const srcElement = e.target;
-            var srcElement = e.srcElement;
+            var srcElement = e.target || e.srcElement;
             var scrollDimVal = srcElement[scrollDim];
-            console.log(scrollDimVal);
             var newVal = Math.ceil((scrollDimVal - 1) / scrollEl[pixelDim]);
             var thisOldVal = scrollEl[oldVal];
             if (newVal === thisOldVal) {

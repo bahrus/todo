@@ -178,9 +178,8 @@ module todo.customElements {
                 break;
         }
         //const srcElement = e.target;
-        const srcElement = e.srcElement;
+        const srcElement = e.target || e.srcElement;
         const scrollDimVal = srcElement[scrollDim];
-        console.log(scrollDimVal);
         const newVal = Math.ceil( (scrollDimVal - 1) / scrollEl[pixelDim]) ;
         const thisOldVal = scrollEl[oldVal];
         if(newVal === thisOldVal){
