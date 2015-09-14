@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Scrollbar Tests</title>
+    <script src="Scripts/src/webcomponents-lite.js"></script>
+    <link rel="import" href="todo-customElements.html" />
+    <link rel="import" href="employeeList.html" />
+</head>
+<body>
+    <!--<link  href="PolymerActions.ts" rel="design-time" />-->
+    <!--<script src="PolymerActions.js"></script>-->
+    <table>
+        <tr>
+            <td><input type="text" id="verticalScrollValue"></td>
+            <td><input type="text" id="horizontalScrollValue"></td>
+            <td><todo-vscroll></todo-vscroll></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <todo-hscroll></todo-hscroll>
+            </td>
+        </tr>
+    </table>
+
+    <script>
+        const vscroll = document.querySelector('todo-vscroll');
+        const verticalScrollValue = document.querySelector('#verticalScrollValue');
+        vscroll.addEventListener('scroll', function(e){
+            verticalScrollValue.value = e.detail.newValue;
+        });
+        const hscroll = document.querySelector('todo-hscroll');
+        const horizontalScrollValue = document.querySelector('#horizontalScrollValue');
+        hscroll.addEventListener('scroll', function(e){
+            horizontalScrollValue.value = e.detail.newValue;
+        });
+    </script>
+</body>
+</html>

@@ -231,6 +231,7 @@ module todo.customElements {
             this[innerStyle] = `height:${innerHeight}px; background-color:green`
         },
         [handleScrollEvent]: function(e: Event) {
+            debugger;
             handleScrollEventForDim(e, this, 'v');
         }
     };

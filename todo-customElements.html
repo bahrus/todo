@@ -1,14 +1,15 @@
 ﻿<link rel="import" href="Scripts/polymer.html"/>
+<!--<link href="todo-customElements.ts" rel="design-time" />-->
+<!--<script src="todo-customElements.js"></script>-->
 
+<!--<link  href="PolymerActions.ts" rel="design-time" />-->
+<!--<script src="PolymerActions.js"></script>-->
 
-<link  href="PolymerActions.ts" rel="design-time" />
-<script src="PolymerActions.js"></script>
 
 <dom-module id="todo-vscroll">
     <template>
         <div style$="[[outerStyle]]" on-scroll="handleScrollEvent">
             <div style$="[[innerStyle]]">&nbsp;</div>
-
         </div>
     </template>
 </dom-module>
