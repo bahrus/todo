@@ -132,36 +132,48 @@ module todo.customElements {
     const oldScrollDimVal = 'oldScrollDimVal';
 
     function getScrollDim(dimension: string){
-        var outer = document.createElement("div");
-        outer.style.visibility = "hidden";
-        switch(dimension){
-            case 'Height':
-                outer.style.height = "100px";
-                break;
-            case 'Width':
-                outer.style.width = "100px";
-                break;
-        }
+        //var outer = document.createElement("div");
+        //outer.style.visibility = "hidden";
+        //switch(dimension){
+        //    case 'Height':
+        //        outer.style.height = "100px";
+        //        break;
+        //    case 'Width':
+        //        outer.style.width = "100px";
+        //        break;
+        //}
+        //
+        //outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
+        //
+        //document.body.appendChild(outer);
+        //const offDim = 'offset' + dimension;
+        //const dimNoScroll = outer[offDim];
+        //// force scrollbars
+        //outer.style.overflow = "scroll";
+        //
+        //// add innerdiv
+        //const inner = document.createElement("div");
+        //inner.style[dimension.toLowerCase()] = "100%";
+        //outer.appendChild(inner);
+        //
+        //const dimWithScroll = inner[offDim];
+        //
+        //// remove divs
+        //outer.parentNode.removeChild(outer);
+        //console.log('dimNoScroll - dimWithScroll = ' + (dimNoScroll - dimWithScroll));
+        //return dimNoScroll - dimWithScroll;
 
-        outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
 
-        document.body.appendChild(outer);
-        const offDim = 'offset' + dimension;
-        const dimNoScroll = outer[offDim];
-        // force scrollbars
-        outer.style.overflow = "scroll";
 
-        // add innerdiv
-        const inner = document.createElement("div");
-        inner.style[dimension.toLowerCase()] = "100%";
-        outer.appendChild(inner);
+        var scrollDiv = document.createElement("div");
+        scrollDiv.className = "scrollbar-measure";
+        document.body.appendChild(scrollDiv);
 
-        const dimWithScroll = inner[offDim];
-
-        // remove divs
-        outer.parentNode.removeChild(outer);
-
-        return dimNoScroll - dimWithScroll;
+// Get the scrollbar width
+        var scrollbarWidth = scrollDiv['offset' + dimension] - scrollDiv['client' + dimension];
+        document.body.removeChild(scrollDiv);
+        if(scrollbarWidth === 0) scrollbarWidth = 17;
+        return scrollbarWidth;
     }
 
     function handleScrollEventForDim(e: Event, scrollEl: polymer.Base, direction: string){
