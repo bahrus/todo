@@ -196,7 +196,6 @@ var todo;
                 this[innerStyle] = "height:" + innerHeight + "px; background-color:green";
             },
             _b[handleScrollEvent] = function (e) {
-                debugger;
                 handleScrollEventForDim(e, this, 'v');
             },
             _b
