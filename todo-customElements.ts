@@ -170,7 +170,7 @@ module todo.customElements {
         document.body.appendChild(scrollDiv);
 
 // Get the scrollbar width
-        var scrollbarWidth = scrollDiv['offset' + dimension] - scrollDiv['client' + dimension];
+        let scrollbarWidth = scrollDiv['offset' + dimension] - scrollDiv['client' + dimension];
         document.body.removeChild(scrollDiv);
         if(scrollbarWidth === 0) scrollbarWidth = 17;
         return scrollbarWidth;
