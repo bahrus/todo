@@ -13,6 +13,7 @@
 		"app.ts",
 		"SampleBuildTasks2.ts",
 		"todo-customElements.ts",
+		"todo-scroll.ts",
 		"PolymerActions.ts",
 		"todoInitTests.ts",
 		"employee-list.ts"

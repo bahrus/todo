@@ -6,11 +6,7 @@
   <template>
     <div>Name: <span>[[test]]</span></div>
 
-    <script is="todo-attr">
-      [{'on-click': todoTests.changeInclude}]
-    </script>
-    <div>ClickMeToChange2</div>
-    <link is="todo-include" all href="[[test]]"/>
+
     
     <div> Employee list: </div>
     <template is="dom-repeat" items="{{employees}}">

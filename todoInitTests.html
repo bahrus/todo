@@ -15,36 +15,6 @@
      <link href="todoInitTests.ts" rel="design-time"/>
     <script src="todoInitTests.js"></script>
 
-     <table>
-         <tr>
-             <td><input type="text" id="verticalScrollValue"></td>
-             <td><input type="text" id="horizontalScrollValue"></td>
-             <td><todo-vscroll></todo-vscroll></td>
-         </tr>
-         <tr>
-             <td colspan="3">
-                 <todo-hscroll></todo-hscroll>
-             </td>
-         </tr>
-     </table>
-
-
-
-
-
-     <script>
-         const vscroll = document.querySelector('todo-vscroll');
-         const verticalScrollValue = document.querySelector('#verticalScrollValue');
-         vscroll.addEventListener('scroll', function(e){
-             verticalScrollValue.value = e.detail.newValue;
-         });
-         const hscroll = document.querySelector('todo-hscroll');
-         const horizontalScrollValue = document.querySelector('#horizontalScrollValue');
-         hscroll.addEventListener('scroll', function(e){
-             horizontalScrollValue.value = e.detail.newValue;
-         });
-     </script>
-
 
 
     <script is="todo-init">todoTests.pushMyName</script>

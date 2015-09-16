@@ -1,0 +1,29 @@
+<link rel="import" href="Scripts/polymer.html"/>
+<style>
+    .scrollbar-measure {
+        width: 100px;
+        height: 100px;
+        overflow: scroll;
+        position: absolute;
+        top: -9999px;
+    }
+</style>
+
+<dom-module id="todo-vscroll">
+    <template>
+        <div style$="[[outerStyle]]" on-scroll="handleScrollEvent">
+            <div style$="[[innerStyle]]">&nbsp;</div>
+        </div>
+    </template>
+</dom-module>
+
+<dom-module id="todo-hscroll">
+    <template>
+        <div style$="[[outerStyle]]" on-scroll="handleScrollEvent">
+            <div style$="[[innerStyle]]">&nbsp;</div>
+        </div>
+    </template>
+</dom-module>
+
+<link href="todo-scroll.ts" rel="design-time" />
+<script src="todo-scroll.js"></script>
