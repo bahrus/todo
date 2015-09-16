@@ -7,8 +7,13 @@
     <link rel="import" href="todo-include.html" />
 </head>
 <body>
-
-<div>ClickMeToChange2</div>
+<script>
+    function handleClick(){
+        var includeEl = document.querySelector('link[is="todo-include"]');
+        includeEl.href = "HTML2.html"
+    }
+</script>
+<div onclick="handleClick()">Click me to change included url</div>
 <link is="todo-include" all href="HTML1.html"/>
 </body>
 </html>
