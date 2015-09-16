@@ -23,6 +23,9 @@ var todo;
                     var link = that.importHref(that.href, function () {
                         that.async(function () {
                             that.style.display = 'inline-block';
+                            while (that.childElementCount > 0) {
+                                Polymer.dom(that).removeChild(that.firstChild);
+                            }
                             Polymer.dom(that).appendChild(link.import.body.firstChild);
                         }, 1);
                     }, function () {

@@ -23,6 +23,10 @@ module todo.customElements {
                     () => {
                         that.async(() => {
                             that.style.display = 'inline-block';
+                            while(that.childElementCount > 0){
+                                Polymer.dom(that).removeChild(that.firstChild);
+                            }
+
                             Polymer.dom(that).appendChild(link.import.body.firstChild);
                         }, 1);
 
