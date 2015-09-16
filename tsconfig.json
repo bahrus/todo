@@ -15,8 +15,9 @@
 		"todo-customElements.ts",
 		"todo-scroll.ts",
 		"todo-include.ts",
-		"PolymerActions.ts",
-		"todoInitTests.ts",
+		"todo-init.ts"
+,		"PolymerActions.ts",
+		"initTests.ts",
 		"employee-list.ts"
   	]
 }

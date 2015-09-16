@@ -14,17 +14,9 @@ module todoTests {
                 {first: 'Sally', last: 'Johnson'}
             ];
 
-            this[test] = 'HTML1.html';
+            this[test] = 'Employees';
         },
 
 
-        
-        // listen: function (node, eventNamemethodName) {
-        //     debugger;
-        // },
-        
-        [changeInclude]: function() {
-            this.set(test, 'HTML2.html');
-        }
     });
 }

@@ -1,10 +1,10 @@
 http://localhost/ -> /todoInitTests.html
-http://localhost/todoInitTests.html -> /todoInitTests.js
+http://localhost/todoInitTests.html -> /initTests.js
 http://localhost/ -> /todoInitTests.html
-http://localhost/todoInitTests.html -> /todoInitTests.js
+http://localhost/todoInitTests.html -> /initTests.js
 http://localhost/ -> /favicon.ico
 http://localhost/ -> /todoInitTests.html
-http://localhost/todoInitTests.html -> /todoInitTests.js
+http://localhost/todoInitTests.html -> /initTests.js
 http://localhost/todoInitTests.html -> /todo-polymer.html
 http://localhost/todoInitTests.html -> /employeeList.html
 http://localhost/todo-polymer.html -> /Scripts/polymer.html
