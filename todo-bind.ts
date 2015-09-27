@@ -2,6 +2,9 @@
 
 module todo.customElements{
 
+    const fnSignature = 'return ';
+    const fnSignatureLn = fnSignature.length;
+
     export interface IBindOptions{
         pull?: Function;
         push?: Function;
@@ -52,7 +55,7 @@ module todo.customElements{
                             attrToChange = binding.attr;
                         }else{
                             switch(target.nodeName){
-                                case 'input':
+                                case 'INPUT':
                                     attrToChange = 'value';
                             }
                         }
@@ -62,7 +65,23 @@ module todo.customElements{
                         };
                         if(binding.get){
                             const val = binding.get(bindArgs);
-                            target['value'] = val;
+                            target[attrToChange] = val;
+                        }
+                        if(binding.set){
+                            const val = target[attrToChange];
+                            let fnString = binding.set.toString();
+                            const iPosReturn = fnString.indexOf(fnSignature);
+                            fnString = fnString.substr(iPosReturn + fnSignatureLn);
+                            const iPosSemi = fnString.indexOf(';');
+                            fnString = fnString.substr(0, iPosSemi);
+                            console.log(fnString);
+                            const iPosOfLastDot = fnString.lastIndexOf('.');
+                            if(iPosOfLastDot > -1){
+                                const fnObj = fnString.substr(0, iPosOfLastDot);
+                                const obj = eval(fnObj);
+                                const fieldOrProp = fnString.substr(iPosOfLastDot).substr(1);
+                                obj[fieldOrProp] = val;
+                            }
                         }
                     });
                 }

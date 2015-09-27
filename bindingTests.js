@@ -3,6 +3,7 @@ var bindingTests;
 (function (bindingTests) {
     bindingTests.myModel = {
         name: 'Bruce',
+        address: '',
         color: 'red'
     };
     bindingTests.spanExample = [
@@ -21,6 +22,7 @@ var bindingTests;
     ];
     bindingTests.divExample = { pull: function (e) { return bindingTests.myModel.name; } };
     bindingTests.inputGetExample = { get: function (e) { return bindingTests.myModel.name; } };
+    bindingTests.inputSetExample = { set: function (e) { return bindingTests.myModel.address; } };
     bindingTests.inputSyncExample = { sync: function (e) { return bindingTests.myModel.name; } };
 })(bindingTests || (bindingTests = {}));
 //# sourceMappingURL=bindingTests.js.map

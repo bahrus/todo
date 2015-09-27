@@ -1,7 +1,8 @@
 ///<reference path='todo-bind.ts'/>
 module bindingTests{
-    export const myModel : {name: string; color: string} = {
+    export const myModel : {name: string; color: string; address: string} = {
         name: 'Bruce',
+        address: '',
         color: 'red'
     };
 
@@ -25,6 +26,8 @@ module bindingTests{
     export const divExample: ibo = {pull: e => myModel.name,};
 
     export const inputGetExample: ibo = {get: e => myModel.name};
+
+    export const inputSetExample: ibo = {set: e => myModel.address};
 
     export const inputSyncExample: ibo = {sync: e => myModel.name};
 }

@@ -3,6 +3,8 @@ var todo;
 (function (todo) {
     var customElements;
     (function (customElements) {
+        var fnSignature = 'return ';
+        var fnSignatureLn = fnSignature.length;
         function nextNonScriptSibling(el) {
             var nextElement = el.nextElementSibling;
             while (nextElement && nextElement.tagName === 'SCRIPT') {
@@ -37,7 +39,7 @@ var todo;
                             }
                             else {
                                 switch (target.nodeName) {
-                                    case 'input':
+                                    case 'INPUT':
                                         attrToChange = 'value';
                                 }
                             }
@@ -47,7 +49,23 @@ var todo;
                             };
                             if (binding.get) {
                                 var val = binding.get(bindArgs);
-                                target['value'] = val;
+                                target[attrToChange] = val;
+                            }
+                            if (binding.set) {
+                                var val = target[attrToChange];
+                                var fnString = binding.set.toString();
+                                var iPosReturn = fnString.indexOf(fnSignature);
+                                fnString = fnString.substr(iPosReturn + fnSignatureLn);
+                                var iPosSemi = fnString.indexOf(';');
+                                fnString = fnString.substr(0, iPosSemi);
+                                console.log(fnString);
+                                var iPosOfLastDot = fnString.lastIndexOf('.');
+                                if (iPosOfLastDot > -1) {
+                                    var fnObj = fnString.substr(0, iPosOfLastDot);
+                                    var obj = eval(fnObj);
+                                    var fieldOrProp = fnString.substr(iPosOfLastDot).substr(1);
+                                    obj[fieldOrProp] = val;
+                                }
                             }
                         });
                     }
