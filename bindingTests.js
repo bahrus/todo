@@ -20,7 +20,7 @@ var bindingTests;
         }
     ];
     bindingTests.divExample = { pull: function (e) { return bindingTests.myModel.name; } };
-    bindingTests.inputPushExample = { push: function (e) { return bindingTests.myModel.name; } };
+    bindingTests.inputGetExample = { get: function (e) { return bindingTests.myModel.name; } };
     bindingTests.inputSyncExample = { sync: function (e) { return bindingTests.myModel.name; } };
 })(bindingTests || (bindingTests = {}));
 //# sourceMappingURL=bindingTests.js.map

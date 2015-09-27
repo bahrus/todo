@@ -30,7 +30,26 @@ var todo;
                         else {
                             bindings = action;
                         }
-                        debugger;
+                        bindings.forEach(function (binding) {
+                            var attrToChange = 'innerText';
+                            if (binding.attr) {
+                                attrToChange = binding.attr;
+                            }
+                            else {
+                                switch (target.nodeName) {
+                                    case 'input':
+                                        attrToChange = 'value';
+                                }
+                            }
+                            var bindArgs = {
+                                el: target,
+                                bindOptions: binding
+                            };
+                            if (binding.get) {
+                                var val = binding.get(bindArgs);
+                                target['value'] = val;
+                            }
+                        });
                     }
                 });
             }

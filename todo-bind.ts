@@ -11,6 +11,11 @@ module todo.customElements{
         attr?: string;
     }
 
+    export interface IBindArgs{
+        el: Element;
+        bindOptions: IBindOptions;
+    }
+
     function nextNonScriptSibling(el:HTMLElement):Element {
         let nextElement = el.nextElementSibling;
         while (nextElement && nextElement.tagName === 'SCRIPT') {
@@ -41,7 +46,25 @@ module todo.customElements{
                     }else{
                         bindings = <IBindOptions[]> action;
                     }
-                    debugger;
+                    bindings.forEach(binding =>{
+                        let attrToChange = 'innerText';
+                        if(binding.attr){
+                            attrToChange = binding.attr;
+                        }else{
+                            switch(target.nodeName){
+                                case 'input':
+                                    attrToChange = 'value';
+                            }
+                        }
+                        const bindArgs : IBindArgs = {
+                            el: target,
+                            bindOptions: binding,
+                        };
+                        if(binding.get){
+                            const val = binding.get(bindArgs);
+                            target['value'] = val;
+                        }
+                    });
                 }
             });
 

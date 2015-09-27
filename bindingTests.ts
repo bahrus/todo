@@ -24,7 +24,7 @@ module bindingTests{
 
     export const divExample: ibo = {pull: e => myModel.name,};
 
-    export const inputPushExample: ibo = {push: e => myModel.name};
+    export const inputGetExample: ibo = {get: e => myModel.name};
 
     export const inputSyncExample: ibo = {sync: e => myModel.name};
 }
