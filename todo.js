@@ -1,4 +1,9 @@
 ///<reference path='Scripts/typings/node/node.d.ts'/>
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 if (!Object['assign']) {
     //from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
     Object.defineProperty(Object, 'assign', {
@@ -129,6 +134,26 @@ var todo;
         endAction(action, callback);
     }
     todo.cacheStringValueActionImpl = cacheStringValueActionImpl;
+    var __todo_name = '__todo_name';
+    var __todo_parent = '__todo_parent';
+    function buildObjectPathActionImpl(context, callback, action) {
+        if (action)
+            action = this;
+    }
+    todo.buildObjectPathActionImpl = buildObjectPathActionImpl;
+    function getParamName(objectGetter) {
+        var functionStr = objectGetter.toString();
+        //const afterReturn = functionStr.
+    }
+    todo.getParamName = getParamName;
+    var test = (function (_super) {
+        __extends(test, _super);
+        function test() {
+            _super.apply(this, arguments);
+        }
+        return test;
+    })(HTMLElement);
+    todo.test = test;
 })(todo || (todo = {}));
 (function (__global) {
     var modInfo = {

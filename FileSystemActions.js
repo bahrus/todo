@@ -49,7 +49,7 @@ var todo;
             var wfm = webContext.fileManager;
             var filePath = wfm.resolve(rootdirectory, action.relativeFilePath);
             action.domState = {
-                content: wfm.readTextFileSync(filePath),
+                content: wfm.readTextFileSync(filePath)
             };
         }
         FileSystemActions.textFileReaderActionImpl = textFileReaderActionImpl;
@@ -57,10 +57,10 @@ var todo;
             if (action.debug)
                 debugger;
             if (context.processManager) {
-                var test = function (chunk, key) {
+                var test_1 = function (chunk, key) {
                     return key && key.ctrl && key.name == 'c';
                 };
-                context.processManager.WaitForUserInputAndExit('Press ctrl c to exit', test);
+                context.processManager.WaitForUserInputAndExit('Press ctrl c to exit', test_1);
             }
             todo.endAction(action, callback);
         }
@@ -107,7 +107,7 @@ var todo;
             action.htmlFileSelectorState = {
                 filePath: action.filePathGenerator.currentFilePath,
                 $: $,
-                originalContent: content,
+                originalContent: content
             };
         }
         function HTMLFileSelectorActionImpl(context, callback, action) {
@@ -133,7 +133,7 @@ var todo;
 (function (__global) {
     var modInfo = {
         name: 'todo',
-        mod: todo,
+        mod: todo
     };
     if (typeof __global[modInfo.name] !== "undefined") {
         if (__global[modInfo.name] !== modInfo.mod) {

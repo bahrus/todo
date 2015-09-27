@@ -12,9 +12,10 @@ module todo.customElements {
     const getScrollbarWidth = 'getScrollbarWidth';
     const handleScrollEvent = 'handleScrollEvent';
     const maxDimElementsInViewPane = 'maxDimElementsInViewPane';
-    //const maxHorizontalElementsInViewPane = 'maxHorizontalElementsInViewPane';
+    const mouseWheelCssSelector = 'mouseWheelCssSelector';
     const oldVal = 'oldVal';
     const oldScrollDimVal = 'oldScrollDimVal';
+
 
     function getScrollDim(dimension: string){
 
@@ -69,7 +70,10 @@ module todo.customElements {
         scrollEl[oldScrollDimVal] = scrollDimVal;
     }
 
+
+
     const vScrollControl: polymer.Base = {
+
         is: 'todo-vscroll',
         properties: {
             [maxValue]: {
@@ -84,6 +88,9 @@ module todo.customElements {
             [maxDimElementsInViewPane]:{
                 type: Number,
                 value: 10,
+            },
+            [mouseWheelCssSelector]:{
+                type: String,
             }
         },
         ready: function () {

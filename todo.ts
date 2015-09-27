@@ -248,6 +248,26 @@ module todo {
         context.stringCache[action.cacheKey] = action.cacheValue;
         endAction(action, callback);
     }
+
+    export interface IBuildObjectPathAction extends IAction{
+        objectGetter : Function
+    }
+
+    const __todo_name = '__todo_name';
+    const __todo_parent = '__todo_parent'
+    export function buildObjectPathActionImpl(context: IContext, callback?: ICallback, action?: IBuildObjectPathAction){
+        if(action) action = this;
+
+    }
+
+    export function getParamName(objectGetter: Function){
+        const functionStr = objectGetter.toString();
+        //const afterReturn = functionStr.
+    }
+
+    export class test extends HTMLElement{
+
+    }
 }
 
 // hook global op

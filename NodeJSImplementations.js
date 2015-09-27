@@ -3,11 +3,10 @@
 ///<reference path='todo.ts'/>
 ///<reference path='StringUtils.ts'/>
 ///<reference path='FileSystemActions.ts'/>
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var fs = require('fs');
 var path = require('path');
@@ -74,7 +73,7 @@ var todo;
                     type: 'uglifyjs',
                     fileIn: filePath,
                     fileOut: destPath,
-                    callback: callback,
+                    callback: callback
                 });
             };
             return NodeJSWebFileManager;
@@ -101,7 +100,7 @@ var todo;
 (function (__global) {
     var modInfo = {
         name: 'todo',
-        mod: todo,
+        mod: todo
     };
     if (typeof __global[modInfo.name] !== "undefined") {
         if (__global[modInfo.name] !== modInfo.mod) {

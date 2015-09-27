@@ -44,7 +44,7 @@ var todo;
             var aSel = action.selector;
             if (!aSel.domState) {
                 aSel.domState = {
-                    htmlFile: action.domState.htmlFile,
+                    htmlFile: action.domState.htmlFile
                 };
             }
             var aSelSt = aSel.domState;
@@ -59,7 +59,7 @@ var todo;
                 eA.domState = {
                     elements: null,
                     DOMTransform: action,
-                    htmlFile: aSelSt.htmlFile,
+                    htmlFile: aSelSt.htmlFile
                 };
                 if (eA.async) {
                     var i = 0;
@@ -97,7 +97,7 @@ var todo;
 (function (__global) {
     var modInfo = {
         name: 'todo',
-        mod: todo,
+        mod: todo
     };
     if (typeof __global[modInfo.name] !== "undefined") {
         if (__global[modInfo.name] !== modInfo.mod) {

@@ -13,7 +13,7 @@ var todo;
         var getScrollbarWidth = 'getScrollbarWidth';
         var handleScrollEvent = 'handleScrollEvent';
         var maxDimElementsInViewPane = 'maxDimElementsInViewPane';
-        //const maxHorizontalElementsInViewPane = 'maxHorizontalElementsInViewPane';
+        var mouseWheelCssSelector = 'mouseWheelCssSelector';
         var oldVal = 'oldVal';
         var oldScrollDimVal = 'oldScrollDimVal';
         function getScrollDim(dimension) {
@@ -79,6 +79,9 @@ var todo;
                     _b[maxDimElementsInViewPane] = {
                         type: Number,
                         value: 10
+                    },
+                    _b[mouseWheelCssSelector] = {
+                        type: String
                     },
                     _b
                 ),

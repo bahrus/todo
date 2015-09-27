@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Binding Tests</title>
+    <script src="Scripts/src/webcomponents-lite.js"></script>
+    <link rel="import" href="todo-bind.html" />
+
+    <link rel="design-time" href="bindingTests.ts"/>
+    <script src="bindingTests.js"></script>
+</head>
+<body>
+    <script is="todo-bind">bindingTests.spanExample</script>
+    <span></span>
+
+    <script is="todo-bind">bindingTests.divExample</script>
+    <div></div>
+
+    <script is="todo-bind">bindingTests.inputPushExample</script>
+    <input type="text" value="Initial Value"/>
+
+    <script is="todo-bind">bindingTests.inputSyncExample</script>
+    <input type="text"/>
+</body>
+</html>
