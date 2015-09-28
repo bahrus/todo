@@ -12,12 +12,27 @@ var todo;
             }
             return nextElement;
         }
+        function analyzeFunctionRef(fnString) {
+            var iPosReturn = fnString.indexOf(fnSignature);
+            fnString = fnString.substr(iPosReturn + fnSignatureLn);
+            var iPosSemi = fnString.indexOf(';');
+            fnString = fnString.substr(0, iPosSemi);
+            console.log(fnString);
+            var iPosOfLastDot = fnString.lastIndexOf('.');
+            if (iPosOfLastDot > -1) {
+                var fnObj = fnString.substr(0, iPosOfLastDot);
+                var obj = eval(fnObj);
+                var fieldOrProp = fnString.substr(iPosOfLastDot).substr(1);
+                return {
+                    obj: obj,
+                    fieldOrProp: fieldOrProp
+                };
+            }
+            return null;
+        }
         var bindExtension = {
             is: 'todo-bind',
             extends: 'script',
-            //properties: {
-            //
-            //},
             attached: function () {
                 var that = eval('this'); //mystery why this is necessary
                 window.addEventListener('load', function (ev) {
@@ -53,19 +68,19 @@ var todo;
                             }
                             if (binding.set) {
                                 var val = target[attrToChange];
-                                var fnString = binding.set.toString();
-                                var iPosReturn = fnString.indexOf(fnSignature);
-                                fnString = fnString.substr(iPosReturn + fnSignatureLn);
-                                var iPosSemi = fnString.indexOf(';');
-                                fnString = fnString.substr(0, iPosSemi);
-                                console.log(fnString);
-                                var iPosOfLastDot = fnString.lastIndexOf('.');
-                                if (iPosOfLastDot > -1) {
-                                    var fnObj = fnString.substr(0, iPosOfLastDot);
-                                    var obj = eval(fnObj);
-                                    var fieldOrProp = fnString.substr(iPosOfLastDot).substr(1);
-                                    obj[fieldOrProp] = val;
-                                }
+                                var objRef = analyzeFunctionRef(binding.set.toString());
+                                objRef.obj[objRef.fieldOrProp] = val;
+                            }
+                            if (binding.pull) {
+                                var objRef = analyzeFunctionRef(binding.pull.toString());
+                                Object['observe'](objRef.obj, function (changes) {
+                                    changes.forEach(function (change) {
+                                        if (change.name !== objRef.fieldOrProp)
+                                            return;
+                                        target[attrToChange] = change.object[objRef.fieldOrProp];
+                                    });
+                                    console.log(changes);
+                                });
                             }
                         });
                     }

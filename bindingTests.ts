@@ -23,7 +23,7 @@ module bindingTests{
         }
     ];
 
-    export const divExample: ibo = {pull: e => myModel.name,};
+    export const divExample: ibo = {pull: e => myModel.address,};
 
     export const inputGetExample: ibo = {get: e => myModel.name};
 
