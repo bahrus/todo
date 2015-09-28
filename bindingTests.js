@@ -23,6 +23,6 @@ var bindingTests;
     bindingTests.divExample = { pull: function (e) { return bindingTests.myModel.address; } };
     bindingTests.inputGetExample = { get: function (e) { return bindingTests.myModel.name; } };
     bindingTests.inputSetExample = { set: function (e) { return bindingTests.myModel.address; } };
-    bindingTests.inputSyncExample = { sync: function (e) { return bindingTests.myModel.name; } };
+    bindingTests.inputPushExample = { push: function (e) { return bindingTests.myModel.address; } };
 })(bindingTests || (bindingTests = {}));
 //# sourceMappingURL=bindingTests.js.map

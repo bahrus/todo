@@ -100,6 +100,15 @@ module todo.customElements{
                                 console.log(changes);
                             });
                         }
+                        if(binding.push){
+                            const observer = new MutationObserver(mutations =>{
+                                console.log(mutations);
+                            });
+
+                            const mutationConfig : MutationObserverInit = {
+                                attributes: true
+                            };
+                        }
                     });
                 }
             });

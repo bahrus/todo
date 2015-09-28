@@ -82,6 +82,14 @@ var todo;
                                     console.log(changes);
                                 });
                             }
+                            if (binding.push) {
+                                var observer = new MutationObserver(function (mutations) {
+                                    console.log(mutations);
+                                });
+                                var mutationConfig = {
+                                    attributes: true
+                                };
+                            }
                         });
                     }
                 });

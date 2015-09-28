@@ -29,5 +29,5 @@ module bindingTests{
 
     export const inputSetExample: ibo = {set: e => myModel.address};
 
-    export const inputSyncExample: ibo = {sync: e => myModel.name};
+    export const inputPushExample: ibo = {push: e => myModel.address};
 }
