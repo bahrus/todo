@@ -6,11 +6,16 @@
     <script>
         var test = {
             s: 'string',
-            f: function(){
-                return 'hello'
+            f: a => 'hello',
+            g: function(a) {
+                return 'goodbye'
             }
-        }
+        };
+        test.__fs = test.f.toString();
+        test.__gs = test.g.toString();
+
         console.log(JSON.stringify(test));
+
     </script>
 </head>
 <body>
