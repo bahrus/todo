@@ -1,5 +1,9 @@
 ///<reference path="TSON.ts"/>
 
+interface String{
+    $: String;
+}
+
 var test = {
     s: 'string',
     f: a => 'hello',
@@ -12,11 +16,19 @@ test['__gs'] = test.g.toString();
 
 console.log(JSON.stringify(test));
 
-module myModule.whatever{
-    export const test = 'hello'
+module myReferencedModule.something{
+    export const myString = 'test'.$;
 }
 
-const testS = TSON.stringify(() => myModule.whatever);
+module myModule.whatever{
+    export const test = 'hello';
+    export const test2 = myReferencedModule.something.myString;
+}
+
+
+//TSON.labelObject(() => myReferencedModule.something);
+
+const testS = TSON.stringify(() => myModule.whatever, [() => myReferencedModule]);
 debugger;
 delete myModule.whatever;
 debugger;

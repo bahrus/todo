@@ -19,8 +19,8 @@ JSON or XML. Really a better term for this declarative paradigm might be "schema
 "declarative syntax" as opposed to "declarative programming."
 
 
-JSON is useful for being able to describe simple JavaScript objects, declaratively, and in plain text format.  
-Like XML, it can be parsed without any side effects on existing code.  This safety feature contributes to the popularity of the format.
+JSON is useful for being able to describe simple JavaScript objects, declaratively, and in plain text format.  Like XML, 
+it can be safely parsed without any side effects on existing code.  This safety feature contributes to the popularity of the format.
 Another advantage of loading declarative syntax separately as JSON, vs embedded inside a JavaScript file, is that it is [typically
 faster to load] (https://jsperf.com/json-parse-vs-eval).  
 
@@ -49,9 +49,11 @@ There is a clear need for declarative syntax that supports objects with much mor
 commonly used JavaScript control libraries reveals that the configuration for these components relies on functions, and other expressions -- 
 formatters, validators, etc.
 
-TSON is a library with two public functions -- Stringify, and Objectify, which significantly enlarges, over standard JSON, the universe of JavaScript (or Typescript) 
-objects that can be serialized and then deserialized back to the same object as the original, with no loss of functionality.  The universe of 
-objects for which TSON.Stringify and TSON.Objectify is idempotent is called "Typescript Oriented Declarative Objects," or "TODO's."  You
+TSON is a library with two public functions -- Stringify, and Objectify, which significantly enlarges, over standard JSON, 
+the universe of JavaScript (or Typescript) objects that can be serialized and then deserialized back to the same object as the original, 
+with no loss of functionality.  The universe of objects for which TSON.Stringify and TSON.Objectify is idempotent is much broader, 
+and a subset of such objects with simple rules to follow, called "Typescript Oriented Declarative Objects," or "TODO's." are guaranteed to
+meet the idempotent criteria.  You
 can work with plain old JavaScript objects as well, but the focus is on leveraging the "Typescript Way" to find the best fit for what
 constitutes declarative syntax.
 
@@ -67,8 +69,8 @@ Those rules are:
     * type
     * extends
     * return
-    * export
-    * const
+    * export followed by const
+    * const preceded by export
     * interface
 3.  Some operators are forbidden, as they cause side effects
     * ++

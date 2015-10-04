@@ -3,6 +3,7 @@ module TSON{
     const fnSignature = 'return ';
     const fnSignatureLn = fnSignature.length;
     const __name__ = '__name__';
+    const __subs__ = '__subs__';
 
     Object.defineProperty(String.prototype, '$', {
         get: function(){
@@ -10,11 +11,89 @@ module TSON{
         }
     });
 
-    export function stringify(getter: () => Object){
+    export interface String{
+        $: String;
+    }
+
+    export function labelObject(getter: () => Object){
+        //debugger;
         const fnString = getModuleName ( getter.toString() );
         const obj = getter();
+        labelObjectWithStr(obj, fnString);
+    }
+
+    function labelObjectWithStr(obj: Object, label: string){
+        obj[__name__] = label;
+        for(var key in obj){
+            const childObj = obj[key];
+            const typ = typeof childObj;
+            switch(typ){
+                case 'object':
+                    const childLbl = label + '.' + key;
+                    labelObjectWithStr(childObj, childLbl);
+                    break;
+            }
+        }
+    }
+
+    function attachBindings(obj: Object, rootObj?: Object, path?: string){
+        if(!rootObj) rootObj = obj;
+        if(!path) path = '';
+        for(let key in obj){
+            const childObj = obj[key];
+            const newPath = path ? path + '.' + key : key;
+            const cn = childObj[__name__];
+            if(cn){
+
+                if(!rootObj[__subs__]) rootObj[__subs__] = {};
+                rootObj[__subs__][newPath] = cn;
+            }
+            const typ = typeof childObj;
+            switch(typ) {
+                case 'object':
+                    attachBindings(childObj, rootObj, newPath);
+                    break;
+            }
+        }
+    }
+
+    export function stringify(getter: () => Object, refs?: [() => Object]){
+        if(refs){
+            refs.forEach(ref => labelObject(ref));
+        }
+        const fnString = getModuleName ( getter.toString() );
+        const obj = getter();
+        attachBindings(obj);
         obj[__name__] = fnString;
         return JSON.stringify(obj);
+    }
+
+    function getObjFromPath(startingObj: Object, path: string, createIfNotFound?: boolean, truncateNo?: number) : {obj: Object, nextWord?: string} {
+        if(!truncateNo) truncateNo = 0;
+        const paths = path.split('.');
+        let modulePath = startingObj;
+        let n = paths.length;
+        for(let i = 0; i < n - truncateNo; i++){
+            const word = paths[i];
+            let newModulePath = modulePath[word];
+            if(createIfNotFound){
+                if(!newModulePath){
+                    newModulePath = {};
+                    modulePath[word] = newModulePath;
+
+                }
+            }else if(!newModulePath){
+                throw path + "not found."
+            }
+            modulePath = newModulePath;
+        }
+        const returnObj : {obj: Object, nextWord?: string} = {
+            obj: modulePath,
+        }
+        if(truncateNo){
+            returnObj.nextWord = paths[n - truncateNo];
+        }
+        return returnObj;
     }
 
     export function objectify(getter: () => Object, tson: string){
@@ -26,17 +105,26 @@ module TSON{
         if(obj[__name__] !== fnString){
             throw "Destination path does not match signature of object";
         }
-        const paths = fnString.split('.');
-        let modulePath = window;
-        const lenMin1 = paths.length - 1;
-        for(let i = 0; i < lenMin1; i++){
-            const path = paths[i];
-            if(!modulePath[path]){
-                modulePath[path] = {};
+        //const paths = fnString.split('.');
+        //let modulePath = window;
+        //const lenMin1 = paths.length - 1;
+        //for(let i = 0; i < lenMin1; i++){
+        //    const path = paths[i];
+        //    if(!modulePath[path]){
+        //        modulePath[path] = {};
+        //    }
+        //    modulePath = modulePath[path];
+        //}
+        const moduleInfo = getObjFromPath(window, fnString, true, 1);
+        moduleInfo.obj[moduleInfo.nextWord] = obj;
+        const subs = obj[__subs__];
+        if(subs){
+            for(var path in subs){
+                const pathInfo = getObjFromPath(obj, path, false, 1);
+                const val = getObjFromPath(window, subs[path]);
+                pathInfo.obj[pathInfo.nextWord] = val.obj;
             }
-            modulePath = modulePath[path];
         }
-        modulePath[paths[lenMin1]] = obj;
         return obj;
     }
 
