@@ -22,6 +22,7 @@ var TSON;
             var childObj = obj[key];
             var typ = typeof childObj;
             switch (typ) {
+                case 'function':
                 case 'object':
                     var childLbl = label + '.' + key;
                     labelObjectWithStr(childObj, childLbl);
@@ -45,6 +46,7 @@ var TSON;
             }
             var typ = typeof childObj;
             switch (typ) {
+                case 'function':
                 case 'object':
                     attachBindings(childObj, rootObj, newPath);
                     break;
@@ -99,16 +101,6 @@ var TSON;
         if (obj[__name__] !== fnString) {
             throw "Destination path does not match signature of object";
         }
-        //const paths = fnString.split('.');
-        //let modulePath = window;
-        //const lenMin1 = paths.length - 1;
-        //for(let i = 0; i < lenMin1; i++){
-        //    const path = paths[i];
-        //    if(!modulePath[path]){
-        //        modulePath[path] = {};
-        //    }
-        //    modulePath = modulePath[path];
-        //}
         var moduleInfo = getObjFromPath(window, fnString, true, 1);
         moduleInfo.obj[moduleInfo.nextWord] = obj;
         var subs = obj[__subs__];

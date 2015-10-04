@@ -18,11 +18,15 @@ console.log(JSON.stringify(test));
 
 module myReferencedModule.something{
     export const myString = 'test'.$;
+    export function addOne(num: number){
+        return num + 1;
+    }
 }
 
 module myModule.whatever{
     export const test = 'hello';
     export const test2 = myReferencedModule.something.myString;
+    export const test3 = myReferencedModule.something.addOne;
 }
 
 

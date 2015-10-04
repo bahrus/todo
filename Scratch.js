@@ -14,6 +14,10 @@ var myReferencedModule;
     var something;
     (function (something) {
         something.myString = 'test'.$;
+        function addOne(num) {
+            return num + 1;
+        }
+        something.addOne = addOne;
     })(something = myReferencedModule.something || (myReferencedModule.something = {}));
 })(myReferencedModule || (myReferencedModule = {}));
 var myModule;
@@ -22,6 +26,7 @@ var myModule;
     (function (whatever) {
         whatever.test = 'hello';
         whatever.test2 = myReferencedModule.something.myString;
+        whatever.test3 = myReferencedModule.something.addOne;
     })(whatever = myModule.whatever || (myModule.whatever = {}));
 })(myModule || (myModule = {}));
 //TSON.labelObject(() => myReferencedModule.something);
