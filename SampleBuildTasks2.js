@@ -20,7 +20,7 @@ var sampleBuildTasks2;
         testForRepeat: function (i) { return i.htmlFileSelector.filePathGenerator.hasNext; },
         htmlFileSelector: {
             do: fsa.HTMLFileSelectorActionImpl,
-            fileTest: fsa.commonHelperFunctions.testForHtmlFileName,
+            fileTest: fsa.commonHelperFunctions.testForHtmlFileName
         },
         domBuildDirectives: {
             removeBuildDirective: {
@@ -50,7 +50,7 @@ var sampleBuildTasks2;
         },
         htmlFileSaver: {
             filePathModifier: {
-                do: sampleBuildTasks2_1.replaceToDoPath,
+                do: sampleBuildTasks2_1.replaceToDoPath
             }
         },
         initActions: [function (i) { return i.htmlFileSelector; }],
@@ -58,7 +58,7 @@ var sampleBuildTasks2;
             function (i) { return i.htmlFileSelector.filePathGenerator; },
             function (i) {
                 i.domBuildDirectives.domState = {
-                    htmlFile: i.htmlFileSelector.htmlFileSelectorState,
+                    htmlFile: i.htmlFileSelector.htmlFileSelectorState
                 };
                 return i.domBuildDirectives;
             },
@@ -66,7 +66,7 @@ var sampleBuildTasks2;
                 i.htmlFileSaver.htmlFileSelectorState = i.htmlFileSelector.htmlFileSelectorState;
                 return i.htmlFileSaver;
             }
-        ],
+        ]
     };
     var context = {};
     sampleBuildTasks2.do(context);
